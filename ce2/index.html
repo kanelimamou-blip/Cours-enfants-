@@ -219,6 +219,36 @@ h1, h2, h3 { font-family: var(--titre); margin: 0; line-height: 1.1; text-wrap: 
 .stat b { display: block; font-family: var(--titre); font-size: 26px; font-variant-numeric: tabular-nums; }
 .stat span { font-size: 13px; color: var(--doux); }
 .discret { font-size: 13px; color: var(--doux); text-align: center; padding: 6px; }
+/* Question du jour, coffre, bulletin, récompenses */
+.qdj { display: flex; align-items: center; gap: 12px; background: linear-gradient(90deg, var(--mangue), #ffd36b); border-radius: 18px; padding: 8px 14px; text-align: left; box-shadow: 0 4px 0 rgba(0,0,0,.15); animation: battre 2s infinite; }
+.qdj b { display: block; font-family: var(--titre); font-size: 19px; line-height: 1.1; }
+.qdj small { font-size: 14px; }
+.coffre-mini { font-size: 34px; }
+.coffre { font-size: 110px; line-height: 1; animation: battre 1.2s infinite; }
+.coffre.ouvre { animation: secoue .5s 2; }
+.indice { box-shadow: 0 0 0 5px var(--mangue), 0 0 24px var(--mangue) !important; }
+.bulletin { background: #fffdf7; border: 2px solid var(--trait); border-radius: 6px; padding: 16px; font-family: Georgia, "Times New Roman", serif; display: grid; gap: 12px; box-shadow: 0 6px 0 var(--trait); user-select: text; }
+.entete-bulletin { display: grid; gap: 2px; text-align: center; border-bottom: 2px solid var(--encre); padding-bottom: 8px; }
+.entete-bulletin b { font-size: 20px; text-transform: uppercase; letter-spacing: .06em; }
+.bulletin table { width: 100%; border-collapse: collapse; font-size: 15px; }
+.bulletin th, .bulletin td { border: 1px solid #cbbfae; padding: 6px; text-align: left; }
+.bulletin td:nth-child(2) { text-align: center; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.bulletin .total td { font-weight: 700; background: #f6efe1; }
+.signature { margin: 0; font-style: italic; color: var(--doux); }
+.sous-titre { font-size: 22px; margin-top: 10px; }
+.bons { display: grid; gap: 8px; }
+.bon-ligne { display: grid; grid-template-columns: 40px 1fr auto; align-items: center; gap: 10px; background: var(--carte); border-radius: 14px; padding: 10px 12px; text-align: left; box-shadow: 0 3px 0 var(--trait); }
+.bon-ligne b { font-size: 28px; }
+.bon-ligne .prix { font-family: var(--titre); font-weight: 800; }
+.bon-ligne.demande { box-shadow: none; border: 2px dashed var(--trait); }
+.statut { font-size: 14px; font-weight: 700; white-space: nowrap; }
+.statut.accorde { color: var(--vert); } .statut.refuse { color: var(--doux); }
+.resume { display: grid; gap: 4px; font-size: 15px; }
+.resume ul { margin: 0 0 6px; padding-left: 20px; }
+.lien { color: var(--theme); text-decoration: underline; font-weight: 700; padding: 0; }
+details summary { cursor: pointer; font-weight: 700; color: var(--theme); }
+details[open] { display: grid; gap: 8px; }
+
 /* Habillage football */
 .aire.terrain { background: repeating-linear-gradient(90deg, #4caf50 0 40px, #45a049 40px 80px); }
 .aire.terrain::before { content: ""; position: absolute; left: 50%; top: 50%; width: 120px; height: 120px; margin: -60px; border: 3px solid rgba(255,255,255,.6); border-radius: 50%; }
@@ -238,6 +268,7 @@ h1, h2, h3 { font-family: var(--titre); margin: 0; line-height: 1.1; text-wrap: 
 <body>
 <div class="app"><main class="ecran" id="ecran"></main></div>
 
+<script src="../voix/voix.js"></script>
 <script>
 /* ---------- Contenu propre à l'enfant ---------- */
 /* Contenu de l'appli CE2. Programme sénégalais (CEB, étape 2), palier 1 : début d'année. */
@@ -669,7 +700,7 @@ h1, h2, h3 { font-family: var(--titre); margin: 0; line-height: 1.1; text-wrap: 
       n.jeu = n.jeu || choisirJeu(n, i);
     });
   })();
-  const NIVEAU_BOSS = { id: C.id + "-boss", titre: BOSS.titre, lieu: BOSS.nom, decor: "boss", animal: BOSS.e, nomAnimal: BOSS.animal, jeu: "pirogue", boss: true, icone: BOSS.e, objectif: "Révision de tout le palier",
+  const NIVEAU_BOSS = { id: C.id + "-boss", titre: "Composition du " + (C.paliers[0].titre || "palier").toLowerCase(), lieu: BOSS.nom, decor: "boss", animal: BOSS.e, nomAnimal: BOSS.animal, jeu: "composition", boss: true, icone: BOSS.e, objectif: "Révision de tout le palier",
     questions: () => melange(NIVEAUX.flatMap(n => n.questions().slice(0, 2))).slice(0, 10) };
 
   function choisirJeu(n, i) {
@@ -681,7 +712,7 @@ h1, h2, h3 { font-family: var(--titre); margin: 0; line-height: 1.1; text-wrap: 
   }
 
   // ----- Mémoire du téléphone -----
-  const defaut = () => ({ prenom: "", code: "1234", toutOuvert: false, progres: {}, journal: [], jours: {}, pieces: 0, achats: [], porte: "", album: [], serie: { jour: "", n: 0 } });
+  const defaut = () => ({ prenom: "", code: "1234", toutOuvert: false, progres: {}, journal: [], jours: {}, pieces: 0, achats: [], porte: "", album: [], serie: { jour: "", n: 0 }, erreurs: [], diff: {}, qdj: "", bulletins: [], bons: [], catalogue: null, bonjour: "" });
   let E = defaut();
   try { const brut = localStorage.getItem(CLE); if (brut) E = Object.assign(defaut(), JSON.parse(brut)); } catch (e) {}
   function sauver() { try { localStorage.setItem(CLE, JSON.stringify(E)); } catch (e) {} }
@@ -717,6 +748,23 @@ h1, h2, h3 { font-family: var(--titre); margin: 0; line-height: 1.1; text-wrap: 
     if (!parole || !texte) return;
     try { parole.cancel(); const u = new SpeechSynthesisUtterance(texte); u.lang = "fr-FR"; u.rate = 0.85; u.pitch = 1.05; if (voix) u.voice = voix; parole.speak(u); } catch (e) {}
   }
+  // Voix de papa : fichiers enregistrés (voix/voix.js), sinon la voix du téléphone.
+  const VOIX = window.VOIX_PAPA || {};
+  let lecteur = null;
+  function parler(cle, texte) {
+    const liste = VOIX[cle];
+    if (liste && liste.length) {
+      try {
+        if (parole) parole.cancel();
+        if (lecteur) lecteur.pause();
+        lecteur = new Audio(liste[Math.floor(Math.random() * liste.length)]);
+        lecteur.play().catch(() => dire(texte));
+        return;
+      } catch (e) {}
+    }
+    dire(texte);
+  }
+
   let audio = null;
   function son(type) {
     try {
@@ -771,7 +819,9 @@ h1, h2, h3 { font-family: var(--titre); margin: 0; line-height: 1.1; text-wrap: 
       '<span class="salut">' + esc(prenom()) + '<small>' + esc(C.classe) + '</small></span><span class="espace"></span>' +
       '<button class="rond" id="btnParent" aria-label="Espace parent">🔒</button></div>' +
       '<div class="barre compteurs"><span class="pastille" title="Jours de suite">🔥 ' + serieActive() + '</span><span class="pastille" title="Pièces">🪙 ' + E.pieces + '</span><span class="pastille" title="Étoiles">⭐ ' + totalEtoiles() + '</span>' +
+      (E.bulletins.length ? '<button class="pastille" id="btnBulletin" aria-label="Mes bulletins">📜</button>' : "") +
       '<span class="espace"></span><button class="pastille" id="btnAlbum">📒 ' + E.album.length + '/' + (NIVEAUX.length + 1) + '</button></div></div>';
+    if (E.qdj !== aujourdhui()) html = html.replace(/<\/div><\/div>$/, '</div><button class="qdj" id="btnQdj"><span class="coffre-mini">🎁</span><span><b>Question du jour</b><small>Ouvre le coffre !</small></span></button></div>');
     html += '<div class="voyage" id="voyage"><svg class="route" id="route" aria-hidden="true"></svg>';
     let decor = "";
     NIVEAUX.forEach((n, i) => {
@@ -808,34 +858,66 @@ h1, h2, h3 { font-family: var(--titre); margin: 0; line-height: 1.1; text-wrap: 
     document.getElementById("btnParent").onclick = () => codeParent();
     document.getElementById("btnPerso").onclick = boutique;
     document.getElementById("btnAlbum").onclick = album;
+    const bq = document.getElementById("btnQdj"); if (bq) bq.onclick = questionDuJour;
+    const bb = document.getElementById("btnBulletin"); if (bb) bb.onclick = () => bulletin(E.bulletins[0], true);
+    const acc = E.bons.filter(b => b.statut === "accorde" && !b.vu);
+    if (acc.length) { acc.forEach(b => b.vu = true); sauver(); setTimeout(() => { bravo("🎟️ Récompense acceptée !"); parler("bon_ok", "Ta récompense est acceptée : " + acc[0].nom + " !"); }, 400); }
+    if (E.bonjour !== aujourdhui()) document.addEventListener("click", function salut() { document.removeEventListener("click", salut, true); if (E.bonjour === aujourdhui()) return; E.bonjour = aujourdhui(); sauver(); parler("bonjour_" + C.id, "Bonjour " + prenom() + " !"); }, true);
   }
 
   function presenter(n) {
-    const j = JEUX[n.jeu];
+    let j = JEUX[n.jeu];
     const v = document.createElement("div"); v.className = "voile";
-    v.innerHTML = '<div class="fenetre" role="dialog" aria-label="' + esc(n.lieu) + '"><div class="grosse-icone">' + (n.boss ? BOSS.e : j.e) + "</div>" +
-      "<h2>" + esc(n.boss ? BOSS.titre : j.nom + " " + (H.a || "à") + " " + n.lieu) + "</h2><p>" + esc(n.boss ? BOSS.aide : j.aide) + "</p>" +
+    if (n.jeu === "composition") j = { e: "📝", nom: "La composition", aide: "" };
+    v.innerHTML = '<div class="fenetre" role="dialog" aria-label="' + esc(n.lieu) + '"><div class="grosse-icone">' + (n.boss ? "📝" : j.e) + "</div>" +
+      "<h2>" + esc(n.boss ? n.titre : j.nom + " " + (H.a || "à") + " " + n.lieu) + "</h2><p>" + esc(n.boss ? "Une révision de tout le palier, comme en classe. Une seule réponse par question, puis ton bulletin !" : j.aide) + "</p>" +
       '<p style="font-size:15px">' + esc(n.titre) + "</p>" + (etoilesDe(n) ? etoilesHTML(etoilesDe(n)) : "") +
       '<div class="boutons"><button class="bouton second" id="fermer">Retour</button><button class="bouton" id="jouer">Jouer !</button></div></div>';
     document.body.appendChild(v);
-    dire(n.boss ? BOSS.titre + " ! " + BOSS.aide : j.nom + " " + (H.a || "à") + " " + n.lieu + ". " + j.aide);
+    if (n.boss) parler("compo", "C'est l'heure de la composition. Concentre-toi bien !"); else dire(j.nom + " " + (H.a || "à") + " " + n.lieu + ". " + j.aide);
     v.onclick = e => { if (e.target === v) v.remove(); };
     v.querySelector("#fermer").onclick = () => v.remove();
     v.querySelector("#jouer").onclick = () => { v.remove(); jouer(n); };
   }
 
   // ----- Les mini-jeux -----
+  // Difficulté de 1 (guidé) à 3 (défi), propre à chaque étape, ajustée après chaque partie.
+  const difficulte = n => E.diff[n.id] || 2;
+  const cleQ = q => q.consigne + "|" + JSON.stringify(q.choix[q.bonne]) + "|" + JSON.stringify(q.scene || "");
+  function alleger(q) {
+    if (q.choix.length <= 2) return q;
+    const faux = q.choix.map((c, i) => i).filter(i => i !== q.bonne);
+    const retire = faux[Math.floor(Math.random() * faux.length)];
+    const choix = q.choix.filter((c, i) => i !== retire);
+    return Object.assign({}, q, { choix, bonne: choix.indexOf(q.choix[q.bonne]), disposition: q.disposition === "trois" ? "" : q.disposition });
+  }
+  function noterErreur(p, q) {
+    const cle = cleQ(q);
+    if (E.erreurs.some(x => x.cle === cle)) return;
+    const propre = Object.assign({}, q); delete propre._rattrapage;
+    E.erreurs.unshift({ cle, id: q._lecon || p.n.id, q: propre, date: new Date().toISOString() });
+    E.erreurs = E.erreurs.slice(0, 60);
+    sauver();
+  }
+  function effacerErreur(q) { const cle = q._rattrapage || cleQ(q); E.erreurs = E.erreurs.filter(x => x.cle !== cle); sauver(); }
+
   function jouer(n) {
     changer();
+    if (n.jeu === "composition") return composition(n);
     $ecran.className = "ecran sans-marge";
-    const questions = n.questions().slice(0, n.boss ? 10 : 8);
-    const partie = { n, questions, k: 0, justes: 0, premier: true };
+    const d = difficulte(n);
+    let questions = n.questions().slice(0, d === 3 ? 10 : 8).map(q => Object.assign({ _lecon: n.id }, q));
+    E.erreurs.filter(x => x.id === n.id).slice(0, 2).forEach((x, i) => { questions[questions.length - 1 - i] = Object.assign({}, x.q, { _rattrapage: x.cle, _lecon: n.id }); });
+    questions = melange(questions);
+    if (d === 1) questions = questions.map(alleger);
+    const partie = { n, questions, k: 0, justes: 0, premier: true, d, vit: d === 1 ? 0.75 : d === 3 ? 1.25 : 1 };
     ({ peche: jeuPeche, ballons: jeuBallons, pirogue: jeuPirogue })[n.jeu](partie);
   }
 
   function enTete(p, q) {
+    p.qc = q;
     return '<div class="jeu-haut"><div class="barre"><button class="rond" id="quitter" aria-label="Quitter">✕</button><div class="progression"><i style="width:' + Math.round(100 * p.k / p.questions.length) + '%"></i></div>' +
-      '<span class="pastille">' + (p.n.boss ? BOSS.e : JEUX[p.n.jeu].e) + " " + p.k + "/" + p.questions.length + "</span></div>" +
+      '<span class="pastille">' + (p.n.boss ? BOSS.e : p.n.jeu === "qdj" ? "🎁" : JEUX[p.n.jeu].e) + " " + p.k + "/" + p.questions.length + "</span></div>" +
       '<div class="consigne"><button class="haut-parleur" id="ecouter" aria-label="Écouter">🔊</button><p>' + esc(q.consigne) + "</p></div>" +
       (q.scene ? '<div class="scene">' + rendu(q.scene) + "</div>" : "") + "</div>";
   }
@@ -846,17 +928,20 @@ h1, h2, h3 { font-family: var(--titre); margin: 0; line-height: 1.1; text-wrap: 
     if (C.voixAuto !== false) ecoute();
   }
   function reussite(p, suite) {
-    if (p.premier) p.justes++;
+    if (p.premier) { p.justes++; if (p.qc && p.qc._rattrapage) effacerErreur(p.qc); }
     son("bon");
     const mot = MOTS_BRAVO[Math.floor(Math.random() * MOTS_BRAVO.length)];
-    bravo(mot); dire(mot);
+    bravo(mot); parler(C.habillage && Math.random() < 0.3 ? "but" : "bravo", mot);
     p.k++; p.premier = true;
-    setTimeout(() => (p.k < p.questions.length ? suite() : fin(p)), 1000);
+    setTimeout(() => (p.k < p.questions.length ? suite() : (p.fin || fin)(p)), 1000);
   }
   function rate(p, choix) {
+    if (p.premier && p.qc) noterErreur(p, p.qc);
     p.premier = false;
     son("faux");
-    dire("Essaie encore." + (choix && choix.dire ? " Ça, c'est " + choix.dire + "." : ""));
+    const aide = choix && choix.dire ? " Ça, c'est " + choix.dire + "." : "";
+    if (VOIX.faux && VOIX.faux.length) { parler("faux", "Essaie encore."); setTimeout(() => aide && dire(aide), 1500); } else dire("Essaie encore." + aide);
+    if (p.d === 1 && p.qc) { const b = $ecran.querySelector('[data-i="' + p.qc.bonne + '"]'); if (b) b.classList.add("indice"); }
   }
   function eclats(aire, x, y, emojis) {
     for (let i = 0; i < 8; i++) {
@@ -891,13 +976,13 @@ h1, h2, h3 { font-family: var(--titre); margin: 0; line-height: 1.1; text-wrap: 
           o.y = haut + (couloirs > 1 ? (rang * (bas - haut)) / (couloirs - 1) : 0);
           o.dir = rang % 2 ? -1 : 1;
           b.classList.add(o.dir > 0 ? "droite" : "gauche");
-          o.v = (34 + Math.random() * 22) * VITESSE;
+          o.v = (34 + Math.random() * 22) * VITESSE * (p.vit || 1);
           o.x = Math.random() * Math.max(10, W - w);
         } else {
           const col = ordre.length;
           o.x = ((rang + 0.5) * W) / col - w / 2 + (Math.random() * 20 - 10);
           o.y = HA * 0.3 + Math.random() * HA * 0.45;
-          o.v = (26 + Math.random() * 16) * VITESSE;
+          o.v = (26 + Math.random() * 16) * VITESSE * (p.vit || 1);
           o.phase = Math.random() * 6;
         }
         b.onclick = () => toucher(o, q);
@@ -944,7 +1029,7 @@ h1, h2, h3 { font-family: var(--titre); margin: 0; line-height: 1.1; text-wrap: 
   const jeuBallons = p => jeuMobile(p, "ballons");
 
   function jeuPirogue(p) {
-    const parQuestion = (p.n.boss ? 8 : 10) / VITESSE; // secondes laissées au rival par question
+    const parQuestion = 10 / (VITESSE * (p.vit || 1)); // secondes laissées au rival par question
     const duree = parQuestion * p.questions.length;
     const debut = performance.now();
     let rivalArrive = false;
@@ -987,6 +1072,113 @@ h1, h2, h3 { font-family: var(--titre); margin: 0; line-height: 1.1; text-wrap: 
     poser();
   }
 
+  // Questions posées calmement, sans course (question du jour, composition).
+  function jeuSimple(p, examen) {
+    function poser() {
+      const q = p.questions[p.k];
+      const ordre = melange(q.choix.map((c, i) => i));
+      const dispo = q.disposition || (q.choix.length === 3 ? "trois" : "");
+      $ecran.innerHTML = '<div class="jeu">' + enTete(p, q) + '<div class="choix ' + dispo + '">' + ordre.map(i => '<button class="reponse r" data-i="' + i + '">' + rendu(q.choix[i]) + "</button>").join("") + "</div></div>";
+      brancher(p, q);
+      $ecran.querySelectorAll(".reponse").forEach(b => b.onclick = () => {
+        const i = +b.dataset.i;
+        if (examen) {
+          $ecran.querySelectorAll(".reponse").forEach(x => x.disabled = true);
+          const bonne = i === q.bonne;
+          b.classList.add(bonne ? "bon" : "faux");
+          if (!bonne) { $ecran.querySelector('.reponse[data-i="' + q.bonne + '"]').classList.add("bon"); noterErreur(p, q); }
+          else if (q._rattrapage) effacerErreur(q);
+          son(bonne ? "bon" : "faux");
+          p.resultats.push({ monde: q._monde, bonne });
+          p.k++;
+          setTimeout(() => (p.k < p.questions.length ? poser() : p.fin(p)), bonne ? 700 : 1500);
+        } else if (i === q.bonne) { b.classList.add("bon"); $ecran.querySelectorAll(".reponse").forEach(x => x.disabled = true); reussite(p, poser); }
+        else { b.classList.add("faux"); b.disabled = true; rate(p, q.choix[i]); }
+      });
+    }
+    poser();
+  }
+
+  function questionDuJour() {
+    changer();
+    $ecran.className = "ecran sans-marge";
+    let q;
+    if (E.erreurs.length) { const x = E.erreurs[Math.floor(Math.random() * E.erreurs.length)]; q = Object.assign({}, x.q, { _rattrapage: x.cle, _lecon: x.id }); }
+    else {
+      const faits = NIVEAUX.filter(n => etoilesDe(n) > 0);
+      const n = (faits.length ? faits : NIVEAUX.slice(0, 1))[Math.floor(Math.random() * Math.max(1, faits.length))];
+      q = Object.assign({ _lecon: n.id }, n.questions()[0]);
+    }
+    const p = { n: { id: "qdj", jeu: "qdj" }, questions: [q], k: 0, justes: 0, premier: true, d: 2 };
+    p.fin = () => coffre(p.justes > 0);
+    parler("qdj", "Voici la question du jour !");
+    setTimeout(() => jeuSimple(p, false), 300);
+  }
+
+  function coffre(premierCoup) {
+    changer();
+    $ecran.className = "ecran";
+    E.qdj = aujourdhui(); serieDuJour();
+    let gain = premierCoup ? [15, 20, 25, 30][Math.floor(Math.random() * 4)] : 10, cadeau = null;
+    const libres = BOUTIQUE.filter(x => !E.achats.includes(x[0]) && x[2] <= 50);
+    if (premierCoup && libres.length && Math.random() < 0.25) { cadeau = libres[Math.floor(Math.random() * libres.length)]; E.achats.push(cadeau[0]); gain = 0; }
+    E.pieces += gain; sauver();
+    $ecran.innerHTML = '<div class="resultat"><button class="coffre" id="ouvrir" aria-label="Ouvrir le coffre">🎁</button><h1>' + (premierCoup ? "Bravo !" : "Bien joué !") + "</h1><p>Touche le coffre pour l'ouvrir</p>" +
+      '<div class="gain" id="contenu" hidden>' + (cadeau ? "<span>" + cadeau[0] + " " + esc(cadeau[1]) + " offert !</span>" : "<span>🪙 +" + gain + "</span>") + "</div>" +
+      '<div class="boutons"><button class="bouton" id="suite" hidden>Continuer</button></div></div>';
+    document.getElementById("ouvrir").onclick = e => {
+      const b = e.currentTarget; if (b.dataset.ouvert) return; b.dataset.ouvert = "1";
+      b.classList.add("ouvre"); son("piece");
+      setTimeout(() => { b.textContent = cadeau ? cadeau[0] : "🪙"; document.getElementById("contenu").hidden = false; document.getElementById("suite").hidden = false; son("gagne"); parler("coffre", "Bravo, tu as ouvert le coffre !"); }, 700);
+    };
+    document.getElementById("suite").onclick = carte;
+  }
+
+  function composition(n) {
+    $ecran.className = "ecran sans-marge";
+    const questions = [];
+    C.mondes.forEach(m => {
+      const lecons = NIVEAUX.filter(x => x.monde === m);
+      for (let k = 0; k < 4; k++) { const l = lecons[(k + Math.floor(Math.random() * lecons.length)) % lecons.length]; const q = melange(l.questions())[0]; questions.push(Object.assign({ _monde: m.titre, _lecon: l.id }, q)); }
+    });
+    const p = { n, questions: melange(questions), k: 0, justes: 0, premier: true, d: 2, resultats: [] };
+    p.fin = finComposition;
+    jeuSimple(p, true);
+  }
+
+  const APPRECIATION = note => note >= 9 ? "Excellent" : note >= 8 ? "Très bien" : note >= 7 ? "Bien" : note >= 6 ? "Assez bien" : note >= 5 ? "Passable" : "Peut mieux faire";
+  const MENTION = moy => moy >= 8 ? "Félicitations" : moy >= 7 ? "Tableau d'honneur" : moy >= 5 ? "Encouragements" : "Doit fournir plus d'efforts";
+  function finComposition(p) {
+    const notes = C.mondes.map(m => { const r = p.resultats.filter(x => x.monde === m.titre); const ok = r.filter(x => x.bonne).length; return { matiere: m.titre, icone: m.icone, note: Math.round((10 * ok) / Math.max(1, r.length) * 2) / 2 }; });
+    const moyenne = Math.round((notes.reduce((s, x) => s + x.note, 0) / notes.length) * 10) / 10;
+    const b = { palier: C.paliers[0].titre, date: new Date().toISOString(), notes, moyenne, mention: MENTION(moyenne) };
+    E.bulletins.unshift(b); E.bulletins = E.bulletins.slice(0, 12);
+    const n = p.n, etoiles = moyenne >= 8 ? 3 : moyenne >= 6 ? 2 : 1, avant = E.progres[n.id] || { etoiles: 0, fois: 0 };
+    E.progres[n.id] = { etoiles: Math.max(avant.etoiles, etoiles), fois: (avant.fois || 0) + 1, dernier: moyenne + "/10", date: b.date };
+    E.journal.unshift({ id: n.id, score: moyenne + "/10", ratio: moyenne / 10, date: b.date });
+    E.pieces += etoiles * 20; serieDuJour();
+    if (!E.album.includes(n.animal)) E.album.push(n.animal);
+    sauver();
+    bulletin(b, false);
+    son("gagne");
+    parler(moyenne >= 6 ? "compo_bien" : "compo_courage", moyenne >= 6 ? "Quelle belle composition ! Félicitations !" : "La composition n'était pas facile. On va réviser ensemble.");
+  }
+
+  function bulletin(b, depuisCarte) {
+    changer();
+    $ecran.className = "ecran";
+    const d = new Date(b.date).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
+    $ecran.innerHTML = '<div class="titre-page"><button class="rond" id="retour" aria-label="Retour">←</button><h1>Mon bulletin</h1></div>' +
+      '<div class="bulletin"><div class="entete-bulletin"><b>' + esc(C.titreAppli) + "</b><span>Composition · " + esc(b.palier) + "</span><span>" + esc(prenom()) + " · " + esc(C.classe) + " · " + d + "</span></div>" +
+      "<table><tr><th>Matière</th><th>Note</th><th>Appréciation</th></tr>" + b.notes.map(x => "<tr><td>" + x.icone + " " + esc(x.matiere) + "</td><td>" + String(x.note).replace(".", ",") + "/10</td><td>" + APPRECIATION(x.note) + "</td></tr>").join("") +
+      '<tr class="total"><td>Moyenne</td><td>' + String(b.moyenne).replace(".", ",") + "/10</td><td>" + esc(b.mention) + "</td></tr></table>" +
+      '<p class="signature">Signature du papa : ____________</p></div>' +
+      (depuisCarte || E.bulletins.length < 2 ? "" : '<p class="aide">Bulletin précédent : ' + String(E.bulletins[1].moyenne).replace(".", ",") + "/10</p>") +
+      '<div class="boutons"><button class="bouton" id="suite">' + (depuisCarte ? "Retour à la carte" : "Continuer") + "</button></div>";
+    document.getElementById("retour").onclick = carte;
+    document.getElementById("suite").onclick = carte;
+  }
+
   // ----- Fin d'un niveau -----
   function fin(p) {
     changer();
@@ -995,11 +1187,12 @@ h1, h2, h3 { font-family: var(--titre); margin: 0; line-height: 1.1; text-wrap: 
     const ratio = p.justes / total;
     let etoiles = ratio >= 0.9 ? 3 : ratio >= 0.65 ? 2 : 1;
     const avant = E.progres[n.id] || { etoiles: 0, fois: 0 };
+    E.diff[n.id] = Math.max(1, Math.min(3, difficulte(n) + (ratio >= 0.9 ? 1 : ratio < 0.6 ? -1 : 0)));
     let gain = etoiles * 5 + (avant.fois ? 0 : 10);
     const gagneCourse = n.jeu === "pirogue" && !p.rival;
     if (gagneCourse) gain += 5;
     E.progres[n.id] = { etoiles: Math.max(avant.etoiles, etoiles), fois: (avant.fois || 0) + 1, dernier: p.justes + "/" + total, date: new Date().toISOString() };
-    E.journal.unshift({ id: n.id, score: p.justes + "/" + total, date: new Date().toISOString() });
+    E.journal.unshift({ id: n.id, score: p.justes + "/" + total, ratio, date: new Date().toISOString() });
     E.journal = E.journal.slice(0, 60);
     E.pieces += gain;
     serieDuJour();
@@ -1013,12 +1206,15 @@ h1, h2, h3 { font-family: var(--titre); margin: 0; line-height: 1.1; text-wrap: 
       '<div class="gain"><span>🪙 +' + gain + "</span><span>🔥 " + E.serie.n + " jour" + (E.serie.n > 1 ? "s" : "") + "</span></div>" +
       (nouveau ? '<div class="nouvel-animal"><b>' + n.animal + "</b><span>" + esc(H.album.nouveau) + esc(n.nomAnimal) + " !</span></div>" : "") +
       '<div class="boutons"><button class="bouton second" id="encore">Rejouer</button><button class="bouton" id="suite">Continuer</button></div></div>';
-    dire(titres[etoiles - 1] + " Tu gagnes " + gain + " pièces." + (nouveau ? " " + H.album.nouveau + n.nomAnimal + " !" : ""));
+    parler("etoiles" + etoiles, titres[etoiles - 1] + " Tu gagnes " + gain + " pièces.");
+    if (nouveau) setTimeout(() => parler("album", H.album.nouveau + n.nomAnimal + " !"), 2600);
     document.getElementById("encore").onclick = () => jouer(n);
     document.getElementById("suite").onclick = carte;
   }
 
   // ----- Boutique du personnage -----
+  const CATALOGUE = [["📺", "Regarder un match avec papa", 150], ["🍨", "Mon dessert préféré", 80], ["🎬", "30 minutes de dessin animé", 100], ["🏖️", "Une sortie à la plage", 250], ["🍲", "Choisir le repas du dimanche", 200]];
+  const catalogue = () => E.catalogue || CATALOGUE;
   function boutique(message) {
     changer();
     $ecran.className = "ecran";
@@ -1028,6 +1224,16 @@ h1, h2, h3 { font-family: var(--titre); margin: 0; line-height: 1.1; text-wrap: 
         const a = E.achats.includes(e);
         return '<button class="objet' + (E.porte === e ? " porte" : "") + '" data-e="' + e + '"><b>' + e + "</b><span>" + esc(nom) + '</span><span class="prix">' + (E.porte === e ? "Porté" : a ? "À toi" : "🪙 " + prix) + "</span></button>";
       }).join("") + "</div>";
+    $ecran.insertAdjacentHTML("beforeend", '<h2 class="sous-titre">🎟️ Mes vraies récompenses</h2><p class="aide">Échange tes pièces contre un bon. Papa doit l\'accepter.</p><div class="bons">' +
+      catalogue().map(([e, nom, prix], i) => '<button class="bon-ligne" data-b="' + i + '"><b>' + e + "</b><span>" + esc(nom) + '</span><span class="prix">🪙 ' + prix + "</span></button>").join("") + "</div>" +
+      (E.bons.length ? '<div class="bons">' + E.bons.slice(0, 6).map(b => '<div class="bon-ligne demande"><b>' + b.e + "</b><span>" + esc(b.nom) + '</span><span class="statut ' + b.statut + '">' + ({ attente: "⏳ En attente", accorde: "✅ Accepté", refuse: "↩️ Refusé" })[b.statut] + "</span></div>").join("") + "</div>" : ""));
+    $ecran.querySelectorAll(".bon-ligne[data-b]").forEach(b => b.onclick = () => {
+      const [e, nom, prix] = catalogue()[+b.dataset.b];
+      if (E.pieces < prix) { son("faux"); dire("Il te manque " + (prix - E.pieces) + " pièces."); return boutique("Il te manque " + (prix - E.pieces) + " pièces pour : " + nom); }
+      E.pieces -= prix; E.bons.unshift({ e, nom, prix, statut: "attente", date: new Date().toISOString() }); E.bons = E.bons.slice(0, 30); sauver();
+      son("piece"); dire("Ta demande est envoyée à papa !");
+      boutique("Demande envoyée à papa : " + nom);
+    });
     document.getElementById("retour").onclick = carte;
     $ecran.querySelectorAll(".objet").forEach(b => b.onclick = () => {
       const [e, nom, prix] = BOUTIQUE.find(x => x[0] === b.dataset.e);
@@ -1079,11 +1285,13 @@ h1, h2, h3 { font-family: var(--titre); margin: 0; line-height: 1.1; text-wrap: 
     const minutes = s => Math.round((s || 0) / 60);
     const nomNiveau = id => { const n = tous.find(x => x.id === id); return n ? n.lieu + " · " + n.titre : id; };
     const dateCourte = d => new Date(d).toLocaleString("fr-FR", { weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
-    const ligne = n => { const p = E.progres[n.id]; return "<tr><td>" + esc(n.titre) + '<br><span class="note">' + esc(n.lieu + " · " + JEUX[n.jeu].nom + (n.objectif ? " · " + n.objectif : "")) + "</span></td><td>" + (p ? etoilesHTML(p.etoiles) + '<br><span class="note">' + p.dernier + " · " + p.fois + " fois</span>" : '<span class="note">pas encore</span>') + "</td></tr>"; };
+    const ligne = n => { const p = E.progres[n.id]; return "<tr><td>" + esc(n.titre) + '<br><span class="note">' + esc(n.lieu + " · " + (JEUX[n.jeu] ? JEUX[n.jeu].nom : "Composition") + (n.objectif ? " · " + n.objectif : "")) + "</span></td><td>" + (p ? etoilesHTML(p.etoiles) + '<br><span class="note">' + p.dernier + " · " + p.fois + " fois" + (n.boss ? "" : " · " + ["", "guidé", "normal", "défi"][difficulte(n)]) + "</span>" : '<span class="note">pas encore</span>') + "</td></tr>"; };
     $ecran.innerHTML = '<div class="parent" style="display:grid;gap:12px">' +
       '<div class="barre"><button class="rond" id="retour" aria-label="Retour">←</button><h1>Espace parent</h1></div>' +
       (message ? '<p class="note" style="color:var(--vert);font-weight:700">' + esc(message) + "</p>" : "") +
-      '<div class="bloc"><div class="stat"><div><b>' + faits + "/" + tous.length + '</b><span>étapes réussies</span></div><div><b>' + totalEtoiles() + '</b><span>étoiles</span></div><div><b>' + minutes(E.jours[aujourdhui()]) + " min</b><span>aujourd'hui</span></div></div></div>" +
+      resumeSemaine() + bonsParent() +
+      (E.bulletins.length ? "<h2>Bulletins</h2><div class=\"bloc\"><table>" + E.bulletins.map((b, i) => '<tr><td><button class="lien" data-bul="' + i + '">Composition · ' + esc(b.palier) + "</button><br><span class=\"note\">" + new Date(b.date).toLocaleDateString("fr-FR") + " · " + esc(b.mention) + "</span></td><td>" + String(b.moyenne).replace(".", ",") + "/10</td></tr>").join("") + "</table></div>" : "") +
+      '<h2>Vue d\'ensemble</h2><div class="bloc"><div class="stat"><div><b>' + faits + "/" + tous.length + '</b><span>étapes réussies</span></div><div><b>' + totalEtoiles() + '</b><span>étoiles</span></div><div><b>' + minutes(E.jours[aujourdhui()]) + " min</b><span>aujourd'hui</span></div></div></div>" +
       "<h2>Progrès par matière</h2>" +
       C.mondes.map(m => '<div class="bloc"><strong>' + m.icone + " " + esc(m.titre) + "</strong><table>" + NIVEAUX.filter(n => n.monde === m).map(ligne).join("") + "</table></div>").join("") +
       '<div class="bloc"><strong>' + BOSS.e + " Révision finale</strong><table>" + ligne(NIVEAU_BOSS) + "</table></div>" +
@@ -1101,6 +1309,15 @@ h1, h2, h3 { font-family: var(--titre); margin: 0; line-height: 1.1; text-wrap: 
       '<p class="discret">' + esc(C.titreAppli) + " · " + esc(C.version) + "</p></div>";
     $ecran.scrollTop = 0;
     document.getElementById("retour").onclick = carte;
+    $ecran.querySelectorAll("[data-bon]").forEach(b => b.onclick = () => {
+      const [i, act] = b.dataset.bon.split(":"); const bon = E.bons[+i];
+      if (act === "ok") { bon.statut = "accorde"; bon.vu = false; } else { bon.statut = "refuse"; E.pieces += bon.prix; }
+      sauver(); parent(act === "ok" ? "Récompense accordée. " + prenom() + " verra la bonne nouvelle." : "Récompense refusée, les pièces sont rendues.");
+    });
+    $ecran.querySelectorAll("[data-suppr]").forEach(b => b.onclick = () => { const c = catalogue().slice(); c.splice(+b.dataset.suppr, 1); E.catalogue = c; sauver(); parent("Récompense retirée."); });
+    const ajout = document.getElementById("okBon");
+    if (ajout) ajout.onclick = () => { const nom = document.getElementById("champBon").value.trim(), prix = parseInt(document.getElementById("champPrix").value, 10); if (!nom || !(prix > 0)) return parent("Indique un nom et un prix en pièces."); E.catalogue = catalogue().concat([["🎁", nom, prix]]); sauver(); parent("Récompense ajoutée : " + nom); };
+    $ecran.querySelectorAll("[data-bul]").forEach(b => b.onclick = () => bulletin(E.bulletins[+b.dataset.bul], true));
     document.getElementById("okPrenom").onclick = () => { const v = document.getElementById("champPrenom").value.trim(); if (v) { E.prenom = v; sauver(); parent("Prénom enregistré."); } };
     document.getElementById("okCode").onclick = () => { const v = document.getElementById("champCode").value.trim(); if (/^\d{4}$/.test(v)) { E.code = v; sauver(); parent("Nouveau code enregistré. Retiens-le bien."); } else parent("Le code doit faire exactement 4 chiffres."); };
     document.getElementById("okOuvert").onclick = () => { E.toutOuvert = !E.toutOuvert; sauver(); parent(E.toutOuvert ? "Toutes les étapes sont ouvertes." : "Les étapes s'ouvrent à nouveau dans l'ordre."); };
@@ -1108,6 +1325,30 @@ h1, h2, h3 { font-family: var(--titre); margin: 0; line-height: 1.1; text-wrap: 
     document.getElementById("effacer").onclick = () => { document.getElementById("confirme").hidden = false; };
     document.getElementById("non").onclick = () => { document.getElementById("confirme").hidden = true; };
     document.getElementById("oui").onclick = () => { const garde = { prenom: E.prenom, code: E.code }; E = Object.assign(defaut(), garde); sauver(); parent("Progrès effacés."); };
+  }
+
+  function resumeSemaine() {
+    const ilya7 = Date.now() - 7 * 864e5;
+    const parties = E.journal.filter(j => new Date(j.date).getTime() >= ilya7);
+    const min = Object.entries(E.jours).filter(([j]) => new Date(j + "T12:00").getTime() >= ilya7).reduce((s, [, v]) => s + v, 0) / 60;
+    const parLecon = {};
+    parties.forEach(j => { if (j.ratio == null) return; (parLecon[j.id] = parLecon[j.id] || []).push(j.ratio); });
+    const tous = NIVEAUX.concat([NIVEAU_BOSS]);
+    const nom = id => { const n = tous.find(x => x.id === id); return n ? n.titre : null; };
+    const moy = a => a.reduce((s, x) => s + x, 0) / a.length;
+    const acquis = Object.keys(parLecon).filter(id => moy(parLecon[id]) >= 0.85).map(nom).filter(Boolean);
+    const coince = Object.keys(parLecon).filter(id => moy(parLecon[id]) < 0.65).map(nom).filter(Boolean);
+    const compte = {}; E.erreurs.forEach(x => compte[x.id] = (compte[x.id] || 0) + 1);
+    const reprendre = Object.entries(compte).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([id, k]) => { const n = tous.find(x => x.id === id); return n ? esc(n.titre) + (n.objectif ? " (" + esc(n.objectif) + ")" : "") + " · " + k + " erreur" + (k > 1 ? "s" : "") + " à revoir" : null; }).filter(Boolean);
+    const liste = a => a.length ? a.map(x => "<li>" + x + "</li>").join("") : '<li class="note">Rien pour l\'instant</li>';
+    return "<h2>La semaine de " + esc(prenom()) + '</h2><div class="bloc"><div class="stat"><div><b>' + parties.length + "</b><span>parties</span></div><div><b>" + Math.round(min) + " min</b><span>de jeu</span></div><div><b>" + E.serie.n + "</b><span>jours de suite</span></div></div>" +
+      '<div class="resume"><strong>✅ Acquis</strong><ul>' + liste(acquis.map(esc)) + "</ul><strong>⚠️ Ça coince</strong><ul>" + liste(coince.map(esc)) + "</ul><strong>📌 À reprendre avec " + esc(prenom()) + "</strong><ul>" + liste(reprendre) + "</ul></div></div>";
+  }
+  function bonsParent() {
+    const att = E.bons.map((b, i) => [b, i]).filter(([b]) => b.statut === "attente");
+    return '<h2>Récompenses demandées</h2><div class="bloc">' + (att.length ? "<table>" + att.map(([b, i]) => "<tr><td>" + b.e + " " + esc(b.nom) + '<br><span class="note">' + b.prix + " pièces · " + new Date(b.date).toLocaleDateString("fr-FR") + '</span></td><td><button class="petit-bouton" data-bon="' + i + ':ok">Accepter</button> <button class="petit-bouton neutre" data-bon="' + i + ':non">Refuser</button></td></tr>').join("") + "</table>" : '<p class="note">Aucune demande en attente.</p>') +
+      '<details><summary>Modifier la liste des récompenses</summary><table>' + catalogue().map(([e, nom, prix], i) => "<tr><td>" + e + " " + esc(nom) + "</td><td>" + prix + ' 🪙 <button class="petit-bouton neutre" data-suppr="' + i + '">Retirer</button></td></tr>').join("") + "</table>" +
+      '<div class="rangee"><input type="text" id="champBon" placeholder="Nouvelle récompense" style="flex:1;min-width:140px"><input type="text" id="champPrix" inputmode="numeric" placeholder="Prix" style="width:70px"><button class="petit-bouton" id="okBon">Ajouter</button></div></details></div>';
   }
 
   window.addEventListener("resize", () => { if (document.getElementById("voyage")) carte(); });

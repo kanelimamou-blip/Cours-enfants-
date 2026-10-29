@@ -29,7 +29,7 @@ for ident, a in applis.items():
 <style>:root{{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}}body{{margin:0}}[hidden]{{display:none!important}}</style>
 </head>
 <body>
-<div class="app">{reste}
+<div class="app">{reste.replace("<script>", '<script src="../voix/voix.js"></script>\n<script>', 1)}
 <script>if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js");</script>
 </body>
 </html>
@@ -37,7 +37,8 @@ for ident, a in applis.items():
     dossier = RACINE / ident
     dossier.mkdir(exist_ok=True)
     (dossier / "index.html").write_text(page, encoding="utf-8")
-    (dossier / "sw.js").write_text(sw.replace("__VERSION__", f"{ident}-{version}"), encoding="utf-8")
+    voix = ["../voix/voix.js"] + sorted("../voix/" + f.name for f in (RACINE / "voix").glob("*.mp3"))
+    (dossier / "sw.js").write_text(sw.replace("__VERSION__", f"{ident}-{version}").replace('"./icone-512.png"]', '"./icone-512.png", ' + ", ".join(json.dumps(v) for v in voix) + "]"), encoding="utf-8")
     manifeste = {
         "name": a["nom"], "short_name": a["court"], "lang": "fr", "id": "./", "start_url": "./", "scope": "./",
         "display": "standalone", "orientation": "portrait", "background_color": "#fff6e6", "theme_color": a["couleur"],
