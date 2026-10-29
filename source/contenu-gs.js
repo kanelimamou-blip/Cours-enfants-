@@ -159,6 +159,21 @@
     classe: "Grande Section",
     avatar: "🦋",
     feminin: true,
+    coin: true,
+    lettresATracer: ["A", "E", "I", "O", "U", "M", "L", "P", "B", "T"],
+    comptines: [
+      { titre: "Un, deux, trois, nous irons au bois", e: "🍒", lignes: [["Un, deux, trois,", "1️⃣"], ["nous irons au bois,", "🌳"], ["quatre, cinq, six,", "4️⃣"], ["cueillir des cerises,", "🍒"], ["sept, huit, neuf,", "7️⃣"], ["dans mon panier neuf,", "🧺"], ["dix, onze, douze,", "🔟"], ["elles seront toutes rouges !", "🔴"]] },
+      { titre: "Une souris verte", e: "🐭", lignes: [["Une souris verte", "🐭"], ["qui courait dans l'herbe,", "🌿"], ["je l'attrape par la queue,", "✋🏾"], ["je la montre à ces messieurs.", "👨🏾‍👨🏾‍👦🏾"], ["Ces messieurs me disent :", "🗣️"], ["trempez-la dans l'huile,", "🫒"], ["trempez-la dans l'eau,", "💧"], ["ça fera un escargot tout chaud !", "🐌"]] },
+      { titre: "Les jours de la semaine", e: "📅", lignes: [["Lundi, on va à l'école,", "🏫"], ["mardi, on apprend des lettres,", "🔤"], ["mercredi, on compte jusqu'à dix,", "🔢"], ["jeudi, on chante en classe,", "🎵"], ["vendredi, on dessine,", "🎨"], ["samedi, on joue dehors,", "⚽"], ["et dimanche, on se repose en famille !", "🏠"]] },
+      { titre: "Les voyelles", e: "🅰️", lignes: [["A comme ananas,", "🍍"], ["E comme éléphant,", "🐘"], ["I comme igloo,", "🧊"], ["O comme orange,", "🍊"], ["U comme lune, tu l'entends ?", "🌙"], ["A, E, I, O, U, je les connais tous !", "⭐"]] },
+      { titre: "Les couleurs", e: "🌈", lignes: [["Rouge comme la tomate,", "🍅"], ["jaune comme le soleil,", "☀️"], ["vert comme la feuille,", "🍃"], ["bleu comme la mer,", "🌊"], ["orange comme la mangue,", "🥭"], ["et toutes ensemble, c'est l'arc-en-ciel !", "🌈"]] },
+    ],
+    coloriages: [
+      { id: "poisson", titre: "Le poisson", svg: '<svg viewBox="0 0 300 220" role="img" aria-label="Poisson à colorier"><rect data-z="eau" x="2" y="2" width="296" height="216" rx="14" fill="#fff"/><path data-z="queue" d="M60 110 L10 60 L10 160 Z" fill="#fff"/><ellipse data-z="corps" cx="150" cy="110" rx="95" ry="58" fill="#fff"/><path data-z="nageoire" d="M140 55 Q160 15 190 52 Z" fill="#fff"/><path data-z="raie" d="M120 70 Q135 110 120 150 L140 152 Q155 110 140 68 Z" fill="#fff"/><circle data-z="oeil" cx="205" cy="95" r="12" fill="#fff"/><circle data-z="bulle1" cx="262" cy="60" r="10" fill="#fff"/><circle data-z="bulle2" cx="275" cy="30" r="7" fill="#fff"/><path data-z="algue" d="M40 215 Q30 185 45 170 Q55 190 50 215 Z" fill="#fff"/></svg>' },
+      { id: "case", titre: "La case", svg: '<svg viewBox="0 0 300 220" role="img" aria-label="Case à colorier"><rect data-z="ciel" x="2" y="2" width="296" height="160" rx="14" fill="#fff"/><circle data-z="soleil" cx="250" cy="45" r="25" fill="#fff"/><rect data-z="sol" x="2" y="160" width="296" height="58" fill="#fff"/><rect data-z="mur" x="80" y="100" width="140" height="80" fill="#fff"/><path data-z="toit" d="M60 105 L150 35 L240 105 Z" fill="#fff"/><rect data-z="porte" x="135" y="130" width="30" height="50" fill="#fff"/><rect data-z="fenetre" x="95" y="120" width="25" height="22" fill="#fff"/><path data-z="arbre" d="M25 160 L35 100 L45 160 Z" fill="#fff"/><circle data-z="feuillage" cx="35" cy="95" r="22" fill="#fff"/></svg>' },
+      { id: "fleur", titre: "La fleur", svg: '<svg viewBox="0 0 300 220" role="img" aria-label="Fleur à colorier"><rect data-z="fond" x="2" y="2" width="296" height="216" rx="14" fill="#fff"/><rect data-z="tige" x="145" y="110" width="10" height="100" fill="#fff"/><ellipse data-z="feuille" cx="180" cy="170" rx="28" ry="12" fill="#fff"/><circle data-z="p1" cx="150" cy="55" r="26" fill="#fff"/><circle data-z="p2" cx="190" cy="85" r="26" fill="#fff"/><circle data-z="p3" cx="175" cy="128" r="26" fill="#fff"/><circle data-z="p4" cx="125" cy="128" r="26" fill="#fff"/><circle data-z="p5" cx="110" cy="85" r="26" fill="#fff"/><circle data-z="coeur" cx="150" cy="95" r="22" fill="#fff"/><circle data-z="papillon" cx="250" cy="45" r="14" fill="#fff"/></svg>' },
+    ],
+
     vitesse: 0.75,
     paliers: [{ id: "p1", titre: "Palier 1", periode: "octobre à décembre" }],
     mondes: [

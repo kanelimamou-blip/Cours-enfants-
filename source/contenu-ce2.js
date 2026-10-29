@@ -301,6 +301,22 @@
     ["Dans quel village est né Sadio Mané ?", "Bambali", ["Joal", "Podor"]],
   ];
 
+  // Placement sur le terrain (4-3-3) : mini-terrain dessiné avec un joueur en surbrillance.
+  const PLACES = [["le gardien", 50, 92], ["le latéral gauche", 14, 70], ["le défenseur central", 38, 75], ["le latéral droit", 86, 70], ["le milieu défensif", 50, 58], ["le milieu gauche", 26, 45], ["le milieu droit", 74, 45], ["l'ailier gauche", 16, 20], ["l'avant-centre", 50, 13], ["l'ailier droit", 84, 20]];
+  function terrain(x, y, petit) {
+    const w = petit ? 70 : 120, h = petit ? 92 : 156;
+    return { k: "html", html: '<svg viewBox="0 0 100 130" width="' + w + '" height="' + h + '" aria-hidden="true"><rect x="1" y="1" width="98" height="128" rx="6" fill="#4caf50" stroke="#fff" stroke-width="2"/><line x1="1" y1="65" x2="99" y2="65" stroke="#fff" stroke-width="1.5"/><circle cx="50" cy="65" r="12" fill="none" stroke="#fff" stroke-width="1.5"/><rect x="30" y="1" width="40" height="16" fill="none" stroke="#fff" stroke-width="1.5"/><rect x="30" y="113" width="40" height="16" fill="none" stroke="#fff" stroke-width="1.5"/><circle cx="' + x + '" cy="' + (y * 1.3) + '" r="8" fill="#a50044" stroke="#fff" stroke-width="2.5"/></svg>' };
+  }
+  function placement() {
+    return () => fois(8, i => {
+      const [nom, x, y] = PLACES[(i * 3 + entre(0, 9)) % PLACES.length];
+      const autres = tirer(PLACES.filter(p => p[0] !== nom), 2);
+      return i % 2
+        ? q("Où joue " + nom + " ? (on attaque vers le haut)", null, Object.assign(terrain(x, y, true), { dire: nom }), autres.map(([n2, x2, y2]) => Object.assign(terrain(x2, y2, true), { dire: n2 })), { disposition: "trois" })
+        : q("Quel est ce poste ?", terrain(x, y, false), phrase(nom), autres.map(a => phrase(a[0])), { disposition: "ligne" });
+    });
+  }
+
   window.CONTENU = {
     id: "ce2",
     titreAppli: "Mon école CE2 · Foot",
@@ -321,7 +337,7 @@
         ["Premier match au Camp Nou", "europe", "🏟️", "le Camp Nou"], ["El Clásico", "europe", "🔥", "le feu du Clásico"], ["La Liga", "europe", "🥇", "une médaille d'or"],
         ["La Coupe du Roi", "europe", "👑", "la couronne du Roi"], ["Le Ballon d'or", "europe", "🌟", "une étoile dorée"], ["La Ligue des champions", "europe", "⭐", "l'étoile des champions"],
         ["Le quart de finale", "europe", "🎺", "une trompette"], ["La demi-finale", "europe", "🏅", "une médaille"], ["Le Mondial", "europe", "🌍", "le globe du Mondial"],
-        ["La CAN", "senegal", "💚", "la fierté des Lions"],
+        ["La CAN", "senegal", "💚", "la fierté des Lions"], ["Le retour au quartier", "quartier", "🏠", "la maison"],
       ],
       decors: { quartier: ["Au quartier", "#f3d9a6"], senegal: ["Au Sénégal", "#b8e3b0"], europe: ["À Barcelone", "#c9d6f2"] },
       boss: { nom: "Finale", zone: "La grande finale", e: "🏆", animal: "le trophée de la finale", titre: "La grande finale", rival: "Le gardien", aide: "Marque avant que le gardien adverse ne s'organise !", bloque: "Gagne toutes les étapes pour jouer la finale !", fond: "#e8c7d2" },
@@ -329,7 +345,20 @@
         peche: { nom: "Les passes", e: "🎯", aide: "Passe le ballon au bon coéquipier, comme au Barça !" },
         ballons: { nom: "Les jongles", e: "⚽", aide: "Touche le bon ballon pour ne pas le laisser tomber !" },
         pirogue: { nom: "La contre-attaque", e: "🏃🏾", aide: "Réponds vite pour marquer avant le défenseur !" },
+        match: { nom: "Le match", e: "🎙️", aide: "Chaque bonne réponse fait avancer ton équipe. Marque plus de buts que l'adversaire !" },
       },
+      match: true,
+      cartes: [
+        { nom: "Lamine Yamal", poste: "ATT", pays: "🇪🇸", note: 86 }, { nom: "Pedri", poste: "MIL", pays: "🇪🇸", note: 87 }, { nom: "Édouard Mendy", poste: "G", pays: "🇸🇳", note: 84 },
+        { nom: "Kalidou Koulibaly", poste: "DEF", pays: "🇸🇳", note: 86 }, { nom: "Gavi", poste: "MIL", pays: "🇪🇸", note: 84 }, { nom: "Ismaïla Sarr", poste: "ATT", pays: "🇸🇳", note: 82 },
+        { nom: "Abdou Diallo", poste: "DEF", pays: "🇸🇳", note: 80 }, { nom: "Idrissa Gueye", poste: "MIL", pays: "🇸🇳", note: 82 }, { nom: "Nicolas Jackson", poste: "ATT", pays: "🇸🇳", note: 81 },
+        { nom: "Jordi Alba", poste: "DEF", pays: "🇪🇸", note: 86 }, { nom: "Pape Matar Sarr", poste: "MIL", pays: "🇸🇳", note: 80 }, { nom: "Ronald Araujo", poste: "DEF", pays: "🇺🇾", note: 85 },
+        { nom: "El Hadji Diouf", poste: "ATT", pays: "🇸🇳", note: 85 }, { nom: "Gerard Piqué", poste: "DEF", pays: "🇪🇸", note: 88 }, { nom: "Frenkie de Jong", poste: "MIL", pays: "🇳🇱", note: 86 },
+        { nom: "Ter Stegen", poste: "G", pays: "🇩🇪", note: 88 }, { nom: "Dani Alves", poste: "DEF", pays: "🇧🇷", note: 88 }, { nom: "Sergio Busquets", poste: "MIL", pays: "🇪🇸", note: 89 },
+        { nom: "Carles Puyol", poste: "DEF", pays: "🇪🇸", note: 89 }, { nom: "Sadio Mané", poste: "ATT", pays: "🇸🇳", note: 89 }, { nom: "Xavi", poste: "MIL", pays: "🇪🇸", note: 92 },
+        { nom: "Luis Suárez", poste: "ATT", pays: "🇺🇾", note: 91 }, { nom: "Andrés Iniesta", poste: "MIL", pays: "🇪🇸", note: 93 }, { nom: "Ronaldinho", poste: "ATT", pays: "🇧🇷", note: 93 },
+        { nom: "Lionel Messi", poste: "ATT", pays: "🇦🇷", note: 98 }, { nom: "Neymar Jr", poste: "ATT", pays: "🇧🇷", note: 95 },
+      ],
       eau: "terrain", ciel: "tribune", mobiles: { peche: "joueur", ballons: "balle" }, bateau: "⚽", prises: { peche: "🎯", ballons: "⚽" },
       monture: "🏃🏾", montureRival: "🏃🏻", passager: "⚽", rival: ["🛡️", "Le défenseur"], course: "pelouse",
       victoire: "But ! Tu as marqué avant le défenseur !", defaite: "Le défenseur a récupéré le ballon",
@@ -363,6 +392,7 @@
         { id: "ce2-p1-s3", palier: "p1", icone: "📋", titre: "Le 4-3-3", objectif: "Lire un schéma tactique (et calculer)", questions: quiz(SCHEMAS) },
         { id: "ce2-p1-s4", palier: "p1", icone: "🔵", titre: "Le style Barça", objectif: "Possession, passes courtes, pressing", questions: quiz(BARCA) },
         { id: "ce2-p1-s5", palier: "p1", icone: "⭐", titre: "Les stars et les Lions", objectif: "Culture foot : Neymar, les Lions du Sénégal", questions: quiz(STARS) },
+        { id: "ce2-p1-s6", palier: "p1", icone: "📍", titre: "Le placement", objectif: "Se repérer sur le terrain (gauche, droite, haut, bas)", questions: placement() },
       ] },
       { id: "decouvrir", titre: "Découvrir", icone: "🌍", couleur: "#bcdcf5", lecons: [
         { id: "ce2-p1-d1", palier: "p1", icone: "🗺️", titre: "Le Sénégal et ses voisins", objectif: "Géographie du Sénégal", questions: quiz(SENEGAL) },

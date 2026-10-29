@@ -249,7 +249,72 @@ h1, h2, h3 { font-family: var(--titre); margin: 0; line-height: 1.1; text-wrap: 
 details summary { cursor: pointer; font-weight: 700; color: var(--theme); }
 details[open] { display: grid; gap: 8px; }
 
+/* Coin de Bineta, livre de Soubeyrou, lutte */
+.coin-grille { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.coin-case { background: var(--carte); border-radius: 22px; padding: 18px 8px; display: grid; justify-items: center; gap: 6px; box-shadow: 0 5px 0 var(--trait); }
+.coin-case b { font-size: 64px; line-height: 1; }
+.coin-case span { font-family: var(--titre); font-weight: 800; font-size: 20px; }
+.maison-animal { background: linear-gradient(#dff3ff, #fff6e6 70%, #c9e9b5 70%); border-radius: 24px; min-height: 200px; display: grid; place-items: center; padding: 14px; gap: 6px; }
+.compagnon { line-height: 1; transition: font-size .4s; }
+.compagnon.saute { animation: saute .5s; }
+.bulle-animal { margin: 0; background: #fff; border-radius: 16px; padding: 6px 14px; font-weight: 700; box-shadow: 0 2px 0 var(--trait); }
+.jauge-animal { display: grid; grid-template-columns: 90px 1fr; align-items: center; gap: 8px; font-weight: 700; }
+.jauge-animal .jauge { display: block; margin: 0; height: 14px; }
+.actions-animal { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.objet:disabled { opacity: .45; }
+.paroles { display: grid; gap: 8px; }
+.paroles p { margin: 0; background: var(--carte); border-radius: 14px; padding: 10px 14px; font-size: 22px; font-weight: 700; display: flex; gap: 10px; align-items: center; transition: transform .2s, background .2s; }
+.paroles p span { font-size: 28px; }
+.paroles p.active { background: var(--theme); color: #fff; transform: scale(1.03); }
+.ardoise { position: relative; background: #2f4f3a; border-radius: 18px; border: 8px solid #a77b4f; overflow: hidden; }
+.ardoise canvas { display: block; }
+.ardoise #trace { position: absolute; inset: 0; }
+.dessin { background: #fff; border-radius: 18px; padding: 8px; box-shadow: 0 4px 0 var(--trait); }
+.dessin svg { width: 100%; height: auto; display: block; }
+.dessin [data-z] { cursor: pointer; stroke: #2b2118; stroke-width: 2.5; }
+.palette { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 6px; }
+.pot { aspect-ratio: 1; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 2px 0 rgba(0,0,0,.2); }
+.pot.choisi { transform: scale(1.18); border-color: var(--encre); }
+.page-livre { background: #fffdf5; border-radius: 8px 22px 22px 8px; border-left: 10px solid var(--theme); padding: 18px; min-height: 280px; display: grid; gap: 14px; align-content: start; box-shadow: 0 5px 0 var(--trait); }
+.page-livre.fermee { place-items: center; text-align: center; }
+.illustration { font-size: 72px; text-align: center; line-height: 1.1; }
+.texte-livre { margin: 0; font-size: 30px; line-height: 1.6; font-weight: 700; }
+.mot { font: inherit; padding: 0 2px; border-radius: 6px; }
+.mot.lu { background: var(--theme-clair); }
+.mot.actif { background: var(--mangue); }
+.bouton:disabled { opacity: .4; }
+.arene { position: relative; height: 70px; margin: 0 max(16px, env(safe-area-inset-right, 0px)) 0 max(16px, env(safe-area-inset-left, 0px)); border-radius: 50%; background: radial-gradient(ellipse, #f3dcaa 55%, #d9b679 56% 62%, #f3dcaa 63%); }
+.lutteurs { position: absolute; top: 8px; transform: translateX(-50%); font-size: 40px; transition: left .5s; white-space: nowrap; }
+.nom-adv { position: absolute; right: 8px; bottom: 2px; font-size: 12px; font-weight: 700; color: var(--doux); }
+
 /* Habillage football */
+.grille.cartes { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.case-carte { padding: 0; display: grid; }
+.carte-joueur { position: relative; display: grid; justify-items: center; gap: 2px; padding: 8px 4px 8px; border-radius: 12px; aspect-ratio: 3 / 4; max-width: 100%; box-sizing: border-box; color: #3a2a00; box-shadow: 0 4px 0 rgba(0,0,0,.18); width: 100%; }
+.carte-joueur.or { background: linear-gradient(160deg, #fff1b8, #e6b422 60%, #b8860b); }
+.carte-joueur.argent { background: linear-gradient(160deg, #ffffff, #c9ced6 60%, #8d96a3); }
+.carte-joueur.bronze { background: linear-gradient(160deg, #ffe0c2, #cd8b52 60%, #8a5326); }
+.carte-joueur.cachee { background: repeating-linear-gradient(45deg, #e9e2d6 0 8px, #ddd3c2 8px 16px); color: var(--doux); }
+.note-c { position: absolute; top: 6px; left: 8px; font-family: var(--titre); font-weight: 800; font-size: 20px; line-height: 1; display: grid; text-align: center; }
+.note-c small { font-size: 11px; }
+.pays { position: absolute; top: 6px; right: 8px; font-size: 16px; }
+.visage { margin-top: 22px; width: 46px; height: 46px; border-radius: 50%; background: rgba(255,255,255,.6); display: grid; place-items: center; font-family: var(--titre); font-weight: 800; font-size: 20px; }
+.nom-c { font-family: var(--titre); font-weight: 800; font-size: 13px; line-height: 1.05; text-align: center; padding: 0 2px; }
+.nouvel-animal .carte-joueur { width: 120px; animation: etoile .6s .7s backwards; }
+.pelouse-equipe { position: relative; aspect-ratio: 3 / 4; max-width: 100%; border-radius: 16px; background: repeating-linear-gradient(#4caf50 0 10%, #45a049 10% 20%); box-shadow: inset 0 0 0 3px rgba(255,255,255,.6); }
+.pelouse-equipe::before { content: ""; position: absolute; left: 50%; top: 50%; width: 26%; aspect-ratio: 1; transform: translate(-50%, -50%); border: 3px solid rgba(255,255,255,.6); border-radius: 50%; }
+.poste { position: absolute; transform: translate(-50%, -50%); width: 64px; min-height: 52px; border-radius: 12px; background: rgba(255,255,255,.92); display: grid; place-items: center; padding: 4px; box-shadow: 0 3px 0 rgba(0,0,0,.2); }
+.poste b { font-family: var(--titre); font-size: 13px; line-height: 1.1; }
+.poste small { font-size: 11px; color: var(--doux); }
+.match { margin: 0 max(16px, env(safe-area-inset-right, 0px)) 0 max(16px, env(safe-area-inset-left, 0px)); display: grid; gap: 6px; }
+.score { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; background: #1b1b1b; color: #fff; border-radius: 12px; padding: 6px 10px; font-size: 14px; }
+.score span:last-child { text-align: right; }
+.score b { font-family: var(--titre); font-size: 24px; color: var(--mangue); font-variant-numeric: tabular-nums; }
+.terrain-match { position: relative; height: 54px; border-radius: 12px; background: repeating-linear-gradient(90deg, #4caf50 0 12.5%, #45a049 12.5% 25%); }
+.balle-match { position: absolute; top: 10px; font-size: 30px; transition: left .5s ease-out; transform: translateX(-50%); }
+.but-g, .but-d { position: absolute; top: 12px; font-size: 26px; }
+.but-g { left: 2px; } .but-d { right: 2px; }
+.commentaire { margin: 0; font-size: 15px; font-weight: 700; min-height: 2.6em; }
 .aire.terrain { background: repeating-linear-gradient(90deg, #4caf50 0 40px, #45a049 40px 80px); }
 .aire.terrain::before { content: ""; position: absolute; left: 50%; top: 50%; width: 120px; height: 120px; margin: -60px; border: 3px solid rgba(255,255,255,.6); border-radius: 50%; }
 .aire.tribune { background: linear-gradient(#1d3b78, #3d6fc4 55%, #4caf50 55%, #45a049); }
@@ -258,6 +323,8 @@ details[open] { display: grid; gap: 8px; }
 .joueur::before { content: ""; position: absolute; top: -14px; left: 50%; width: 30px; height: 30px; margin-left: -15px; border-radius: 50%; background: #7a4a2a; }
 .joueur.c1, .joueur.c3 { background: linear-gradient(90deg, #004d98 0 25%, #a50044 25% 50%, #004d98 50% 75%, #a50044 75%); }
 .balle { width: 104px; height: 104px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #fff 0 55%, #e6e6e6 56%); box-shadow: inset -8px -8px 0 rgba(0,0,0,.08), 0 6px 0 rgba(0,0,0,.15); border: 3px solid #222; box-sizing: border-box; padding: 8px; }
+.course.route { background: linear-gradient(#6b6b6b, #555); }
+.course.route .couloir { border-bottom-color: #f5c518; }
 .course.pelouse { background: repeating-linear-gradient(90deg, #4caf50 0 30px, #45a049 30px 60px); }
 @media (prefers-reduced-motion: reduce) { .noeud.actuel .bulle, .resultat .grandes-etoiles span, .nouvel-animal b { animation: none !important; } }
 </style>
@@ -432,6 +499,21 @@ details[open] { display: grid; gap: 8px; }
     classe: "Grande Section",
     avatar: "🦋",
     feminin: true,
+    coin: true,
+    lettresATracer: ["A", "E", "I", "O", "U", "M", "L", "P", "B", "T"],
+    comptines: [
+      { titre: "Un, deux, trois, nous irons au bois", e: "🍒", lignes: [["Un, deux, trois,", "1️⃣"], ["nous irons au bois,", "🌳"], ["quatre, cinq, six,", "4️⃣"], ["cueillir des cerises,", "🍒"], ["sept, huit, neuf,", "7️⃣"], ["dans mon panier neuf,", "🧺"], ["dix, onze, douze,", "🔟"], ["elles seront toutes rouges !", "🔴"]] },
+      { titre: "Une souris verte", e: "🐭", lignes: [["Une souris verte", "🐭"], ["qui courait dans l'herbe,", "🌿"], ["je l'attrape par la queue,", "✋🏾"], ["je la montre à ces messieurs.", "👨🏾‍👨🏾‍👦🏾"], ["Ces messieurs me disent :", "🗣️"], ["trempez-la dans l'huile,", "🫒"], ["trempez-la dans l'eau,", "💧"], ["ça fera un escargot tout chaud !", "🐌"]] },
+      { titre: "Les jours de la semaine", e: "📅", lignes: [["Lundi, on va à l'école,", "🏫"], ["mardi, on apprend des lettres,", "🔤"], ["mercredi, on compte jusqu'à dix,", "🔢"], ["jeudi, on chante en classe,", "🎵"], ["vendredi, on dessine,", "🎨"], ["samedi, on joue dehors,", "⚽"], ["et dimanche, on se repose en famille !", "🏠"]] },
+      { titre: "Les voyelles", e: "🅰️", lignes: [["A comme ananas,", "🍍"], ["E comme éléphant,", "🐘"], ["I comme igloo,", "🧊"], ["O comme orange,", "🍊"], ["U comme lune, tu l'entends ?", "🌙"], ["A, E, I, O, U, je les connais tous !", "⭐"]] },
+      { titre: "Les couleurs", e: "🌈", lignes: [["Rouge comme la tomate,", "🍅"], ["jaune comme le soleil,", "☀️"], ["vert comme la feuille,", "🍃"], ["bleu comme la mer,", "🌊"], ["orange comme la mangue,", "🥭"], ["et toutes ensemble, c'est l'arc-en-ciel !", "🌈"]] },
+    ],
+    coloriages: [
+      { id: "poisson", titre: "Le poisson", svg: '<svg viewBox="0 0 300 220" role="img" aria-label="Poisson à colorier"><rect data-z="eau" x="2" y="2" width="296" height="216" rx="14" fill="#fff"/><path data-z="queue" d="M60 110 L10 60 L10 160 Z" fill="#fff"/><ellipse data-z="corps" cx="150" cy="110" rx="95" ry="58" fill="#fff"/><path data-z="nageoire" d="M140 55 Q160 15 190 52 Z" fill="#fff"/><path data-z="raie" d="M120 70 Q135 110 120 150 L140 152 Q155 110 140 68 Z" fill="#fff"/><circle data-z="oeil" cx="205" cy="95" r="12" fill="#fff"/><circle data-z="bulle1" cx="262" cy="60" r="10" fill="#fff"/><circle data-z="bulle2" cx="275" cy="30" r="7" fill="#fff"/><path data-z="algue" d="M40 215 Q30 185 45 170 Q55 190 50 215 Z" fill="#fff"/></svg>' },
+      { id: "case", titre: "La case", svg: '<svg viewBox="0 0 300 220" role="img" aria-label="Case à colorier"><rect data-z="ciel" x="2" y="2" width="296" height="160" rx="14" fill="#fff"/><circle data-z="soleil" cx="250" cy="45" r="25" fill="#fff"/><rect data-z="sol" x="2" y="160" width="296" height="58" fill="#fff"/><rect data-z="mur" x="80" y="100" width="140" height="80" fill="#fff"/><path data-z="toit" d="M60 105 L150 35 L240 105 Z" fill="#fff"/><rect data-z="porte" x="135" y="130" width="30" height="50" fill="#fff"/><rect data-z="fenetre" x="95" y="120" width="25" height="22" fill="#fff"/><path data-z="arbre" d="M25 160 L35 100 L45 160 Z" fill="#fff"/><circle data-z="feuillage" cx="35" cy="95" r="22" fill="#fff"/></svg>' },
+      { id: "fleur", titre: "La fleur", svg: '<svg viewBox="0 0 300 220" role="img" aria-label="Fleur à colorier"><rect data-z="fond" x="2" y="2" width="296" height="216" rx="14" fill="#fff"/><rect data-z="tige" x="145" y="110" width="10" height="100" fill="#fff"/><ellipse data-z="feuille" cx="180" cy="170" rx="28" ry="12" fill="#fff"/><circle data-z="p1" cx="150" cy="55" r="26" fill="#fff"/><circle data-z="p2" cx="190" cy="85" r="26" fill="#fff"/><circle data-z="p3" cx="175" cy="128" r="26" fill="#fff"/><circle data-z="p4" cx="125" cy="128" r="26" fill="#fff"/><circle data-z="p5" cx="110" cy="85" r="26" fill="#fff"/><circle data-z="coeur" cx="150" cy="95" r="22" fill="#fff"/><circle data-z="papillon" cx="250" cy="45" r="14" fill="#fff"/></svg>' },
+    ],
+
     vitesse: 0.75,
     paliers: [{ id: "p1", titre: "Palier 1", periode: "octobre à décembre" }],
     mondes: [
@@ -511,6 +593,7 @@ details[open] { display: grid; gap: 8px; }
     NIVEAUX.forEach((n, i) => {
       const lieu = LIEUX[i % LIEUX.length];
       n.lieu = lieu[0]; n.decor = lieu[1]; n.animal = lieu[2]; n.nomAnimal = lieu[3]; n.index = i;
+      if (H.cartes && H.cartes[i]) { n.carte = H.cartes[i]; n.animal = n.carte.nom; n.nomAnimal = "la carte de " + n.carte.nom; }
       n.jeu = n.jeu || choisirJeu(n, i);
     });
   })();
@@ -520,13 +603,13 @@ details[open] { display: grid; gap: 8px; }
   function choisirJeu(n, i) {
     const exemple = n.questions()[0];
     const court = exemple.choix.every(c => ["lettre", "chiffre", "image", "tas", "html"].includes(c.k) || (c.k === "mots" && String(c.t).length <= 9));
-    if (!court || i % 3 === 2) return "pirogue";
+    if (!court || i % 3 === 2) return H.match && i % 2 === 0 ? "match" : H.lutte && i % 2 === 0 ? "lutte" : "pirogue";
     const tas = exemple.choix.some(c => c.k === "tas" || c.k === "html");
     return tas || i % 2 ? "ballons" : "peche";
   }
 
   // ----- Mémoire du téléphone -----
-  const defaut = () => ({ prenom: "", code: "1234", toutOuvert: false, progres: {}, journal: [], jours: {}, pieces: 0, achats: [], porte: "", album: [], serie: { jour: "", n: 0 }, erreurs: [], diff: {}, qdj: "", bulletins: [], bons: [], catalogue: null, bonjour: "" });
+  const defaut = () => ({ prenom: "", code: "1234", toutOuvert: false, progres: {}, journal: [], jours: {}, pieces: 0, achats: [], porte: "", album: [], serie: { jour: "", n: 0 }, erreurs: [], diff: {}, qdj: "", bulletins: [], bons: [], catalogue: null, bonjour: "", equipe: {}, animal: null, jetons: { manger: 2, laver: 2, jouer: 2 }, coloriages: {}, lettresTracees: [] });
   let E = defaut();
   try { const brut = localStorage.getItem(CLE); if (brut) E = Object.assign(defaut(), JSON.parse(brut)); } catch (e) {}
   function sauver() { try { localStorage.setItem(CLE, JSON.stringify(E)); } catch (e) {} }
@@ -633,8 +716,11 @@ details[open] { display: grid; gap: 8px; }
       '<span class="salut">' + esc(prenom()) + '<small>' + esc(C.classe) + '</small></span><span class="espace"></span>' +
       '<button class="rond" id="btnParent" aria-label="Espace parent">🔒</button></div>' +
       '<div class="barre compteurs"><span class="pastille" title="Jours de suite">🔥 ' + serieActive() + '</span><span class="pastille" title="Pièces">🪙 ' + E.pieces + '</span><span class="pastille" title="Étoiles">⭐ ' + totalEtoiles() + '</span>' +
+      (H.cartes ? '<button class="pastille" id="btnEquipe" aria-label="Mon équipe">🏟️</button>' : "") +
+      (C.coin ? '<button class="pastille" id="btnCoin" aria-label="Mon coin">' + (E.animal ? ANIMAUX_COMPAGNONS[E.animal.type][0] : "🏡") + "</button>" : "") +
+      (C.livre ? '<button class="pastille" id="btnLivre" aria-label="Mon livre de lecture">📖</button>' : "") +
       (E.bulletins.length ? '<button class="pastille" id="btnBulletin" aria-label="Mes bulletins">📜</button>' : "") +
-      '<span class="espace"></span><button class="pastille" id="btnAlbum">📒 ' + E.album.length + '/' + (NIVEAUX.length + 1) + '</button></div></div>';
+      '<span class="espace"></span><button class="pastille" id="btnAlbum">' + (H.cartes ? "🃏 " : "📒 ") + E.album.length + '/' + (NIVEAUX.length + 1) + '</button></div></div>';
     if (E.qdj !== aujourdhui()) html = html.replace(/<\/div><\/div>$/, '</div><button class="qdj" id="btnQdj"><span class="coffre-mini">🎁</span><span><b>Question du jour</b><small>Ouvre le coffre !</small></span></button></div>');
     html += '<div class="voyage" id="voyage"><svg class="route" id="route" aria-hidden="true"></svg>';
     let decor = "";
@@ -672,6 +758,9 @@ details[open] { display: grid; gap: 8px; }
     document.getElementById("btnParent").onclick = () => codeParent();
     document.getElementById("btnPerso").onclick = boutique;
     document.getElementById("btnAlbum").onclick = album;
+    const be = document.getElementById("btnEquipe"); if (be) be.onclick = () => equipe();
+    const bc = document.getElementById("btnCoin"); if (bc) bc.onclick = () => coin();
+    const bl = document.getElementById("btnLivre"); if (bl) bl.onclick = () => livre(0);
     const bq = document.getElementById("btnQdj"); if (bq) bq.onclick = questionDuJour;
     const bb = document.getElementById("btnBulletin"); if (bb) bb.onclick = () => bulletin(E.bulletins[0], true);
     const acc = E.bons.filter(b => b.statut === "accorde" && !b.vu);
@@ -725,7 +814,7 @@ details[open] { display: grid; gap: 8px; }
     questions = melange(questions);
     if (d === 1) questions = questions.map(alleger);
     const partie = { n, questions, k: 0, justes: 0, premier: true, d, vit: d === 1 ? 0.75 : d === 3 ? 1.25 : 1 };
-    ({ peche: jeuPeche, ballons: jeuBallons, pirogue: jeuPirogue })[n.jeu](partie);
+    ({ peche: jeuPeche, ballons: jeuBallons, pirogue: jeuPirogue, match: jeuMatch, lutte: jeuLutte })[n.jeu](partie);
   }
 
   function enTete(p, q) {
@@ -936,7 +1025,9 @@ details[open] { display: grid; gap: 8px; }
     let gain = premierCoup ? [15, 20, 25, 30][Math.floor(Math.random() * 4)] : 10, cadeau = null;
     const libres = BOUTIQUE.filter(x => !E.achats.includes(x[0]) && x[2] <= 50);
     if (premierCoup && libres.length && Math.random() < 0.25) { cadeau = libres[Math.floor(Math.random() * libres.length)]; E.achats.push(cadeau[0]); gain = 0; }
-    E.pieces += gain; sauver();
+    E.pieces += gain;
+    if (C.coin) E.jetons.manger = (E.jetons.manger || 0) + 1;
+    sauver();
     $ecran.innerHTML = '<div class="resultat"><button class="coffre" id="ouvrir" aria-label="Ouvrir le coffre">🎁</button><h1>' + (premierCoup ? "Bravo !" : "Bien joué !") + "</h1><p>Touche le coffre pour l'ouvrir</p>" +
       '<div class="gain" id="contenu" hidden>' + (cadeau ? "<span>" + cadeau[0] + " " + esc(cadeau[1]) + " offert !</span>" : "<span>🪙 +" + gain + "</span>") + "</div>" +
       '<div class="boutons"><button class="bouton" id="suite" hidden>Continuer</button></div></div>';
@@ -1005,10 +1096,12 @@ details[open] { display: grid; gap: 8px; }
     let gain = etoiles * 5 + (avant.fois ? 0 : 10);
     const gagneCourse = n.jeu === "pirogue" && !p.rival;
     if (gagneCourse) gain += 5;
+    gain += p.bonus || 0;
     E.progres[n.id] = { etoiles: Math.max(avant.etoiles, etoiles), fois: (avant.fois || 0) + 1, dernier: p.justes + "/" + total, date: new Date().toISOString() };
     E.journal.unshift({ id: n.id, score: p.justes + "/" + total, ratio, date: new Date().toISOString() });
     E.journal = E.journal.slice(0, 60);
     E.pieces += gain;
+    if (C.coin) ["manger", "laver", "jouer"].forEach(k => E.jetons[k] = (E.jetons[k] || 0) + 1);
     serieDuJour();
     const nouveau = !E.album.includes(n.animal);
     if (nouveau) E.album.push(n.animal);
@@ -1016,9 +1109,9 @@ details[open] { display: grid; gap: 8px; }
     son("gagne");
     const titres = ["Continue, tu progresses !", "Bien joué !", C.feminin ? "Championne !" : "Champion !"];
     $ecran.innerHTML = '<div class="resultat"><div class="grandes-etoiles">' + etoilesHTML(etoiles) + "</div><h1>" + esc(titres[etoiles - 1]) + "</h1>" +
-      "<p>" + p.justes + " sur " + total + " du premier coup" + (n.jeu === "pirogue" ? (gagneCourse ? " · " + H.victoire : " · " + H.defaite) : "") + "</p>" +
+      "<p>" + p.justes + " sur " + total + " du premier coup" + (p.texteFin ? " · " + p.texteFin : n.jeu === "pirogue" ? (gagneCourse ? " · " + H.victoire : " · " + H.defaite) : "") + "</p>" +
       '<div class="gain"><span>🪙 +' + gain + "</span><span>🔥 " + E.serie.n + " jour" + (E.serie.n > 1 ? "s" : "") + "</span></div>" +
-      (nouveau ? '<div class="nouvel-animal"><b>' + n.animal + "</b><span>" + esc(H.album.nouveau) + esc(n.nomAnimal) + " !</span></div>" : "") +
+      (nouveau ? '<div class="nouvel-animal">' + (n.carte ? carteHTML(n.carte, true) : "<b>" + n.animal + "</b>") + "<span>" + esc(H.album.nouveau) + esc(n.nomAnimal) + " !</span></div>" : "") +
       '<div class="boutons"><button class="bouton second" id="encore">Rejouer</button><button class="bouton" id="suite">Continuer</button></div></div>';
     parler("etoiles" + etoiles, titres[etoiles - 1] + " Tu gagnes " + gain + " pièces.");
     if (nouveau) setTimeout(() => parler("album", H.album.nouveau + n.nomAnimal + " !"), 2600);
@@ -1058,7 +1151,16 @@ details[open] { display: grid; gap: 8px; }
     });
   }
 
+  // ----- Cartes de joueurs et équipe (CE2 foot) -----
+  const POSTES = { G: "Gardien", DEF: "Défenseur", MIL: "Milieu", ATT: "Attaquant" };
+  function carteHTML(c, obtenue) {
+    const rang = c.note >= 90 ? "or" : c.note >= 85 ? "argent" : "bronze";
+    if (!obtenue) return '<span class="carte-joueur cachee"><span class="note-c">?</span><span class="visage">❔</span><span class="nom-c">' + esc(c.lieu || "") + "</span></span>";
+    const init = c.nom.split(" ").map(m => m[0]).join("").slice(0, 2);
+    return '<span class="carte-joueur ' + rang + '"><span class="note-c">' + c.note + "<small>" + c.poste + '</small></span><span class="pays">' + c.pays + '</span><span class="visage">' + esc(init) + '</span><span class="nom-c">' + esc(c.nom) + "</span></span>";
+  }
   function album() {
+    if (H.cartes) return cartes();
     changer();
     $ecran.className = "ecran";
     const tous = NIVEAUX.map(n => [n.animal, n.nomAnimal, n.lieu]).concat([[BOSS.e, BOSS.animal, BOSS.nom]]);
@@ -1067,6 +1169,300 @@ details[open] { display: grid; gap: 8px; }
       '<div class="grille">' + tous.map(([e, nom, lieu]) => { const a = E.album.includes(e); return '<button class="objet' + (a ? "" : " cache") + '" data-nom="' + esc(a ? nom : "") + '"><b>' + e + "</b><span>" + esc(a ? nom.replace(/^(un |une |le |la |l')/, "") : "?") + '</span><span class="note">' + esc(lieu) + "</span></button>"; }).join("") + "</div>";
     document.getElementById("retour").onclick = carte;
     $ecran.querySelectorAll(".objet").forEach(b => b.onclick = () => b.dataset.nom ? dire(b.dataset.nom) : dire("Pas encore trouvé !"));
+  }
+
+  function cartes() {
+    changer();
+    $ecran.className = "ecran";
+    const liste = NIVEAUX.filter(n => n.carte);
+    const nb = liste.filter(n => E.album.includes(n.carte.nom)).length;
+    $ecran.innerHTML = '<div class="titre-page"><button class="rond" id="retour" aria-label="Retour">←</button><h1>Mes cartes</h1><span style="flex:1"></span><button class="pastille" id="btnEquipe">🏟️ Mon équipe</button></div>' +
+      '<p class="aide">Chaque étape réussie te donne la carte d\'un joueur. ' + nb + " sur " + liste.length + " cartes.</p>" +
+      '<div class="grille cartes">' + liste.map(n => '<button class="case-carte" data-n="' + esc(n.carte.nom) + '">' + carteHTML(Object.assign({ lieu: n.lieu }, n.carte), E.album.includes(n.carte.nom)) + "</button>").join("") + "</div>";
+    document.getElementById("retour").onclick = carte;
+    document.getElementById("btnEquipe").onclick = () => equipe();
+    $ecran.querySelectorAll(".case-carte").forEach(b => b.onclick = () => { const c = liste.find(n => n.carte.nom === b.dataset.n); E.album.includes(c.carte.nom) ? dire(c.carte.nom + ", " + POSTES[c.carte.poste] + ". Note : " + c.carte.note) : dire("Gagne l'étape " + c.lieu + " pour obtenir cette carte."); });
+  }
+  const SCHEMA = [["ATT", "AG", 18, 18], ["ATT", "AC", 50, 12], ["ATT", "AD", 82, 18], ["MIL", "MG", 25, 42], ["MIL", "MC", 50, 48], ["MIL", "MD", 75, 42], ["DEF", "DG", 12, 70], ["DEF", "DCG", 37, 74], ["DEF", "DCD", 63, 74], ["DEF", "DD", 88, 70], ["G", "GB", 50, 92]];
+  function equipe(choisir) {
+    changer();
+    $ecran.className = "ecran";
+    const possedees = NIVEAUX.filter(n => n.carte && E.album.includes(n.carte.nom)).map(n => n.carte);
+    const placees = Object.values(E.equipe);
+    const notes = SCHEMA.map(([, id]) => possedees.find(c => c.nom === E.equipe[id])).filter(Boolean).map(c => c.note);
+    const moy = notes.length ? Math.round(notes.reduce((a, b) => a + b, 0) / notes.length) : 0;
+    let html = '<div class="titre-page"><button class="rond" id="retour" aria-label="Retour">←</button><h1>Mon équipe</h1><span style="flex:1"></span><span class="pastille">4-3-3 · ' + (moy || "–") + "</span></div>" +
+      '<p class="aide">' + (notes.length === 11 ? "Équipe complète ! Tu as vu tout le palier. 🏆" : "Touche un poste pour y placer une de tes cartes. " + notes.length + "/11 joueurs.") + "</p>" +
+      '<div class="pelouse-equipe">' + SCHEMA.map(([poste, id, x, y]) => { const c = possedees.find(k => k.nom === E.equipe[id]); return '<button class="poste" data-id="' + id + '" data-poste="' + poste + '" style="left:' + x + "%;top:" + y + '%">' + (c ? '<b>' + esc(c.nom.split(" ").pop()) + "</b><small>" + c.note + "</small>" : "<b>+</b><small>" + poste + "</small>") + "</button>"; }).join("") + "</div>";
+    if (choisir) {
+      const libres = possedees.filter(c => c.poste === choisir.poste && (!placees.includes(c.nom) || E.equipe[choisir.id] === c.nom));
+      html += '<h2 class="sous-titre">Choisis ton ' + POSTES[choisir.poste].toLowerCase() + "</h2>" + (libres.length ? '<div class="grille cartes">' + libres.map(c => '<button class="case-carte" data-choix="' + esc(c.nom) + '">' + carteHTML(c, true) + "</button>").join("") + "</div>" : '<p class="aide">Tu n\'as pas encore de carte de ' + POSTES[choisir.poste].toLowerCase() + ". Continue ta carrière pour en gagner !</p>");
+    }
+    $ecran.innerHTML = html;
+    document.getElementById("retour").onclick = cartes;
+    $ecran.querySelectorAll(".poste").forEach(b => b.onclick = () => { son("pop"); equipe({ id: b.dataset.id, poste: b.dataset.poste }); setTimeout(() => $ecran.scrollTop = 9999, 50); });
+    $ecran.querySelectorAll("[data-choix]").forEach(b => b.onclick = () => { E.equipe[choisir.id] = b.dataset.choix; sauver(); son("piece"); dire(b.dataset.choix + " entre sur le terrain !"); equipe(); });
+  }
+
+  // ----- Lutte sénégalaise (CI) : chaque bonne réponse pousse l'adversaire hors de l'arène -----
+  function jeuLutte(p) {
+    const adv = ["Tyson", "Boy Niang", "le Lion de Guédiawaye", "Balla Gaye", "Modou Lô", "Eumeu Sène"][Math.floor(Math.random() * 6)];
+    let pos = 0; p.bakk = false;
+    function poser() {
+      arreter();
+      const q = p.questions[p.k];
+      const ordre = melange(q.choix.map((c, i) => i));
+      const dispo = q.disposition || (q.choix.length === 3 ? "trois" : "");
+      $ecran.innerHTML = '<div class="jeu">' + enTete(p, q) +
+        '<div class="arene" aria-hidden="true"><span class="lutteurs" style="left:' + (50 + pos * 12) + '%"><span class="moi-l">' + C.avatar + '🤼🏾</span></span><span class="nom-adv">contre ' + esc(adv) + "</span></div>" +
+        '<div class="choix ' + dispo + '">' + ordre.map(i => '<button class="reponse r" data-i="' + i + '">' + rendu(q.choix[i]) + "</button>").join("") + "</div></div>";
+      brancher(p, q);
+      $ecran.querySelectorAll(".reponse").forEach(b => b.onclick = () => {
+        const i = +b.dataset.i;
+        if (i === q.bonne) {
+          b.classList.add("bon"); $ecran.querySelectorAll(".reponse").forEach(x => x.disabled = true);
+          if (p.premier) pos = Math.min(3, pos + 1);
+          const l = $ecran.querySelector(".lutteurs"); if (l) l.style.left = 50 + pos * 12 + "%";
+          if (pos >= 3 && !p.bakk) { p.bakk = true; setTimeout(() => { bravo("Bàkk ! Tu as gagné !"); dire("Il a fait tomber " + adv + " ! Bàkk !"); }, 300); }
+          reussite(p, poser);
+        } else {
+          b.classList.add("faux"); b.disabled = true;
+          if (p.premier) pos = Math.max(-3, pos - 1);
+          const l = $ecran.querySelector(".lutteurs"); if (l) l.style.left = 50 + pos * 12 + "%";
+          rate(p, q.choix[i]);
+        }
+      });
+    }
+    p.fin = pp => { pp.texteFin = pp.bakk ? "Tu as battu " + adv + " !" : adv + " a résisté, revanche ?"; pp.bonus = pp.bakk ? 10 : 0; fin(pp); };
+    poser();
+  }
+
+  // ----- Match commenté (CE2 foot) -----
+  function jeuMatch(p) {
+    const adv = ["Real Madrid", "l'Atlético", "le Jaraaf", "Casa Sports", "Génération Foot", "Teungueth FC", "le Bayern"][Math.floor(Math.random() * 7)];
+    p.buts = 0; p.butsAdv = 0;
+    let pos = 1, comm = "Coup d'envoi ! " + prenom() + " et ses coéquipiers contre " + adv + ".";
+    const PHRASES_BUT = ["Passe courte, triangle, frappe… BUUUT !", "Il dribble le défenseur… et c'est le BUUUT !", "Centre de l'ailier, reprise… BUUUT !", "Une-deux à la Barça… BUUUT !"];
+    const PHRASES_AVANCE = ["Belle passe vers l'avant !", "Il garde le ballon, le jeu avance.", "Triangle de passes, l'équipe monte.", "Contrôle orienté, il accélère !"];
+    function poser() {
+      arreter();
+      const q = p.questions[p.k];
+      const ordre = melange(q.choix.map((c, i) => i));
+      const dispo = q.disposition || (q.choix.length === 3 ? "trois" : "");
+      $ecran.innerHTML = '<div class="jeu">' + enTete(p, q) +
+        '<div class="match"><div class="score"><span>' + esc(prenom()) + " FC</span><b>" + p.buts + " - " + p.butsAdv + "</b><span>" + esc(adv) + '</span></div>' +
+        '<div class="terrain-match"><span class="but-g">🥅</span><span class="balle-match" style="left:' + (8 + pos * 21) + '%">⚽</span><span class="but-d">🥅</span></div><p class="commentaire">🎙️ ' + esc(comm) + "</p></div>" +
+        '<div class="choix ' + dispo + '">' + ordre.map(i => '<button class="reponse r" data-i="' + i + '">' + rendu(q.choix[i]) + "</button>").join("") + "</div></div>";
+      brancher(p, q);
+      $ecran.querySelectorAll(".reponse").forEach(b => b.onclick = () => {
+        const i = +b.dataset.i;
+        if (i === q.bonne) {
+          b.classList.add("bon"); $ecran.querySelectorAll(".reponse").forEach(x => x.disabled = true);
+          if (p.premier) { pos++; if (pos >= 4) { p.buts++; pos = 1; comm = PHRASES_BUT[Math.floor(Math.random() * PHRASES_BUT.length)]; bravo("BUUUT !"); parler("but", "Buuut !"); } else comm = PHRASES_AVANCE[Math.floor(Math.random() * PHRASES_AVANCE.length)]; }
+          else comm = "Il récupère le ballon, ouf !";
+          const balle = $ecran.querySelector(".balle-match"); if (balle) balle.style.left = 8 + pos * 21 + "%";
+          if (p.premier) p.justes++;
+          if (p.qc && p.qc._rattrapage && p.premier) effacerErreur(p.qc);
+          son("bon"); p.k++; p.premier = true;
+          setTimeout(() => (p.k < p.questions.length ? poser() : finMatch()), 1200);
+        } else {
+          b.classList.add("faux"); b.disabled = true;
+          if (p.premier) { pos--; if (pos < 0) { p.butsAdv++; pos = 1; comm = adv + " contre-attaque… et marque. Allez, on se reprend !"; } else comm = "Ballon perdu ! Il faut presser tout de suite."; }
+          const c = $ecran.querySelector(".commentaire"); if (c) c.textContent = "🎙️ " + comm;
+          const balle = $ecran.querySelector(".balle-match"); if (balle) balle.style.left = 8 + pos * 21 + "%";
+          rate(p, q.choix[i]);
+        }
+      });
+    }
+    function finMatch() {
+      p.texteFin = (p.buts > p.butsAdv ? "Victoire " : p.buts === p.butsAdv ? "Match nul " : "Défaite ") + p.buts + "-" + p.butsAdv + " contre " + adv;
+      p.bonus = p.buts > p.butsAdv ? 10 : 0;
+      fin(p);
+    }
+    poser();
+  }
+
+  // ----- Le coin de Bineta : animal, comptines, lettres, coloriage -----
+  const ANIMAUX_COMPAGNONS = { lapin: ["🐰", "Pompon"], chaton: ["🐱", "Minou"], chiot: ["🐶", "Toutou"], poussin: ["🐥", "Piou"] };
+  function coin() {
+    changer();
+    $ecran.className = "ecran";
+    const a = E.animal;
+    $ecran.innerHTML = '<div class="titre-page"><button class="rond" id="retour" aria-label="Retour">←</button><h1>Mon coin</h1></div>' +
+      '<div class="coin-grille">' +
+      '<button class="coin-case" data-c="animal"><b>' + (a ? ANIMAUX_COMPAGNONS[a.type][0] : "🥚") + "</b><span>" + (a ? esc(ANIMAUX_COMPAGNONS[a.type][1]) : "Mon animal") + "</span></button>" +
+      '<button class="coin-case" data-c="comptines"><b>🎵</b><span>Les comptines</span></button>' +
+      '<button class="coin-case" data-c="tracer"><b>✏️</b><span>J\'écris</span></button>' +
+      '<button class="coin-case" data-c="colorier"><b>🎨</b><span>Coloriage</span></button></div>';
+    dire("Mon coin. Que veux-tu faire ?");
+    document.getElementById("retour").onclick = carte;
+    $ecran.querySelectorAll(".coin-case").forEach(b => b.onclick = () => ({ animal: animal, comptines: comptines, tracer: () => tracer(0), colorier: () => colorier(0) })[b.dataset.c]());
+  }
+
+  function animal(message) {
+    changer();
+    $ecran.className = "ecran";
+    if (!E.animal) {
+      $ecran.innerHTML = '<div class="titre-page"><button class="rond" id="retour" aria-label="Retour">←</button><h1>Choisis ton animal</h1></div><div class="coin-grille">' +
+        Object.entries(ANIMAUX_COMPAGNONS).map(([k, [e, nom]]) => '<button class="coin-case" data-a="' + k + '"><b>' + e + "</b><span>" + nom + "</span></button>").join("") + "</div>";
+      dire("Choisis ton animal. Tu vas t'en occuper !");
+      document.getElementById("retour").onclick = coin;
+      $ecran.querySelectorAll("[data-a]").forEach(b => b.onclick = () => { E.animal = { type: b.dataset.a, faim: 60, proprete: 60, joie: 60, soins: 0, jour: aujourdhui() }; sauver(); son("gagne"); animal("Voici " + ANIMAUX_COMPAGNONS[b.dataset.a][1] + " !"); });
+      return;
+    }
+    const a = E.animal;
+    // Un peu de faim chaque nouveau jour, sans jamais de punition.
+    if (a.jour !== aujourdhui()) { a.faim = Math.max(20, a.faim - 25); a.proprete = Math.max(20, a.proprete - 20); a.joie = Math.max(20, a.joie - 20); a.jour = aujourdhui(); sauver(); }
+    const [e, nom] = ANIMAUX_COMPAGNONS[a.type];
+    const taille = Math.min(5, 1 + Math.floor(a.soins / 8));
+    const humeur = Math.min(a.faim, a.proprete, a.joie);
+    const phrase = message || (humeur < 40 ? nom + (a.faim < 40 ? " a faim !" : a.proprete < 40 ? " voudrait un bain !" : " veut jouer avec toi !") : nom + " est content de te voir !");
+    const jauge = (lab, v) => '<div class="jauge-animal"><span>' + lab + '</span><span class="jauge"><i style="width:' + v + '%"></i></span></div>';
+    $ecran.innerHTML = '<div class="titre-page"><button class="rond" id="retour" aria-label="Retour">←</button><h1>' + esc(nom) + '</h1><span style="flex:1"></span><span class="pastille">Taille ' + taille + "/5</span></div>" +
+      '<div class="maison-animal"><span class="compagnon" id="compagnon" style="font-size:' + (60 + taille * 14) + 'px">' + e + '</span><p class="bulle-animal">' + esc(phrase) + "</p></div>" +
+      jauge("🍎 Ventre", a.faim) + jauge("🫧 Propre", a.proprete) + jauge("💛 Joie", a.joie) +
+      '<div class="actions-animal">' + [["manger", "🍎", "Nourrir"], ["laver", "🧼", "Laver"], ["jouer", "⚽", "Jouer"]].map(([k, ic, lab]) => '<button class="objet" data-act="' + k + '"' + ((E.jetons[k] || 0) ? "" : " disabled") + "><b>" + ic + "</b><span>" + lab + '</span><span class="prix">× ' + (E.jetons[k] || 0) + "</span></button>").join("") + "</div>" +
+      '<p class="aide">Gagne des 🍎 🧼 ⚽ en jouant sur la carte et avec la question du jour.</p>';
+    dire(phrase);
+    document.getElementById("retour").onclick = coin;
+    $ecran.querySelectorAll("[data-act]").forEach(b => b.onclick = () => {
+      const k = b.dataset.act; if (!E.jetons[k]) return;
+      E.jetons[k]--; a.soins++;
+      if (k === "manger") a.faim = Math.min(100, a.faim + 30); if (k === "laver") a.proprete = Math.min(100, a.proprete + 30); if (k === "jouer") a.joie = Math.min(100, a.joie + 30);
+      const grandit = a.soins % 8 === 0 && a.soins / 8 < 5;
+      sauver(); son(grandit ? "gagne" : "pop");
+      animal(grandit ? nom + " a grandi ! Bravo !" : { manger: "Miam ! Merci !", laver: "Tout propre !", jouer: "Youpi, on s'amuse !" }[k]);
+      const c = document.getElementById("compagnon"); if (c) c.classList.add("saute");
+    });
+  }
+
+  function comptines() {
+    changer();
+    $ecran.className = "ecran";
+    const liste = C.comptines || [];
+    $ecran.innerHTML = '<div class="titre-page"><button class="rond" id="retour" aria-label="Retour">←</button><h1>Les comptines</h1></div><div class="bons">' +
+      liste.map((c, i) => '<button class="bon-ligne" data-k="' + i + '"><b>' + c.e + "</b><span>" + esc(c.titre) + '</span><span class="prix">▶</span></button>').join("") + "</div>";
+    document.getElementById("retour").onclick = coin;
+    $ecran.querySelectorAll("[data-k]").forEach(b => b.onclick = () => comptine(liste[+b.dataset.k]));
+  }
+  function comptine(c) {
+    changer();
+    $ecran.className = "ecran";
+    $ecran.innerHTML = '<div class="titre-page"><button class="rond" id="retour" aria-label="Retour">←</button><h1>' + esc(c.titre) + '</h1></div><div class="paroles">' +
+      c.lignes.map((l, i) => '<p data-l="' + i + '"><span>' + (l[1] || "") + "</span>" + esc(l[0]) + "</p>").join("") + '</div><div class="boutons"><button class="bouton" id="chanter">▶ Chante avec moi</button></div>';
+    let fini = false, timer = 0;
+    arreter = () => { fini = true; clearTimeout(timer); if (parole) parole.cancel(); };
+    document.getElementById("retour").onclick = comptines;
+    function ligne(i) {
+      if (fini) return;
+      $ecran.querySelectorAll(".paroles p").forEach(p => p.classList.toggle("active", +p.dataset.l === i));
+      if (i >= c.lignes.length) { if (!E.chants) E.chants = 0; E.chants++; if (E.chants % 2 === 0) { E.jetons.jouer = (E.jetons.jouer || 0) + 1; bravo("⚽ +1"); } sauver(); return; }
+      const p = $ecran.querySelector('.paroles p[data-l="' + i + '"]'); if (p) p.scrollIntoView({ block: "center", behavior: "smooth" });
+      const t = c.lignes[i][0];
+      if (parole) { try { parole.cancel(); const u = new SpeechSynthesisUtterance(t); u.lang = "fr-FR"; u.rate = 0.8; u.pitch = 1.25; if (voix) u.voice = voix; u.onend = () => { timer = setTimeout(() => ligne(i + 1), 250); }; parole.speak(u); return; } catch (e) {} }
+      timer = setTimeout(() => ligne(i + 1), 1800);
+    }
+    document.getElementById("chanter").onclick = () => { fini = false; ligne(0); };
+  }
+
+  // Tracer une lettre avec le doigt : on vérifie qu'on a bien suivi la forme.
+  function tracer(k) {
+    changer();
+    $ecran.className = "ecran";
+    const lettres = C.lettresATracer || ["A", "E", "I", "O", "U"];
+    const L = lettres[k % lettres.length];
+    $ecran.innerHTML = '<div class="titre-page"><button class="rond" id="retour" aria-label="Retour">←</button><h1>J\'écris : ' + L + '</h1><span style="flex:1"></span><span class="pastille">' + (k % lettres.length + 1) + "/" + lettres.length + "</span></div>" +
+      '<p class="aide">Suis la lettre avec ton doigt, sans sortir du chemin.</p><div class="ardoise"><canvas id="modele"></canvas><canvas id="trace"></canvas></div>' +
+      '<div class="boutons"><button class="bouton second" id="effacer">Effacer</button><button class="bouton" id="verifier">J\'ai fini</button></div>';
+    dire("Écris la lettre " + L + ". Suis le chemin avec ton doigt.");
+    document.getElementById("retour").onclick = coin;
+    const boite = $ecran.querySelector(".ardoise"), cm = document.getElementById("modele"), ct = document.getElementById("trace");
+    const W = boite.clientWidth, Hh = Math.min(360, W);
+    const dpr = window.devicePixelRatio || 1;
+    [cm, ct].forEach(c => { c.width = W * dpr; c.height = Hh * dpr; c.style.width = W + "px"; c.style.height = Hh + "px"; c.getContext("2d").scale(dpr, dpr); });
+    const xm = cm.getContext("2d"), xt = ct.getContext("2d");
+    const dessinerModele = () => {
+      xm.clearRect(0, 0, W, Hh);
+      xm.font = "700 " + Math.round(Hh * 0.82) + "px Andika, sans-serif"; xm.textAlign = "center"; xm.textBaseline = "middle";
+      xm.fillStyle = "#e8dcc6"; xm.fillText(L, W / 2, Hh / 2 + Hh * 0.04);
+      xm.setLineDash([6, 10]); xm.lineWidth = 3; xm.strokeStyle = "#b9a98d"; xm.strokeText(L, W / 2, Hh / 2 + Hh * 0.04);
+    };
+    dessinerModele(); if (document.fonts) document.fonts.ready.then(dessinerModele);
+    xt.lineWidth = Math.max(18, Hh * 0.08); xt.lineCap = "round"; xt.lineJoin = "round"; xt.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue("--theme").trim() || "#8a4fd6";
+    let enCours = false;
+    const pos = e => { const r = ct.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
+    ct.addEventListener("pointerdown", e => { enCours = true; ct.setPointerCapture(e.pointerId); const [x, y] = pos(e); xt.beginPath(); xt.moveTo(x, y); xt.lineTo(x + 0.1, y); xt.stroke(); });
+    ct.addEventListener("pointermove", e => { if (!enCours) return; const [x, y] = pos(e); xt.lineTo(x, y); xt.stroke(); });
+    ct.addEventListener("pointerup", () => enCours = false);
+    ct.style.touchAction = "none";
+    document.getElementById("effacer").onclick = () => xt.clearRect(0, 0, W, Hh);
+    document.getElementById("verifier").onclick = () => {
+      const a = xm.getImageData(0, 0, cm.width, cm.height).data, b = xt.getImageData(0, 0, ct.width, ct.height).data;
+      let lettre = 0, couvert = 0, trait = 0, dehors = 0;
+      for (let i = 0; i < a.length; i += 4 * 6) {
+        const dansLettre = a[i + 3] > 40, dansTrait = b[i + 3] > 40;
+        if (dansLettre) { lettre++; if (dansTrait) couvert++; }
+        if (dansTrait) { trait++; if (!dansLettre) dehors++; }
+      }
+      const couverture = couvert / Math.max(1, lettre), ecart = dehors / Math.max(1, trait);
+      if (couverture > 0.5 && ecart < 0.6) {
+        son("gagne"); bravo("Bravo !"); parler("bravo", "Bravo, tu as bien écrit la lettre " + L + " !");
+        if (!E.lettresTracees.includes(L)) { E.lettresTracees.push(L); E.jetons.laver = (E.jetons.laver || 0) + 1; }
+        sauver();
+        setTimeout(() => tracer(k + 1), 1500);
+      } else { son("faux"); dire(couverture <= 0.5 ? "Continue, il manque un morceau de la lettre." : "Attention, reste bien sur le chemin."); }
+    };
+  }
+
+  function colorier(k) {
+    changer();
+    $ecran.className = "ecran";
+    const dessins = C.coloriages || [];
+    if (!dessins.length) return coin();
+    const d = dessins[k % dessins.length];
+    const couleurs = ["#e0533d", "#f08a1c", "#f5c518", "#2e9e5b", "#2f6fd1", "#8a4fd6", "#ff8fc7", "#8b5a2b"];
+    let choisie = couleurs[0];
+    const etat = E.coloriages[d.id] || {};
+    $ecran.innerHTML = '<div class="titre-page"><button class="rond" id="retour" aria-label="Retour">←</button><h1>' + esc(d.titre) + '</h1><span style="flex:1"></span><button class="pastille" id="suivant">Suivant ›</button></div>' +
+      '<div class="dessin">' + d.svg + '</div><div class="palette">' + couleurs.map((c, i) => '<button class="pot' + (i ? "" : " choisi") + '" data-c="' + c + '" style="background:' + c + '" aria-label="Couleur"></button>').join("") + "</div>";
+    dire("Choisis une couleur, puis touche le dessin.");
+    document.getElementById("retour").onclick = coin;
+    document.getElementById("suivant").onclick = () => colorier(k + 1);
+    const zones = [...$ecran.querySelectorAll(".dessin [data-z]")];
+    zones.forEach(z => { if (etat[z.dataset.z]) z.setAttribute("fill", etat[z.dataset.z]); z.onclick = () => {
+      z.setAttribute("fill", choisie); etat[z.dataset.z] = choisie; E.coloriages[d.id] = etat; son("pop");
+      if (zones.every(x => etat[x.dataset.z]) && !etat._fini) { etat._fini = true; E.jetons.jouer = (E.jetons.jouer || 0) + 1; son("gagne"); bravo("Magnifique !"); parler("bravo", "Magnifique ! Ton dessin est fini !"); }
+      sauver();
+    }; });
+    $ecran.querySelectorAll(".pot").forEach(p => p.onclick = () => { choisie = p.dataset.c; $ecran.querySelectorAll(".pot").forEach(x => x.classList.toggle("choisi", x === p)); son("pop"); });
+  }
+
+  // ----- Le livre de lecture de Soubeyrou -----
+  function livre(i) {
+    changer();
+    $ecran.className = "ecran";
+    const pages = C.livre || [];
+    const ouverte = pg => E.toutOuvert || !pg.apres || (E.progres[pg.apres] && E.progres[pg.apres].etoiles > 0);
+    const pg = pages[i];
+    const ok = ouverte(pg);
+    const mots = pg.texte.split(" ");
+    $ecran.innerHTML = '<div class="titre-page"><button class="rond" id="retour" aria-label="Retour">←</button><h1>Mon livre</h1><span style="flex:1"></span><span class="pastille">Page ' + (i + 1) + "/" + pages.length + "</span></div>" +
+      '<div class="page-livre' + (ok ? "" : " fermee") + '">' + (ok ? '<div class="illustration">' + pg.e + '</div><p class="texte-livre">' + mots.map((m, j) => '<button class="mot" data-j="' + j + '">' + esc(m) + "</button>").join(" ") + "</p>" :
+        '<div class="illustration">🔒</div><p class="aide">Réussis l\'étape « ' + esc((NIVEAUX.find(n => n.id === pg.apres) || {}).titre || "") + " » pour ouvrir cette page.</p>") + "</div>" +
+      '<div class="boutons"><button class="bouton second" id="prec"' + (i ? "" : " disabled") + '>‹</button>' + (ok ? '<button class="bouton" id="lire">🔊 Lis avec moi</button>' : "") + '<button class="bouton second" id="suiv"' + (i < pages.length - 1 ? "" : " disabled") + ">›</button></div>" +
+      (ok ? '<p class="aide">Touche un mot pour l\'entendre. Essaie d\'abord de le lire tout seul !</p>' : "");
+    document.getElementById("retour").onclick = carte;
+    document.getElementById("prec").onclick = () => i && livre(i - 1);
+    document.getElementById("suiv").onclick = () => i < pages.length - 1 && livre(i + 1);
+    $ecran.querySelectorAll(".mot").forEach(b => b.onclick = () => { b.classList.add("lu"); dire(b.textContent.replace(/[.,!?;:«»]/g, "")); });
+    const bl = document.getElementById("lire");
+    if (bl) bl.onclick = () => {
+      if (!parole) return;
+      let j = 0; const bs = [...$ecran.querySelectorAll(".mot")];
+      let fini = false; arreter = () => { fini = true; parole.cancel(); };
+      const suivant = () => { if (fini || j >= bs.length) { bs.forEach(b => b.classList.remove("actif")); return; } bs.forEach((b, k) => b.classList.toggle("actif", k === j)); const u = new SpeechSynthesisUtterance(bs[j].textContent); u.lang = "fr-FR"; u.rate = 0.75; if (voix) u.voice = voix; u.onend = () => { j++; setTimeout(suivant, 120); }; parole.speak(u); };
+      parole.cancel(); suivant();
+    };
   }
 
   // ----- Espace parent -----

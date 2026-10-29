@@ -180,6 +180,27 @@
     prenom: "Soubeyrou",
     classe: "Cours d'Initiation",
     avatar: "🦁",
+    livre: [
+      { apres: "ci-p1-l1", e: "🧒🏾⚽", texte: "Ali a un ballon. Ali a un ami. Allez, on joue !" },
+      { apres: "ci-p1-l2", e: "🚗💨", texte: "Une auto rouge file sur la route. Elle va vite, très vite !" },
+      { apres: "ci-p1-l3", e: "🤼🏾", texte: "Le lutteur salue la foule. Il est fort comme un lion." },
+      { apres: "ci-p1-l4", e: "🚌🏟️", texte: "Le bus jaune est plein. Tout le monde va au stade." },
+      { apres: "ci-p1-l5", e: "🦙", texte: "Lili a lu. Lola a lu. Le lama a lu !" },
+      { apres: "ci-p1-l6", e: "🏍️", texte: "Mimi a mal. Mamie a la moto. Moi, j'ai le ballon !" },
+      { apres: "ci-p1-l7", e: "🦙🤼🏾", texte: "Ma mamie a un lama. Le lama mime le lutteur. Ali rit !" },
+    ],
+    habillage: {
+      lutte: true,
+      jeux: {
+        ballons: { nom: "Les jongles", e: "⚽", aide: "Touche le bon ballon pour ne pas le laisser tomber !" },
+        pirogue: { nom: "La course de voitures", e: "🏎️", aide: "Réponds vite pour gagner la course !" },
+        lutte: { nom: "La lutte", e: "🤼🏾", aide: "Chaque bonne réponse pousse ton adversaire. Fais-le tomber : bàkk !" },
+      },
+      ciel: "tribune", mobiles: { peche: "poisson", ballons: "balle" }, prises: { peche: "🐟", ballons: "⚽" },
+      monture: "🏎️", montureRival: "🚙", passager: " ", rival: ["", "Le rival"], course: "route",
+      victoire: "Tu as gagné la course !", defaite: "La voiture rivale est arrivée avant toi",
+    },
+
     paliers: [{ id: "p1", titre: "Palier 1", periode: "octobre à décembre" }],
     mondes: [
       { id: "lire", titre: "Lire", icone: "📖", couleur: "#ffd9a8", lecons: [
