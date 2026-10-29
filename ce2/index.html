@@ -1,0 +1,1120 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icone-192.png">
+<link rel="apple-touch-icon" href="icone-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="École CE2">
+<title>Mon école CE2</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="theme-color" content="#1f8a5b">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Baloo+2:wght@600;800&display=swap">
+<style>
+/* Mise en page : un jeu d'une seule colonne. La carte du voyage défile, chaque niveau ouvre un mini-jeu plein écran. */
+:root {
+  --sable: #fff6e6;
+  --carte: #ffffff;
+  --encre: #2b2118;
+  --doux: #7a6a58;
+  --theme: #1f8a5b;
+  --theme-clair: #d4efe0;
+  --mangue: #ffb21e;
+  --vert: #2e9e5b;
+  --rouge: #e0533d;
+  --trait: #ecdcc2;
+  --mer: #8fd3f0;
+  --mer-fonce: #3a9fd6;
+  --savane: #f6dc8c;
+  --fleuve: #a9e0c8;
+  --foret: #8fcf8a;
+  --titre: "Baloo 2", "Trebuchet MS", system-ui, sans-serif;
+  --lecture: "Andika", "Segoe UI", system-ui, sans-serif;
+  color-scheme: light;
+}
+html, body { height: 100%; }
+body {
+  background: var(--sable); color: var(--encre); font-family: var(--lecture); font-size: 18px;
+  -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none; overscroll-behavior: none; overflow: hidden;
+}
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--sable); }
+.app { height: 100%; max-width: 560px; margin: 0 auto; display: flex; flex-direction: column; position: relative; }
+.ecran { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 12px 16px; box-sizing: border-box; }
+.ecran.sans-marge { padding: 0; gap: 0; }
+button { font: inherit; color: inherit; border: 0; background: none; cursor: pointer; touch-action: manipulation; }
+button:focus-visible { outline: 3px solid var(--theme); outline-offset: 3px; }
+h1, h2, h3 { font-family: var(--titre); margin: 0; line-height: 1.1; text-wrap: balance; }
+
+/* Barre du haut */
+.barre { display: flex; align-items: center; gap: 8px; }
+.barre .espace { flex: 1; }
+.rond { width: 46px; height: 46px; border-radius: 50%; background: var(--carte); display: grid; place-items: center; font-size: 22px; box-shadow: 0 3px 0 var(--trait); flex: none; }
+.pastille { display: flex; align-items: center; gap: 4px; background: var(--carte); border-radius: 999px; padding: 4px 11px; font-family: var(--titre); font-weight: 800; font-size: 17px; box-shadow: 0 3px 0 var(--trait); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.perso { position: relative; width: 52px; height: 52px; border-radius: 16px; background: var(--theme); display: grid; place-items: center; font-size: 30px; flex: none; box-shadow: 0 3px 0 rgba(0,0,0,.18); }
+.perso .accessoire { position: absolute; top: -12px; right: -10px; font-size: 24px; transform: rotate(14deg); }
+.perso.grand { width: 96px; height: 96px; border-radius: 28px; font-size: 58px; }
+.perso.grand .accessoire { font-size: 42px; top: -22px; right: -18px; }
+
+/* Carte du voyage */
+.carte-haut { position: sticky; top: 0; z-index: 3; display: grid; gap: 8px; padding: 12px max(16px, env(safe-area-inset-right, 0px)) 10px max(16px, env(safe-area-inset-left, 0px)); background: linear-gradient(var(--sable) 75%, rgba(255,246,230,0)); }
+.salut { font-family: var(--titre); font-weight: 800; font-size: 22px; line-height: 1.1; }
+.salut small { display: block; font-family: var(--lecture); font-weight: 400; font-size: 14px; color: var(--doux); }
+.voyage { position: relative; padding: 10px 0 40px; }
+.voyage svg.route { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
+.zone { position: relative; }
+.zone-nom { position: relative; z-index: 1; text-align: center; font-family: var(--titre); font-weight: 800; font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: rgba(43,33,24,.55); padding: 14px 0 0; }
+.etape { position: relative; z-index: 2; height: 118px; }
+.noeud { position: absolute; top: 14px; transform: translateX(-50%); display: grid; justify-items: center; gap: 2px; width: 120px; }
+.noeud .bulle { width: 70px; height: 70px; border-radius: 50%; background: var(--carte); display: grid; place-items: center; font-size: 32px; box-shadow: 0 5px 0 rgba(0,0,0,.18); border: 4px solid var(--theme); font-family: var(--lecture); font-weight: 700; }
+.noeud.fini .bulle { background: var(--theme); color: #fff; border-color: #fff; }
+.noeud.ferme .bulle { background: #e9e2d6; border-color: #d4c9b6; filter: grayscale(1); opacity: .8; }
+.noeud.actuel .bulle { animation: battre 1.4s infinite; }
+.noeud.boss .bulle { width: 88px; height: 88px; font-size: 46px; border-color: var(--rouge); }
+.noeud .lieu { font-family: var(--titre); font-weight: 800; font-size: 15px; background: rgba(255,255,255,.85); border-radius: 999px; padding: 0 10px; white-space: nowrap; }
+.noeud .etoiles { font-size: 14px; letter-spacing: 1px; line-height: 1; }
+.noeud .moi { position: absolute; left: -26px; top: -10px; }
+@keyframes battre { 50% { transform: scale(1.08); } }
+.etoiles .on { color: var(--mangue); }
+.etoiles .off { color: rgba(0,0,0,.18); }
+
+/* Fenêtre */
+.voile { position: fixed; inset: 0; z-index: 20; background: rgba(43,33,24,.45); display: grid; place-items: end center; padding: 16px max(16px, env(safe-area-inset-right, 0px)) calc(16px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); }
+.fenetre { width: 100%; max-width: 520px; background: var(--sable); border-radius: 28px; padding: 20px; display: grid; gap: 12px; justify-items: center; text-align: center; animation: monter .25s ease-out; }
+.fenetre .grosse-icone { font-size: 64px; line-height: 1; }
+.fenetre h2 { font-size: 30px; font-weight: 800; }
+.fenetre p { margin: 0; color: var(--doux); }
+@keyframes monter { from { transform: translateY(40px); opacity: 0; } }
+
+.bouton { background: var(--theme); color: #fff; font-family: var(--titre); font-weight: 800; font-size: 24px; border-radius: 18px; padding: 12px 28px; box-shadow: 0 5px 0 rgba(0,0,0,.2); }
+.bouton.second { background: var(--carte); color: var(--encre); box-shadow: 0 5px 0 var(--trait); }
+.bouton:active { transform: translateY(3px); box-shadow: 0 2px 0 rgba(0,0,0,.2); }
+.boutons { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
+
+/* Jeux : en-tête commun */
+.jeu { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.jeu-haut { display: grid; gap: 10px; padding: 12px max(16px, env(safe-area-inset-right, 0px)) 10px max(16px, env(safe-area-inset-left, 0px)); }
+.progression { flex: 1; height: 14px; border-radius: 99px; background: var(--carte); overflow: hidden; box-shadow: inset 0 0 0 2px var(--trait); }
+.progression i { display: block; height: 100%; background: var(--theme); border-radius: 99px; transition: width .3s; }
+.consigne { display: flex; align-items: center; gap: 10px; }
+.consigne p { margin: 0; font-size: 21px; font-weight: 700; flex: 1; line-height: 1.25; }
+.haut-parleur { width: 54px; height: 54px; border-radius: 50%; background: var(--theme); color: #fff; font-size: 24px; flex: none; box-shadow: 0 4px 0 rgba(0,0,0,.18); }
+.scene { background: var(--carte); border-radius: 20px; padding: 10px 14px; box-shadow: 0 3px 0 var(--trait); text-align: center; display: grid; place-items: center; min-height: 64px; }
+.scene .gros { font-size: 48px; line-height: 1.15; }
+.scene .lettre { font-size: 72px; line-height: 1; font-weight: 700; }
+.scene .mots { font-size: 34px; font-weight: 700; }
+.scene .chiffre { font-family: var(--titre); font-size: 64px; font-weight: 800; line-height: 1; }
+.scene .tas { display: flex; flex-wrap: wrap; justify-content: center; gap: 2px 8px; font-size: 38px; max-width: 320px; }
+.scene .texte { margin: 0; font-size: 18px; line-height: 1.5; text-align: left; user-select: text; -webkit-user-select: text; }
+.scene .phrase { font-size: 24px; font-weight: 700; line-height: 1.3; }
+.tas i { font-style: normal; }
+
+/* Contenu d'une réponse, quel que soit le jeu */
+.r .lettre { font-size: 46px; font-weight: 700; line-height: 1; }
+.r .chiffre { font-family: var(--titre); font-size: 44px; font-weight: 800; line-height: 1; }
+.r .mots { font-size: 28px; font-weight: 700; line-height: 1.1; }
+.r .phrase { font-size: 20px; font-weight: 700; line-height: 1.25; }
+.r .emoji { font-size: 44px; line-height: 1.1; display: block; }
+.r .legende { font-size: 15px; display: block; }
+.r .gros { font-size: 40px; }
+.r .tas { display: flex; flex-wrap: wrap; justify-content: center; gap: 0 2px; font-size: 24px; max-width: 120px; }
+
+/* Jeu de la pêche et des ballons : une aire où les réponses bougent */
+.aire { position: relative; flex: 1; min-height: 260px; overflow: hidden; }
+.aire.eau { background: linear-gradient(#bfe9fb, var(--mer) 30%, var(--mer-fonce)); }
+.aire.eau::before { content: ""; position: absolute; inset: 0 0 auto; height: 16px; background: radial-gradient(circle at 10px -4px, transparent 12px, #bfe9fb 13px) 0 0 / 20px 16px repeat-x; opacity: .9; }
+.aire.ciel { background: linear-gradient(#9fd8ff, #dff3ff 70%, var(--savane)); }
+.mobile { position: absolute; left: 0; top: 0; will-change: transform; display: grid; place-items: center; text-align: center; }
+.poisson { min-width: 96px; height: 84px; padding: 0 16px 0 22px; border-radius: 50% 44% 44% 50% / 50%; background: #ffcf5a; box-shadow: inset -6px -6px 0 rgba(0,0,0,.08); }
+.poisson::after { content: ""; position: absolute; top: 50%; width: 0; height: 0; border-top: 20px solid transparent; border-bottom: 20px solid transparent; transform: translateY(-50%); }
+.poisson.droite::after { left: -22px; border-right: 26px solid #ffcf5a; }
+.poisson.gauche::after { right: -22px; border-left: 26px solid #ffcf5a; }
+.poisson::before { content: ""; position: absolute; top: 24px; width: 10px; height: 10px; border-radius: 50%; background: var(--encre); }
+.poisson.droite::before { right: 12px; }
+.poisson.gauche::before { left: 12px; }
+.poisson.c1, .poisson.c1::after { background: #ff9f7a; border-left-color: #ff9f7a; border-right-color: #ff9f7a; }
+.poisson.c2, .poisson.c2::after { background: #b9a4ff; border-left-color: #b9a4ff; border-right-color: #b9a4ff; }
+.poisson.c3, .poisson.c3::after { background: #7fe0a8; border-left-color: #7fe0a8; border-right-color: #7fe0a8; }
+.poisson.c1::after, .poisson.c2::after, .poisson.c3::after { background: none; }
+.ballon { width: 104px; height: 120px; border-radius: 50% 50% 48% 48% / 56% 56% 44% 44%; background: #ff7a6b; box-shadow: inset -10px -10px 0 rgba(0,0,0,.1); padding: 8px; box-sizing: border-box; }
+.ballon::after { content: ""; position: absolute; left: 50%; bottom: -40px; width: 2px; height: 40px; background: rgba(0,0,0,.25); }
+.ballon.c1 { background: #ffd23f; } .ballon.c2 { background: #7cc6ff; } .ballon.c3 { background: #8ee08a; }
+.mobile.faux { filter: grayscale(.8) brightness(.9); }
+.mobile.pris { transition: transform .5s ease-in, opacity .5s; opacity: 0; }
+.bateau { position: absolute; top: -6px; left: 50%; transform: translateX(-50%); font-size: 50px; z-index: 2; pointer-events: none; }
+.prises { position: absolute; top: 10px; right: 12px; z-index: 2; font-family: var(--titre); font-weight: 800; font-size: 20px; background: rgba(255,255,255,.85); border-radius: 999px; padding: 2px 12px; }
+.eclat { position: absolute; z-index: 3; pointer-events: none; font-size: 26px; animation: eclat .7s ease-out forwards; }
+@keyframes eclat { to { transform: translate(var(--dx), var(--dy)) scale(.4); opacity: 0; } }
+
+/* Course de pirogues */
+.course { margin: 0 max(16px, env(safe-area-inset-right, 0px)) 0 max(16px, env(safe-area-inset-left, 0px)); border-radius: 20px; background: linear-gradient(var(--mer), var(--mer-fonce)); padding: 10px 12px; display: grid; gap: 6px; position: relative; }
+.couloir { position: relative; height: 46px; border-bottom: 2px dashed rgba(255,255,255,.5); }
+.couloir:last-of-type { border-bottom: 0; }
+.couloir .pirogue { position: absolute; top: 0; left: 0; font-size: 38px; transition: left .5s ease-out; transform: scaleX(-1); }
+.couloir .qui { position: absolute; top: 10px; font-size: 18px; transition: left .5s ease-out; }
+.couloir .nom { position: absolute; right: 26px; top: 12px; font-size: 12px; font-weight: 700; color: rgba(255,255,255,.95); }
+.arrivee { position: absolute; right: 10px; top: 6px; bottom: 6px; width: 8px; background: repeating-linear-gradient(#fff 0 8px, var(--encre) 8px 16px); border-radius: 2px; }
+.choix { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; padding: 12px max(16px, env(safe-area-inset-right, 0px)) 16px max(16px, env(safe-area-inset-left, 0px)); }
+.choix.trois { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.choix.ligne { grid-template-columns: 1fr; }
+.reponse { background: var(--carte); border-radius: 18px; min-height: 76px; padding: 8px; display: grid; place-items: center; text-align: center; box-shadow: 0 5px 0 var(--trait); border: 3px solid transparent; }
+.reponse:active { transform: translateY(3px); box-shadow: 0 2px 0 var(--trait); }
+.reponse.bon { border-color: var(--vert); background: #e6f6ec; animation: saute .4s; }
+.reponse.faux { border-color: var(--rouge); background: #fdeae6; animation: secoue .4s; }
+@keyframes saute { 40% { transform: scale(1.06); } }
+@keyframes secoue { 20%, 60% { transform: translateX(-6px); } 40%, 80% { transform: translateX(6px); } }
+.bravo { position: fixed; left: 0; right: 0; top: 40%; z-index: 30; text-align: center; font-family: var(--titre); font-weight: 800; font-size: 40px; color: var(--vert); text-shadow: 0 3px 0 #fff, 0 -3px 0 #fff, 3px 0 0 #fff, -3px 0 0 #fff; pointer-events: none; animation: pop .9s forwards; }
+@keyframes pop { from { opacity: 0; transform: scale(.6); } 25% { opacity: 1; transform: scale(1.1); } 60% { transform: scale(1); opacity: 1; } to { opacity: 0; transform: translateY(-30px); } }
+
+/* Résultat */
+.resultat { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; text-align: center; }
+.resultat .grandes-etoiles { font-size: 60px; letter-spacing: 6px; }
+.resultat .grandes-etoiles span { display: inline-block; animation: etoile .5s backwards; }
+.resultat .grandes-etoiles span:nth-child(2) { animation-delay: .25s; } .resultat .grandes-etoiles span:nth-child(3) { animation-delay: .5s; }
+@keyframes etoile { from { transform: scale(0) rotate(-90deg); } }
+.resultat h1 { font-size: 38px; font-weight: 800; }
+.resultat p { margin: 0; color: var(--doux); font-size: 19px; }
+.gain { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+.gain span { background: var(--carte); border-radius: 999px; padding: 6px 14px; font-family: var(--titre); font-weight: 800; font-size: 20px; box-shadow: 0 3px 0 var(--trait); }
+.nouvel-animal { display: grid; gap: 4px; justify-items: center; background: var(--carte); border-radius: 22px; padding: 12px 22px; box-shadow: 0 4px 0 var(--trait); }
+.nouvel-animal b { font-size: 60px; line-height: 1; animation: etoile .6s .7s backwards; }
+
+/* Boutique et album */
+.grille { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.objet { background: var(--carte); border-radius: 18px; padding: 10px 6px; display: grid; justify-items: center; gap: 4px; box-shadow: 0 4px 0 var(--trait); border: 3px solid transparent; }
+.objet b { font-size: 40px; line-height: 1.1; }
+.objet span { font-size: 14px; }
+.objet .prix { font-family: var(--titre); font-weight: 800; font-size: 16px; }
+.objet.porte { border-color: var(--vert); }
+.objet.cache b { filter: brightness(0); opacity: .25; }
+.titre-page { display: flex; align-items: center; gap: 12px; }
+.titre-page h1 { font-size: 28px; font-weight: 800; }
+.aide { color: var(--doux); font-size: 15px; margin: 0; }
+
+/* Espace parent */
+.pave { display: grid; grid-template-columns: repeat(3, 76px); gap: 12px; justify-content: center; }
+.pave button { height: 64px; border-radius: 16px; background: var(--carte); font-family: var(--titre); font-size: 28px; font-weight: 800; box-shadow: 0 3px 0 var(--trait); }
+.points { display: flex; gap: 12px; justify-content: center; }
+.points i { width: 18px; height: 18px; border-radius: 50%; border: 3px solid var(--doux); }
+.points i.plein { background: var(--encre); border-color: var(--encre); }
+.parent { font-family: system-ui, sans-serif; font-size: 16px; user-select: text; -webkit-user-select: text; }
+.parent h1 { font-size: 26px; }
+.parent h2 { font-size: 19px; margin-top: 8px; }
+.bloc { background: var(--carte); border-radius: 16px; padding: 14px; display: grid; gap: 10px; box-shadow: 0 2px 0 var(--trait); }
+.bloc table { width: 100%; border-collapse: collapse; font-size: 15px; }
+.bloc td { padding: 6px 4px; border-top: 1px solid var(--trait); vertical-align: top; }
+.bloc td:last-child { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.bloc tr:first-child td { border-top: 0; }
+.rangee { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.rangee label { flex: 1; min-width: 160px; }
+.rangee input { font: inherit; padding: 8px 10px; border-radius: 10px; border: 2px solid var(--trait); width: 140px; background: var(--sable); color: var(--encre); }
+.petit-bouton { background: var(--theme); color: #fff; border-radius: 10px; padding: 8px 14px; font-weight: 700; }
+.petit-bouton.danger { background: var(--rouge); }
+.petit-bouton.neutre { background: var(--trait); color: var(--encre); }
+.note { color: var(--doux); font-size: 14px; margin: 0; }
+.stat { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; text-align: center; }
+.stat b { display: block; font-family: var(--titre); font-size: 26px; font-variant-numeric: tabular-nums; }
+.stat span { font-size: 13px; color: var(--doux); }
+.discret { font-size: 13px; color: var(--doux); text-align: center; padding: 6px; }
+/* Habillage football */
+.aire.terrain { background: repeating-linear-gradient(90deg, #4caf50 0 40px, #45a049 40px 80px); }
+.aire.terrain::before { content: ""; position: absolute; left: 50%; top: 50%; width: 120px; height: 120px; margin: -60px; border: 3px solid rgba(255,255,255,.6); border-radius: 50%; }
+.aire.tribune { background: linear-gradient(#1d3b78, #3d6fc4 55%, #4caf50 55%, #45a049); }
+.joueur { width: 96px; min-height: 86px; padding: 18px 8px 8px; border-radius: 22px 22px 16px 16px; background: linear-gradient(90deg, #a50044 0 25%, #004d98 25% 50%, #a50044 50% 75%, #004d98 75%); color: #fff; box-shadow: 0 5px 0 rgba(0,0,0,.25); box-sizing: border-box; }
+.joueur .lettre, .joueur .chiffre, .joueur .mots, .joueur .phrase, .joueur .legende { background: rgba(0,0,0,.35); border-radius: 10px; padding: 0 6px; }
+.joueur::before { content: ""; position: absolute; top: -14px; left: 50%; width: 30px; height: 30px; margin-left: -15px; border-radius: 50%; background: #7a4a2a; }
+.joueur.c1, .joueur.c3 { background: linear-gradient(90deg, #004d98 0 25%, #a50044 25% 50%, #004d98 50% 75%, #a50044 75%); }
+.balle { width: 104px; height: 104px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #fff 0 55%, #e6e6e6 56%); box-shadow: inset -8px -8px 0 rgba(0,0,0,.08), 0 6px 0 rgba(0,0,0,.15); border: 3px solid #222; box-sizing: border-box; padding: 8px; }
+.course.pelouse { background: repeating-linear-gradient(90deg, #4caf50 0 30px, #45a049 30px 60px); }
+@media (prefers-reduced-motion: reduce) { .noeud.actuel .bulle, .resultat .grandes-etoiles span, .nouvel-animal b { animation: none !important; } }
+</style>
+
+
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}[hidden]{display:none!important}</style>
+</head>
+<body>
+<div class="app"><main class="ecran" id="ecran"></main></div>
+
+<script>
+/* ---------- Contenu propre à l'enfant ---------- */
+/* Contenu de l'appli CE2. Programme sénégalais (CEB, étape 2), palier 1 : début d'année. */
+(function () {
+  const hasard = a => a[Math.floor(Math.random() * a.length)];
+  const melange = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const tirer = (a, n) => melange(a).slice(0, n);
+  const fois = (n, f) => Array.from({ length: n }, (_, i) => f(i));
+  const entre = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+  const fmt = n => n.toLocaleString("fr-FR");
+  function q(consigne, scene, bonne, autres, extra) {
+    return Object.assign({ consigne, scene, choix: [bonne].concat(autres), bonne: 0 }, extra || {});
+  }
+  const phrase = t => ({ k: "phrase", t, dire: t });
+  const mot = t => ({ k: "mots", t: String(t), dire: String(t) });
+  const unique = (bon, faux) => Array.from(new Set(faux.map(String))).filter(x => x !== String(bon));
+
+  // Nombres en lettres (orthographe traditionnelle)
+  const U = ["zéro", "un", "deux", "trois", "quatre", "cinq", "six", "sept", "huit", "neuf", "dix", "onze", "douze", "treize", "quatorze", "quinze", "seize"];
+  const D = { 2: "vingt", 3: "trente", 4: "quarante", 5: "cinquante", 6: "soixante" };
+  function cent(n) {
+    if (n < 17) return U[n];
+    if (n < 20) return "dix-" + U[n - 10];
+    if (n < 70) { const d = Math.floor(n / 10), u = n % 10; return D[d] + (u === 0 ? "" : u === 1 ? " et un" : "-" + U[u]); }
+    if (n < 80) return n === 71 ? "soixante et onze" : "soixante-" + cent(n - 60);
+    return n === 80 ? "quatre-vingts" : "quatre-vingt-" + cent(n - 80);
+  }
+  function mille(n) {
+    const c = Math.floor(n / 100), r = n % 100;
+    if (!c) return cent(r);
+    const tete = c === 1 ? "cent" : U[c] + " cent" + (r === 0 ? "s" : "");
+    return r ? tete + " " + cent(r) : tete;
+  }
+  function enLettres(n) {
+    if (n === 0) return "zéro";
+    const m = Math.floor(n / 1000), r = n % 1000;
+    const tete = !m ? "" : m === 1 ? "mille" : U[m] + " mille";
+    return r ? (tete ? tete + " " : "") + mille(r) : tete;
+  }
+
+  // ---------- FRANÇAIS ----------
+  const PHRASES = [
+    ["Awa mange une mangue juteuse.", "mange", "mangue"],
+    ["Le pêcheur répare sa pirogue.", "répare", "pirogue"],
+    ["Les enfants jouent dans la cour.", "jouent", "cour"],
+    ["Moussa lit un livre de contes.", "lit", "livre"],
+    ["La maîtresse écrit au tableau.", "écrit", "tableau"],
+    ["Mon père vend du poisson au marché.", "vend", "poisson"],
+    ["Fatou porte un seau d'eau.", "porte", "seau"],
+    ["Les élèves chantent l'hymne national.", "chantent", "élèves"],
+    ["Grand-mère prépare le thiéboudienne.", "prépare", "grand-mère"],
+    ["Le berger conduit ses moutons au puits.", "conduit", "berger"],
+    ["Le vent souffle sur la plage.", "souffle", "plage"],
+    ["Neymar dribble le défenseur.", "dribble", "défenseur"],
+    ["Le gardien arrête le penalty.", "arrête", "gardien"],
+    ["Seydina marque un but magnifique.", "marque", "but"],
+    ["L'ailier centre vers l'attaquant.", "centre", "attaquant"],
+    ["Les supporters chantent dans le stade.", "chantent", "stade"],
+    ["L'entraîneur explique la tactique.", "explique", "entraîneur"],
+  ];
+  function nomVerbe() {
+    return () => tirer(PHRASES, 8).map(([p, v, n], i) => {
+      const mots = p.replace(/[.,]/g, "").split(" ").filter(m => m.length > 2 && m !== v && m !== n);
+      return i % 2 === 0
+        ? q("Quel mot est le verbe ?", phrase(p), mot(v), tirer(mots, 2).concat([n]).map(mot), { disposition: "ligne" })
+        : q("Quel mot est un nom ?", phrase(p), mot(n), tirer(mots.filter(m => !/^(un|une|le|la|les|du|des|sa|ses|au|dans|sur|mon|de)$/i.test(m)), 1).concat([v]).map(mot), { disposition: "ligne" });
+    });
+  }
+
+  const GENRE = [["baobab", "le"], ["pirogue", "la"], ["marché", "le"], ["calebasse", "la"], ["tam-tam", "le"], ["case", "la"], ["puits", "le"], ["natte", "la"], ["soleil", "le"], ["plage", "la"], ["mouton", "le"], ["route", "la"], ["arbre", "l'"], ["école", "l'"], ["fleuve", "le"], ["boutique", "la"]];
+  function genre() {
+    return () => tirer(GENRE, 8).map(([m, art]) => q("Quel déterminant va avec ce nom ?", { k: "mots", t: "… " + m }, mot(art), ["le", "la", "l'"].filter(x => x !== art).map(mot), { disposition: "trois" }));
+  }
+
+  const PLURIELS = [["un cheval", "des chevaux", ["des chevals", "des chevaus"]], ["un journal", "des journaux", ["des journals", "des journauxs"]], ["un oiseau", "des oiseaux", ["des oiseaus", "des oiseau"]], ["un bateau", "des bateaux", ["des bateaus", "des bateau"]],
+    ["un jeu", "des jeux", ["des jeus", "des jeu"]], ["un animal", "des animaux", ["des animals", "des animale"]], ["une mangue", "des mangues", ["des mangue", "des manguex"]], ["un enfant", "des enfants", ["des enfant", "des enfantx"]],
+    ["un tableau", "des tableaux", ["des tableaus", "des tableau"]], ["un hôpital", "des hôpitaux", ["des hôpitals", "des hôpitale"]], ["un caillou", "des cailloux", ["des caillous", "des caillou"]], ["une ville", "des villes", ["des ville", "des villex"]]];
+  function pluriel() {
+    return () => tirer(PLURIELS, 8).map(([s, p, f]) => q("Écris au pluriel", { k: "mots", t: s }, mot(p), f.map(mot), { disposition: "ligne" }));
+  }
+
+  const PRONOMS = ["je", "tu", "il", "nous", "vous", "ils"];
+  const ETRE = ["suis", "es", "est", "sommes", "êtes", "sont"], AVOIR = ["ai", "as", "a", "avons", "avez", "ont"];
+  function etreAvoir() {
+    return () => fois(8, i => {
+      const t = i % 2 ? AVOIR : ETRE, nom = i % 2 ? "avoir" : "être";
+      const k = entre(0, 5);
+      const sujet = k === 0 && t === AVOIR ? "j'" : PRONOMS[k] + " ";
+      return q("Conjugue le verbe " + nom + " au présent", { k: "phrase", t: sujet + "…" }, mot(t[k]), tirer(t.filter((x, j) => j !== k), 2).map(mot), { disposition: "trois" });
+    });
+  }
+  const VERBES_ER = ["chanter", "jouer", "danser", "parler", "porter", "regarder", "laver", "marcher"];
+  function verbesEr() {
+    const fin = ["e", "es", "e", "ons", "ez", "ent"];
+    return () => fois(8, () => {
+      const v = hasard(VERBES_ER), rad = v.slice(0, -2), k = entre(0, 5);
+      const formes = fin.map(f => rad + f);
+      const sujet = PRONOMS[k];
+      const faux = unique(formes[k], [rad + "er", rad + "é"].concat(formes)).slice(0, 2);
+      return q("Conjugue « " + v + " » au présent", { k: "phrase", t: (sujet === "je" && /^[aeiouh]/.test(v) ? "j'" : sujet + " ") + "…" }, mot(formes[k]), faux.map(mot), { disposition: "trois" });
+    });
+  }
+
+  const HOMO = [
+    ["Awa … un cahier neuf.", "a", "à"], ["Je vais … l'école.", "à", "a"], ["Il … faim ce matin.", "a", "à"], ["Nous allons … Thiès.", "à", "a"],
+    ["Mamadou … sa sœur jouent.", "et", "est"], ["Le ciel … bleu.", "est", "et"], ["Il … grand … fort.", "est … et", "et … est"], ["Le marché … plein de monde.", "est", "et"],
+    ["Elle … une robe … fleurs.", "a … à", "à … a"], ["Le pain … chaud.", "est", "et"],
+    ["Neymar … marqué un but.", "a", "à"], ["Il passe le ballon … son coéquipier.", "à", "a"], ["Le gardien … grand … rapide.", "est … et", "et … est"], ["Le match … fini.", "est", "et"],
+  ];
+  function homophones() {
+    return () => tirer(HOMO, 8).map(([p, b, f]) => q("Complète avec le bon mot", phrase(p), mot(b), [mot(f)], { disposition: "" }));
+  }
+
+  const TEXTES = [
+    { texte: "Samedi, Awa accompagne sa grand-mère au marché de Tilène. Elles achètent trois kilos de riz, des oignons et du poisson frais. Sur le chemin du retour, il commence à pleuvoir. Elles s'abritent sous un grand baobab jusqu'à la fin de la pluie.",
+      questions: [["Où vont Awa et sa grand-mère ?", "au marché", ["à l'école", "à la plage"]], ["Combien de kilos de riz achètent-elles ?", "trois", ["deux", "cinq"]], ["Que se passe-t-il sur le chemin ?", "il pleut", ["il fait nuit", "elles se perdent"]], ["Où s'abritent-elles ?", "sous un baobab", ["dans une boutique", "dans un car"]]] },
+    { texte: "Chaque mercredi, Seydina s'entraîne à l'école de foot de son quartier. Son entraîneur lui apprend à faire des passes courtes, comme au Barça. « Le ballon court plus vite que le joueur », répète-t-il. Samedi, l'équipe a gagné trois buts à un. Seydina, ailier gauche, a marqué le dernier but après un beau dribble.",
+      questions: [["Quand Seydina s'entraîne-t-il ?", "le mercredi", ["le dimanche", "le lundi"]], ["Quel style de passes apprend-il ?", "des passes courtes", ["des longs ballons", "des passes en retrait"]], ["Quel est le score du match ?", "trois buts à un", ["un but à zéro", "deux buts partout"]], ["À quel poste joue Seydina ?", "ailier gauche", ["gardien", "défenseur central"]], ["Que veut dire l'entraîneur avec sa phrase ?", "il faut faire circuler le ballon", ["il faut courir sans le ballon", "il faut tirer de loin"]]] },
+    { texte: "Ibou habite à Joal, au bord de la mer. Chaque matin, il regarde les pirogues partir à la pêche. Son oncle est pêcheur. Le soir, Ibou l'aide à décharger les poissons et à ranger les filets. Plus tard, il veut devenir capitaine de bateau.",
+      questions: [["Où habite Ibou ?", "à Joal", ["à Dakar", "à Kédougou"]], ["Quel est le métier de son oncle ?", "pêcheur", ["boulanger", "maçon"]], ["Que fait Ibou le soir ?", "il aide son oncle", ["il dort", "il va à la plage"]], ["Que veut-il devenir ?", "capitaine de bateau", ["médecin", "pêcheur"]]] },
+  ];
+  function lecture() {
+    return () => melange(TEXTES).flatMap(t => t.questions.map(([qq, b, f]) => q(qq, { k: "texte", t: t.texte }, phrase(b), f.map(phrase), { disposition: "ligne" })));
+  }
+
+  // ---------- MATHÉMATIQUES ----------
+  function lireNombres() {
+    return () => fois(8, i => {
+      const n = entre(1001, 9999);
+      const voisins = unique(n, [n + 100, n - 10, Number(String(n).split("").reverse().join("")), Math.floor(n / 1000) * 1000 + (n % 100), n + 1000 > 9999 ? n - 1000 : n + 1000]);
+      return i % 2
+        ? q("Écris ce nombre en chiffres", { k: "phrase", t: enLettres(n) }, mot(fmt(n)), tirer(voisins.filter(x => +x > 0 && +x < 10000).map(x => fmt(+x)), 2).map(mot), { disposition: "ligne" })
+        : q("Comment se lit ce nombre ?", { k: "mots", t: fmt(n) }, phrase(enLettres(n)), tirer(voisins.filter(x => +x > 999 && +x < 10000), 2).map(x => phrase(enLettres(+x))), { disposition: "ligne" });
+    });
+  }
+  function rangs() {
+    const RANGS = ["milliers", "centaines", "dizaines", "unités"];
+    return () => fois(8, () => {
+      const chiffres = tirer([1, 2, 3, 4, 5, 6, 7, 8, 9], 4);
+      const n = Number(chiffres.join("")), r = entre(0, 3);
+      return q("Quel est le chiffre des " + RANGS[r] + " ?", { k: "mots", t: fmt(n) }, mot(chiffres[r]), chiffres.filter((c, j) => j !== r).map(mot), {});
+    });
+  }
+  function comparer() {
+    return () => fois(8, i => {
+      if (i % 2) {
+        const a = entre(1000, 9999);
+        const b = hasard([a, a + entre(1, 9) * hasard([1, 10, 100]), a - entre(1, 9) * hasard([1, 10, 100])]);
+        const s = a < b ? "<" : a > b ? ">" : "=";
+        return q("Quel signe faut-il mettre ?", { k: "mots", t: fmt(a) + "  …  " + fmt(b) }, mot(s), ["<", ">", "="].filter(x => x !== s).map(mot), { disposition: "trois" });
+      }
+      const base = entre(1000, 9000);
+      const nombres = unique(-1, [base, base + entre(1, 9) * 10, base + entre(1, 9) * 100, base - entre(1, 9)]).map(Number).slice(0, 3);
+      const max = Math.max(...nombres);
+      return q("Quel est le plus grand nombre ?", null, mot(fmt(max)), nombres.filter(x => x !== max).map(x => mot(fmt(x))), { disposition: "trois" });
+    });
+  }
+  function operations() {
+    return () => fois(8, i => {
+      const plus = i % 2 === 0;
+      const a = entre(1200, 6000), b = entre(150, plus ? 3500 : a - 100);
+      const r = plus ? a + b : a - b;
+      const faux = unique(r, [r + 10, r - 100, r + 100, r - 10, plus ? r - 1000 : r + 1000]).filter(x => +x > 0);
+      return q("Calcule", { k: "mots", t: fmt(a) + (plus ? " + " : " − ") + fmt(b) + " =" }, mot(fmt(r)), tirer(faux, 2).map(x => mot(fmt(+x))), { disposition: "trois" });
+    });
+  }
+  function tables(de, a) {
+    return () => fois(8, () => {
+      const t = entre(de, a), n = entre(2, 10), r = t * n;
+      const faux = unique(r, [r + t, r - t, r + 1, (t + 1) * n, r - 2]).filter(x => +x > 0);
+      return q("Combien font…", { k: "mots", t: t + " × " + n }, mot(r), tirer(faux, 2).map(mot), { disposition: "trois", dire: t + " fois " + n + " ?" });
+    });
+  }
+  function problemes() {
+    const P = [
+      () => { const n = entre(3, 8), p = hasard([100, 125, 150, 200, 250]); return ["Awa achète " + n + " mangues à " + p + " F l'une. Combien paie-t-elle ?", n * p, [n * p + p, n * p - p, n + p]]; },
+      () => { const s = hasard([500, 1000, 2000]), p = entre(2, 9) * 25; return ["Moussa a " + fmt(s) + " F. Il achète un pain à " + p + " F. Combien lui reste-t-il ?", s - p, [s + p, s - p + 100, s - p - 50]]; },
+      () => { const c = entre(3, 6), n = entre(18, 45); return ["Un car rapide transporte " + n + " passagers. Combien de passagers dans " + c + " cars ?", c * n, [c * n + n, c + n, c * n - 10]]; },
+      () => { const t = entre(45, 70), f = entre(20, t - 15); return ["Dans une classe de " + t + " élèves, il y a " + f + " filles. Combien y a-t-il de garçons ?", t - f, [t + f, t - f + 10, t - f - 1]]; },
+      () => { const s = entre(4, 9), k = hasard([25, 50]); return ["Un sac de riz pèse " + k + " kg. Combien pèsent " + s + " sacs ?", s * k, [s * k + k, s + k, s * k - 10]]; },
+      () => { const t = entre(1200, 4800), v = entre(800, 3900); return ["Pour le match, " + fmt(t) + " supporters sont dans la tribune nord et " + fmt(v) + " dans la tribune sud. Combien sont-ils en tout ?", t + v, [t + v + 100, t - v, t + v - 1000]]; },
+      () => { const m = entre(3, 9), b = entre(2, 4); return ["Neymar marque " + b + " buts par mois. Combien de buts marque-t-il en " + m + " mois ?", b * m, [b * m + b, b + m, b * m - 1]]; },
+      () => { const p = entre(6, 9), n = entre(4, 9); return ["Un ballon coûte " + p + " 000 F. L'école de foot en achète " + n + ". Combien paie-t-elle ?", p * 1000 * n, [p * 1000 * n + 1000, p * 1000 + n, p * 100 * n]]; },
+      () => { const a = entre(1200, 3000), b = entre(900, 2500); return ["Le matin, la boutique gagne " + fmt(a) + " F et l'après-midi " + fmt(b) + " F. Combien gagne-t-elle dans la journée ?", a + b, [a + b + 100, a - b, a + b - 1000]]; },
+    ];
+    return () => melange(P).concat(tirer(P, 2)).map(f => { const [enonce, r, faux] = f(); return q("Résous le problème", { k: "texte", t: enonce }, mot(fmt(r)), tirer(unique(r, faux).filter(x => +x > 0), 2).map(x => mot(fmt(+x))), { disposition: "trois" }); });
+  }
+  function mesures() {
+    const M = [
+      ["1 m = … cm", "100", ["10", "1 000"]], ["1 km = … m", "1 000", ["100", "10"]], ["1 kg = … g", "1 000", ["100", "10"]], ["1 heure = … minutes", "60", ["100", "30"]],
+      ["2 m 30 cm = … cm", "230", ["2 030", "23"]], ["300 cm = … m", "3", ["30", "300"]], ["1 jour = … heures", "24", ["12", "60"]], ["1 L = … cL", "100", ["10", "1 000"]],
+      ["Pour mesurer la longueur de la cour, j'utilise le…", "mètre", ["kilogramme", "litre"]], ["Pour peser du riz, j'utilise le…", "kilogramme", ["mètre", "litre"]], ["Pour mesurer l'eau d'un seau, j'utilise le…", "litre", ["mètre", "gramme"]],
+    ];
+    return () => tirer(M, 8).map(([e, b, f]) => q("Complète", { k: "phrase", t: e }, mot(b), f.map(mot), { disposition: "trois" }));
+  }
+
+  // ---------- DÉCOUVRIR (ESVS) ----------
+  function quiz(liste) {
+    return () => tirer(liste, Math.min(8, liste.length)).map(([qq, b, f]) => q(qq, null, phrase(b), f.map(phrase), { disposition: "ligne" }));
+  }
+  const SENEGAL = [
+    ["Quelle est la capitale du Sénégal ?", "Dakar", ["Thiès", "Saint-Louis"]],
+    ["Quel océan borde le Sénégal ?", "l'océan Atlantique", ["l'océan Indien", "la mer Rouge"]],
+    ["Quel pays est au nord du Sénégal ?", "la Mauritanie", ["la Guinée", "la Gambie"]],
+    ["Quel pays est à l'est du Sénégal ?", "le Mali", ["la Mauritanie", "le Maroc"]],
+    ["Quel pays est presque entouré par le Sénégal ?", "la Gambie", ["le Mali", "la Guinée-Bissau"]],
+    ["Quels pays sont au sud du Sénégal ?", "la Guinée et la Guinée-Bissau", ["le Mali et la Mauritanie", "la Gambie et le Mali"]],
+    ["Quel fleuve a donné son nom au pays ?", "le fleuve Sénégal", ["le fleuve Gambie", "la Casamance"]],
+    ["Combien le Sénégal compte-t-il de régions ?", "14", ["10", "20"]],
+    ["Laquelle est une région du Sénégal ?", "Kaolack", ["Bamako", "Banjul"]],
+    ["Dans quelle région se trouve Ziguinchor ?", "au sud, en Casamance", ["au nord, près du fleuve", "à l'est, près du Mali"]],
+  ];
+  const SYMBOLES = [
+    ["Quelles sont les couleurs du drapeau du Sénégal ?", "vert, jaune, rouge", ["bleu, blanc, rouge", "vert, blanc, orange"]],
+    ["Qu'y a-t-il au milieu du drapeau ?", "une étoile verte", ["un lion", "un baobab"]],
+    ["Quelle est la devise du Sénégal ?", "Un Peuple, Un But, Une Foi", ["Liberté, Égalité, Fraternité", "Unité, Travail, Progrès"]],
+    ["Quand le Sénégal est-il devenu indépendant ?", "le 4 avril 1960", ["le 1er janvier 1960", "le 4 avril 1980"]],
+    ["Quel animal est le symbole du Sénégal ?", "le lion", ["l'éléphant", "l'aigle"]],
+    ["Quel arbre est un symbole du Sénégal ?", "le baobab", ["le cocotier", "le manguier"]],
+    ["Comment commence l'hymne national ?", "Pincez tous vos koras…", ["Allons enfants…", "Debout, frères…"]],
+    ["Quel jour fête-t-on l'indépendance ?", "le 4 avril", ["le 1er mai", "le 25 décembre"]],
+  ];
+  const EAU = [
+    ["Quand l'eau gèle, elle devient…", "de la glace", ["de la vapeur", "du sable"]],
+    ["Quand l'eau bout, elle se transforme en…", "vapeur", ["glace", "sel"]],
+    ["La glace est de l'eau à l'état…", "solide", ["liquide", "gazeux"]],
+    ["L'eau du robinet est à l'état…", "liquide", ["solide", "gazeux"]],
+    ["Une eau qu'on peut boire sans danger est une eau…", "potable", ["salée", "boueuse"]],
+    ["L'eau de la mer est…", "salée", ["sucrée", "potable"]],
+    ["Les nuages sont formés de…", "petites gouttes d'eau", ["fumée", "poussière"]],
+    ["Pour rendre l'eau du puits plus sûre, on peut…", "la faire bouillir", ["la mettre au soleil", "y ajouter du sable"]],
+  ];
+  const SANTE = [
+    ["Quel insecte transmet le paludisme ?", "le moustique", ["la mouche", "la fourmi"]],
+    ["Pour se protéger du paludisme la nuit, on dort sous…", "une moustiquaire", ["une natte", "un drap"]],
+    ["Les moustiques pondent dans…", "les eaux stagnantes", ["le sable sec", "les arbres"]],
+    ["Pour éviter les maladies, avant de manger on…", "se lave les mains au savon", ["boit du thé", "court"]],
+    ["Le vaccin sert à…", "protéger contre les maladies", ["faire grandir", "soigner les dents"]],
+    ["Pour avoir des dents saines, on…", "se brosse les dents chaque jour", ["mange beaucoup de bonbons", "boit du soda"]],
+    ["Lequel est un aliment de construction (qui fait grandir) ?", "le poisson", ["le sucre", "l'huile"]],
+    ["Lequel donne de l'énergie ?", "le riz", ["l'eau", "le sel"]],
+  ];
+  const PLANTES = [
+    ["De quoi une plante a-t-elle besoin pour vivre ?", "d'eau, de lumière et d'air", ["de sable seulement", "de sel"]],
+    ["Quelle partie de la plante est dans la terre ?", "la racine", ["la feuille", "la fleur"]],
+    ["Quelle partie donne les graines ?", "le fruit", ["la tige", "la racine"]],
+    ["Comment s'appelle le fruit du baobab ?", "le pain de singe", ["la mangue", "le bissap"]],
+    ["L'arachide pousse…", "sous la terre", ["en haut d'un arbre", "dans l'eau"]],
+    ["Quand pousse le mil au Sénégal ?", "pendant l'hivernage", ["en saison sèche", "jamais"]],
+    ["Que fait la tige ?", "elle porte les feuilles et transporte la sève", ["elle mange les insectes", "elle produit de l'eau"]],
+    ["Planter des arbres permet de…", "lutter contre l'avancée du désert", ["faire plus de bruit", "salir l'eau"]],
+  ];
+
+  // ---------- FOOT ----------
+  const POSTES = [
+    ["Quel joueur a le droit de prendre le ballon avec les mains ?", "le gardien", ["l'ailier", "le milieu"]],
+    ["Quel joueur court sur le côté gauche pour attaquer, comme Neymar au Barça ?", "l'ailier gauche", ["le défenseur central", "le gardien"]],
+    ["Qui joue au milieu de la défense, devant le gardien ?", "le défenseur central", ["l'avant-centre", "l'ailier droit"]],
+    ["Le latéral gauche joue…", "en défense, sur le côté gauche", ["dans les buts", "en attaque au centre"]],
+    ["Qui organise le jeu et distribue les passes au milieu du terrain ?", "le milieu de terrain", ["le gardien", "l'arbitre"]],
+    ["L'avant-centre a surtout pour mission de…", "marquer des buts", ["arrêter les tirs", "siffler les fautes"]],
+    ["Combien de joueurs a une équipe sur le terrain ?", "11", ["10", "12"]],
+    ["Qui fait respecter les règles pendant le match ?", "l'arbitre", ["l'entraîneur", "le capitaine"]],
+  ];
+  const REGLES = [
+    ["Combien dure un match de football ?", "90 minutes (2 × 45)", ["60 minutes", "100 minutes"]],
+    ["Que montre l'arbitre pour une faute très grave ?", "un carton rouge", ["un carton vert", "un carton bleu"]],
+    ["Deux cartons jaunes dans le même match, ça donne…", "un carton rouge", ["un penalty", "un corner"]],
+    ["Le ballon sort derrière ta ligne de but, touché en dernier par un défenseur : c'est…", "un corner", ["une touche", "un penalty"]],
+    ["Une faute dans la surface de réparation donne…", "un penalty", ["une touche", "un corner"]],
+    ["Pour remettre le ballon en jeu après une sortie sur le côté, on fait…", "une touche avec les mains", ["un coup de pied", "un corner"]],
+    ["Un attaquant plus près du but que l'avant-dernier défenseur au moment de la passe est…", "hors-jeu", ["en forme", "remplaçant"]],
+    ["À quelle distance du but tire-t-on un penalty ?", "11 mètres", ["5 mètres", "30 mètres"]],
+  ];
+  const SCHEMAS = [
+    ["Dans un 4-3-3, combien y a-t-il de défenseurs ?", "4", ["3", "5"]],
+    ["Dans un 4-3-3, combien y a-t-il d'attaquants ?", "3", ["4", "2"]],
+    ["4 + 3 + 3 = 10 joueurs de champ. Avec le gardien, ça fait…", "11 joueurs", ["10 joueurs", "12 joueurs"]],
+    ["Dans un 4-4-2, combien de milieux ?", "4", ["2", "3"]],
+    ["Dans le 4-3-3 du Barça, où joue l'ailier gauche ?", "devant, côté gauche", ["derrière, au centre", "dans les buts"]],
+    ["Un 3-5-2 compte combien de joueurs de champ ?", "10", ["11", "9"]],
+    ["Le terrain mesure 100 m de long. La moitié, c'est…", "50 m", ["25 m", "100 m"]],
+    ["Un match commence à 16 h 00 et dure 1 h 45 avec la mi-temps. Il finit à…", "17 h 45", ["17 h 15", "18 h 00"]],
+  ];
+  const BARCA = [
+    ["Le style du Barça repose surtout sur…", "la possession du ballon", ["les longs ballons", "la défense à 11"]],
+    ["Pour garder le ballon, les joueurs du Barça font surtout…", "des passes courtes", ["des tirs de loin", "des dégagements"]],
+    ["Que fait l'équipe juste après avoir perdu le ballon ?", "elle presse tout de suite pour le récupérer", ["elle recule tout au fond", "elle s'arrête"]],
+    ["Trois joueurs proches qui se font des passes forment…", "un triangle", ["un carré", "une ligne droite"]],
+    ["Comment s'appelle le centre de formation du Barça ?", "la Masia", ["le Camp Nou", "la Liga"]],
+    ["Comment s'appelle le grand stade du Barça ?", "le Camp Nou", ["le Bernabéu", "le Parc des Princes"]],
+    ["« Tiki-taka » veut dire un jeu fait de…", "passes rapides et courtes", ["dribbles seuls", "têtes"]],
+    ["Pour bien recevoir une passe, il faut…", "regarder autour de soi avant", ["fermer les yeux", "rester immobile"]],
+  ];
+  const STARS = [
+    ["De quel pays est Neymar ?", "le Brésil", ["l'Argentine", "le Portugal"]],
+    ["À quel poste Neymar jouait-il au Barça ?", "ailier gauche", ["gardien", "défenseur central"]],
+    ["Avec qui Neymar formait-il le trio « MSN » au Barça ?", "Messi et Suárez", ["Mané et Salah", "Xavi et Iniesta"]],
+    ["Quel numéro Neymar portait-il au Barça ?", "le 11", ["le 1", "le 4"]],
+    ["Comment surnomme-t-on l'équipe du Sénégal ?", "les Lions de la Teranga", ["les Éléphants", "les Aigles"]],
+    ["Quelle Coupe d'Afrique le Sénégal a-t-il gagnée pour la première fois ?", "la CAN 2021", ["la CAN 2002", "la CAN 1990"]],
+    ["Quel joueur sénégalais a marqué le tir au but de la victoire en finale de la CAN 2021 ?", "Sadio Mané", ["El Hadji Diouf", "Kalidou Koulibaly"]],
+    ["Dans quel village est né Sadio Mané ?", "Bambali", ["Joal", "Podor"]],
+  ];
+
+  window.CONTENU = {
+    id: "ce2",
+    titreAppli: "Mon école CE2 · Foot",
+    version: "Palier 1",
+    prenom: "Seydina",
+    classe: "CE2",
+    avatar: "🧒🏾",
+    vitesse: 1.25,
+    voixAuto: false,
+    habillage: {
+      a: "·",
+      lieux: [
+        ["Le terrain du quartier", "quartier", "👟", "des crampons"], ["L'école de foot", "quartier", "🧦", "des chaussettes de match"], ["Le tournoi Navétanes", "quartier", "🥁", "un tam-tam de supporter"],
+        ["Les petits ponts", "quartier", "🎽", "un maillot d'entraînement"], ["Le match de rue", "quartier", "⚽", "un ballon"], ["L'académie", "senegal", "📋", "un carnet de tactique"],
+        ["Stade Demba-Diop", "senegal", "🥅", "des filets de but"], ["Le derby de Dakar", "senegal", "📣", "un mégaphone"], ["Stade Léopold-Senghor", "senegal", "🧤", "des gants de gardien"],
+        ["La sélection U17", "senegal", "🥉", "une médaille de bronze"], ["Stade Abdoulaye-Wade", "senegal", "🦁", "l'écharpe des Lions"], ["Les Lions de la Teranga", "senegal", "🥈", "une médaille d'argent"],
+        ["Le départ en Europe", "europe", "✈️", "un billet d'avion"], ["La Masia", "europe", "🏫", "le badge de la Masia"], ["Barça Atlètic", "europe", "🎖️", "un brassard de capitaine"],
+        ["Premier match au Camp Nou", "europe", "🏟️", "le Camp Nou"], ["El Clásico", "europe", "🔥", "le feu du Clásico"], ["La Liga", "europe", "🥇", "une médaille d'or"],
+        ["La Coupe du Roi", "europe", "👑", "la couronne du Roi"], ["Le Ballon d'or", "europe", "🌟", "une étoile dorée"], ["La Ligue des champions", "europe", "⭐", "l'étoile des champions"],
+        ["Le quart de finale", "europe", "🎺", "une trompette"], ["La demi-finale", "europe", "🏅", "une médaille"], ["Le Mondial", "europe", "🌍", "le globe du Mondial"],
+        ["La CAN", "senegal", "💚", "la fierté des Lions"],
+      ],
+      decors: { quartier: ["Au quartier", "#f3d9a6"], senegal: ["Au Sénégal", "#b8e3b0"], europe: ["À Barcelone", "#c9d6f2"] },
+      boss: { nom: "Finale", zone: "La grande finale", e: "🏆", animal: "le trophée de la finale", titre: "La grande finale", rival: "Le gardien", aide: "Marque avant que le gardien adverse ne s'organise !", bloque: "Gagne toutes les étapes pour jouer la finale !", fond: "#e8c7d2" },
+      jeux: {
+        peche: { nom: "Les passes", e: "🎯", aide: "Passe le ballon au bon coéquipier, comme au Barça !" },
+        ballons: { nom: "Les jongles", e: "⚽", aide: "Touche le bon ballon pour ne pas le laisser tomber !" },
+        pirogue: { nom: "La contre-attaque", e: "🏃🏾", aide: "Réponds vite pour marquer avant le défenseur !" },
+      },
+      eau: "terrain", ciel: "tribune", mobiles: { peche: "joueur", ballons: "balle" }, bateau: "⚽", prises: { peche: "🎯", ballons: "⚽" },
+      monture: "🏃🏾", montureRival: "🏃🏻", passager: "⚽", rival: ["🛡️", "Le défenseur"], course: "pelouse",
+      victoire: "But ! Tu as marqué avant le défenseur !", defaite: "Le défenseur a récupéré le ballon",
+      album: { titre: "Mes trophées", aide: "Chaque étape gagnée te donne un objet de ta carrière.", nouveau: "Nouveau trophée : " },
+      boutique: [["🧢", "Casquette", 20], ["🕶️", "Lunettes", 30], ["🎧", "Casque", 40], ["🧤", "Gants", 40], ["🎖️", "Brassard", 60], ["💛", "Cœur jaune", 50], ["⭐", "Étoile", 80], ["🦁", "Lion", 100], ["👑", "Couronne", 120]],
+    },
+    paliers: [{ id: "p1", titre: "Palier 1", periode: "octobre à décembre" }],
+    mondes: [
+      { id: "francais", titre: "Français", icone: "📖", couleur: "#ffd9a8", lecons: [
+        { id: "ce2-p1-f1", palier: "p1", icone: "🔤", titre: "Le nom et le verbe", objectif: "Reconnaître le nom et le verbe dans une phrase", questions: nomVerbe() },
+        { id: "ce2-p1-f2", palier: "p1", icone: "♀", titre: "Le, la ou l' ?", objectif: "Genre des noms", questions: genre() },
+        { id: "ce2-p1-f3", palier: "p1", icone: "➕", titre: "Le pluriel des noms", objectif: "Pluriel en -s, -x, -aux", questions: pluriel() },
+        { id: "ce2-p1-f4", palier: "p1", icone: "✍️", titre: "Être et avoir au présent", objectif: "Conjuguer être et avoir", questions: etreAvoir() },
+        { id: "ce2-p1-f5", palier: "p1", icone: "🎵", titre: "Les verbes en -er au présent", objectif: "Conjuguer les verbes du 1er groupe", questions: verbesEr() },
+        { id: "ce2-p1-f6", palier: "p1", icone: "⚖️", titre: "a ou à, et ou est", objectif: "Homophones grammaticaux", questions: homophones() },
+        { id: "ce2-p1-f7", palier: "p1", icone: "📚", titre: "Je lis et je comprends", objectif: "Compréhension d'un texte court", questions: lecture() },
+      ] },
+      { id: "maths", titre: "Mathématiques", icone: "🔢", couleur: "#bfe3c9", lecons: [
+        { id: "ce2-p1-m1", palier: "p1", icone: "🔢", titre: "Les nombres jusqu'à 9 999", objectif: "Lire et écrire les nombres", questions: lireNombres() },
+        { id: "ce2-p1-m2", palier: "p1", icone: "🧱", titre: "Milliers, centaines, dizaines", objectif: "Valeur des chiffres", questions: rangs() },
+        { id: "ce2-p1-m3", palier: "p1", icone: "📊", titre: "Comparer et ranger", objectif: "Comparer des nombres", questions: comparer() },
+        { id: "ce2-p1-m4", palier: "p1", icone: "➕", titre: "Additions et soustractions", objectif: "Calculer avec des nombres à 4 chiffres", questions: operations() },
+        { id: "ce2-p1-m5", palier: "p1", icone: "✖️", titre: "Tables de 2 à 5", objectif: "Mémoriser les tables", questions: tables(2, 5) },
+        { id: "ce2-p1-m6", palier: "p1", icone: "✖️", titre: "Tables de 6 à 9", objectif: "Mémoriser les tables", questions: tables(6, 9) },
+        { id: "ce2-p1-m7", palier: "p1", icone: "💰", titre: "Problèmes du marché", objectif: "Résoudre des problèmes en francs CFA", questions: problemes() },
+        { id: "ce2-p1-m8", palier: "p1", icone: "📏", titre: "Les mesures", objectif: "Longueurs, masses, durées, capacités", questions: mesures() },
+      ] },
+      { id: "foot", titre: "Foot", icone: "⚽", couleur: "#ffd1dc", lecons: [
+        { id: "ce2-p1-s1", palier: "p1", icone: "🧤", titre: "Les postes", objectif: "Gardien, défenseurs, milieux, attaquants", questions: quiz(POSTES) },
+        { id: "ce2-p1-s2", palier: "p1", icone: "🟨", titre: "Les règles du jeu", objectif: "Règles de base du football", questions: quiz(REGLES) },
+        { id: "ce2-p1-s3", palier: "p1", icone: "📋", titre: "Le 4-3-3", objectif: "Lire un schéma tactique (et calculer)", questions: quiz(SCHEMAS) },
+        { id: "ce2-p1-s4", palier: "p1", icone: "🔵", titre: "Le style Barça", objectif: "Possession, passes courtes, pressing", questions: quiz(BARCA) },
+        { id: "ce2-p1-s5", palier: "p1", icone: "⭐", titre: "Les stars et les Lions", objectif: "Culture foot : Neymar, les Lions du Sénégal", questions: quiz(STARS) },
+      ] },
+      { id: "decouvrir", titre: "Découvrir", icone: "🌍", couleur: "#bcdcf5", lecons: [
+        { id: "ce2-p1-d1", palier: "p1", icone: "🗺️", titre: "Le Sénégal et ses voisins", objectif: "Géographie du Sénégal", questions: quiz(SENEGAL) },
+        { id: "ce2-p1-d2", palier: "p1", icone: "🇸🇳", titre: "Les symboles du pays", objectif: "Éducation civique", questions: quiz(SYMBOLES) },
+        { id: "ce2-p1-d3", palier: "p1", icone: "💧", titre: "L'eau", objectif: "États de l'eau et eau potable", questions: quiz(EAU) },
+        { id: "ce2-p1-d4", palier: "p1", icone: "🦟", titre: "Ma santé", objectif: "Paludisme, hygiène, alimentation", questions: quiz(SANTE) },
+        { id: "ce2-p1-d5", palier: "p1", icone: "🌱", titre: "Les plantes", objectif: "Besoins et parties de la plante", questions: quiz(PLANTES) },
+      ] },
+    ],
+  };
+})();
+
+</script>
+<script>
+/* ---------- Moteur de jeu commun aux trois applis ---------- */
+(function () {
+  const C = window.CONTENU;
+  const CLE = "coursEnfants:" + C.id;
+  const $ecran = document.getElementById("ecran");
+  const VITESSE = C.vitesse || 1; // 0.7 en GS, 1 au CI, 1.3 au CE2
+
+  // ----- Le voyage : lieux, décors et animaux à gagner -----
+  let LIEUX = [
+    ["Dakar", "mer", "🐬", "un dauphin"], ["Gorée", "mer", "🐢", "une tortue de mer"], ["Rufisque", "mer", "🦀", "un crabe"], ["Lac Rose", "mer", "🦩", "un flamant rose"],
+    ["Thiès", "savane", "🐪", "un dromadaire"], ["Mbour", "mer", "🐠", "un poisson-perroquet"], ["Joal", "mer", "🐋", "une baleine"], ["Fatick", "savane", "🦜", "un perroquet"],
+    ["Kaolack", "savane", "🐄", "un zébu"], ["Kaffrine", "savane", "🐐", "une chèvre"], ["Diourbel", "savane", "🐑", "un mouton"], ["Touba", "savane", "🐎", "un cheval"],
+    ["Louga", "savane", "🦅", "un aigle"], ["Saint-Louis", "fleuve", "🦢", "un pélican"], ["Podor", "fleuve", "🐊", "un crocodile"], ["Matam", "fleuve", "🦛", "un hippopotame"],
+    ["Bakel", "fleuve", "🦒", "une girafe"], ["Tambacounda", "savane", "🐒", "un singe"], ["Kédougou", "foret", "🐘", "un éléphant"], ["Kolda", "foret", "🐆", "un léopard"],
+    ["Sédhiou", "foret", "🦓", "un zèbre"], ["Ziguinchor", "foret", "🦔", "un hérisson"], ["Cap Skirring", "mer", "🐙", "une pieuvre"],
+  ];
+  let BOSS = { nom: "Niokolo-Koba", zone: "Le parc du Niokolo-Koba", e: "🦁", animal: "le lion", titre: "Le défi du Lion", rival: "Le Lion", aide: "Bats le lion à la course de pirogues !", bloque: "Termine toutes les étapes pour affronter le lion !" };
+  let DECORS = { mer: ["Au bord de la mer", "var(--mer)"], savane: ["Dans la savane", "var(--savane)"], fleuve: ["Le long du fleuve", "var(--fleuve)"], foret: ["Dans la forêt", "var(--foret)"] };
+  let JEUX = {
+    peche: { nom: "La pêche", e: "🎣", aide: "Attrape le bon poisson !" },
+    ballons: { nom: "Les ballons", e: "🎈", aide: "Éclate le bon ballon !" },
+    pirogue: { nom: "La course de pirogues", e: "🛶", aide: "Réponds vite pour gagner la course !" },
+  };
+  let BOUTIQUE = [["🧢", "Casquette", 20], ["🕶️", "Lunettes", 30], ["🎀", "Nœud", 30], ["⚽", "Ballon", 40], ["🎩", "Chapeau", 50], ["🌺", "Fleur", 50], ["🎧", "Casque", 70], ["⭐", "Étoile", 80], ["👑", "Couronne", 120]];
+
+  // Habillage : chaque appli peut remplacer le voyage, les jeux et les récompenses (ex. le football au CE2).
+  let H = {
+    eau: "eau", ciel: "ciel", mobiles: { peche: "poisson", ballons: "ballon" }, bateau: "🚣🏾", prises: { peche: "🐟", ballons: "🎈" },
+    monture: "🛶", rival: ["🐊", "Croco"], victoire: "Tu as gagné la course !", defaite: "Le rival est arrivé avant toi",
+    album: { titre: "Mon album", aide: "Chaque étape gagnée t'offre un nouvel animal.", nouveau: "Nouvel ami dans ton album : " },
+  };
+  if (C.habillage) {
+    const h = C.habillage;
+    if (h.lieux) LIEUX = h.lieux; if (h.boss) BOSS = Object.assign({}, BOSS, h.boss); if (h.decors) DECORS = h.decors;
+    if (h.jeux) JEUX = Object.assign({}, JEUX, h.jeux); if (h.boutique) BOUTIQUE = h.boutique;
+    H = Object.assign({}, H, h);
+  }
+
+  // Les niveaux : on alterne les mondes (Lire, Compter, Découvrir…) le long du voyage.
+  const NIVEAUX = [];
+  (function () {
+    const files = C.mondes.map(m => m.lecons.map(l => Object.assign({ monde: m }, l)));
+    let tour = 0;
+    while (files.some(f => f.length)) { files.forEach(f => { if (f.length) NIVEAUX.push(f.shift()); }); tour++; }
+    NIVEAUX.forEach((n, i) => {
+      const lieu = LIEUX[i % LIEUX.length];
+      n.lieu = lieu[0]; n.decor = lieu[1]; n.animal = lieu[2]; n.nomAnimal = lieu[3]; n.index = i;
+      n.jeu = n.jeu || choisirJeu(n, i);
+    });
+  })();
+  const NIVEAU_BOSS = { id: C.id + "-boss", titre: BOSS.titre, lieu: BOSS.nom, decor: "boss", animal: BOSS.e, nomAnimal: BOSS.animal, jeu: "pirogue", boss: true, icone: BOSS.e, objectif: "Révision de tout le palier",
+    questions: () => melange(NIVEAUX.flatMap(n => n.questions().slice(0, 2))).slice(0, 10) };
+
+  function choisirJeu(n, i) {
+    const exemple = n.questions()[0];
+    const court = exemple.choix.every(c => ["lettre", "chiffre", "image", "tas", "html"].includes(c.k) || (c.k === "mots" && String(c.t).length <= 9));
+    if (!court || i % 3 === 2) return "pirogue";
+    const tas = exemple.choix.some(c => c.k === "tas" || c.k === "html");
+    return tas || i % 2 ? "ballons" : "peche";
+  }
+
+  // ----- Mémoire du téléphone -----
+  const defaut = () => ({ prenom: "", code: "1234", toutOuvert: false, progres: {}, journal: [], jours: {}, pieces: 0, achats: [], porte: "", album: [], serie: { jour: "", n: 0 } });
+  let E = defaut();
+  try { const brut = localStorage.getItem(CLE); if (brut) E = Object.assign(defaut(), JSON.parse(brut)); } catch (e) {}
+  function sauver() { try { localStorage.setItem(CLE, JSON.stringify(E)); } catch (e) {} }
+  const prenom = () => E.prenom || C.prenom;
+  const aujourdhui = () => { const d = new Date(); return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); };
+  setInterval(() => {
+    if (document.visibilityState !== "visible") return;
+    const j = aujourdhui();
+    E.jours[j] = (E.jours[j] || 0) + 15;
+    const cles = Object.keys(E.jours).sort();
+    while (cles.length > 30) delete E.jours[cles.shift()];
+    sauver();
+  }, 15000);
+  function serieDuJour() {
+    const j = aujourdhui();
+    if (E.serie.jour === j) return;
+    const hier = new Date(); hier.setDate(hier.getDate() - 1);
+    const h = hier.getFullYear() + "-" + String(hier.getMonth() + 1).padStart(2, "0") + "-" + String(hier.getDate()).padStart(2, "0");
+    E.serie = { jour: j, n: E.serie.jour === h ? E.serie.n + 1 : 1 };
+  }
+  const serieActive = () => { const j = aujourdhui(); const hier = new Date(); hier.setDate(hier.getDate() - 1); const h = hier.toISOString().slice(0, 10); return E.serie.jour === j || E.serie.jour === h ? E.serie.n : 0; };
+
+  // ----- Voix et sons -----
+  let voix = null;
+  const parole = "speechSynthesis" in window ? window.speechSynthesis : null;
+  function choisirVoix() {
+    if (!parole) return;
+    const v = parole.getVoices().filter(v => /^fr/i.test(v.lang));
+    voix = v.find(v => /fr[-_]FR/i.test(v.lang) && /google|natural|amélie|audrey|thomas/i.test(v.name)) || v.find(v => /fr[-_]FR/i.test(v.lang)) || v[0] || null;
+  }
+  if (parole) { choisirVoix(); parole.onvoiceschanged = choisirVoix; }
+  function dire(texte) {
+    if (!parole || !texte) return;
+    try { parole.cancel(); const u = new SpeechSynthesisUtterance(texte); u.lang = "fr-FR"; u.rate = 0.85; u.pitch = 1.05; if (voix) u.voice = voix; parole.speak(u); } catch (e) {}
+  }
+  let audio = null;
+  function son(type) {
+    try {
+      audio = audio || new (window.AudioContext || window.webkitAudioContext)();
+      const notes = { bon: [660, 880], faux: [220, 180], piece: [988, 1319], gagne: [523, 659, 784, 1047], pop: [500] }[type];
+      notes.forEach((f, i) => {
+        const o = audio.createOscillator(), g = audio.createGain(), t = audio.currentTime + i * 0.11;
+        o.type = type === "faux" ? "triangle" : "sine"; o.frequency.value = f;
+        g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.25, t + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.18);
+        o.connect(g).connect(audio.destination); o.start(t); o.stop(t + 0.2);
+      });
+    } catch (e) {}
+  }
+
+  // ----- Outils -----
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const melange = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const etoilesHTML = (n, max = 3) => '<span class="etoiles" aria-label="' + n + ' étoiles sur ' + max + '">' + Array.from({ length: max }, (_, i) => '<span class="' + (i < n ? "on" : "off") + '">★</span>').join("") + "</span>";
+  const etoilesDe = n => (E.progres[n.id] && E.progres[n.id].etoiles) || 0;
+  const totalEtoiles = () => Object.values(E.progres).reduce((s, p) => s + (p.etoiles || 0), 0);
+  const ouvert = i => E.toutOuvert || i === 0 || etoilesDe(NIVEAUX[i - 1]) > 0;
+  const bossOuvert = () => E.toutOuvert || NIVEAUX.every(n => etoilesDe(n) > 0);
+  function persoHTML(grand) { return '<span class="perso' + (grand ? " grand" : "") + '" aria-hidden="true">' + C.avatar + (E.porte ? '<span class="accessoire">' + E.porte + "</span>" : "") + "</span>"; }
+  function rendu(x) {
+    if (x == null) return "";
+    if (typeof x === "string") return '<span class="gros">' + esc(x) + "</span>";
+    switch (x.k) {
+      case "lettre": return '<span class="lettre">' + esc(x.t) + "</span>";
+      case "mots": return '<span class="mots">' + esc(x.t) + "</span>";
+      case "texte": return '<p class="texte">' + esc(x.t) + "</p>";
+      case "phrase": return '<span class="phrase">' + esc(x.t) + "</span>";
+      case "chiffre": return '<span class="chiffre">' + esc(x.t) + "</span>";
+      case "tas": return '<span class="tas">' + x.items.map(e => "<i>" + esc(e) + "</i>").join("") + "</span>";
+      case "html": return x.html;
+      case "image": return '<span class="emoji">' + esc(x.e) + "</span>" + (x.t ? '<span class="legende">' + esc(x.t) + "</span>" : "");
+      default: return '<span class="gros">' + esc(x.t || "") + "</span>";
+    }
+  }
+  function bravo(mot) { const t = document.createElement("div"); t.className = "bravo"; t.textContent = mot; document.body.appendChild(t); setTimeout(() => t.remove(), 950); }
+  const MOTS_BRAVO = ["Bravo !", "Super !", "Très bien !", "Génial !", "Excellent !", "Waouh !"];
+  let arreter = () => {};
+  function changer() { arreter(); arreter = () => {}; document.querySelectorAll(".voile").forEach(v => v.remove()); }
+
+  // ----- La carte -----
+  function carte() {
+    changer();
+    $ecran.className = "ecran sans-marge";
+    const actuel = NIVEAUX.findIndex((n, i) => ouvert(i) && etoilesDe(n) === 0);
+    const largeur = Math.min(560, window.innerWidth);
+    const xDe = i => Math.round(largeur / 2 + Math.sin(i * 1.15) * (largeur * 0.27));
+    let html = '<div class="carte-haut"><div class="barre"><button id="btnPerso" aria-label="Mon personnage et la boutique">' + persoHTML() + '</button>' +
+      '<span class="salut">' + esc(prenom()) + '<small>' + esc(C.classe) + '</small></span><span class="espace"></span>' +
+      '<button class="rond" id="btnParent" aria-label="Espace parent">🔒</button></div>' +
+      '<div class="barre compteurs"><span class="pastille" title="Jours de suite">🔥 ' + serieActive() + '</span><span class="pastille" title="Pièces">🪙 ' + E.pieces + '</span><span class="pastille" title="Étoiles">⭐ ' + totalEtoiles() + '</span>' +
+      '<span class="espace"></span><button class="pastille" id="btnAlbum">📒 ' + E.album.length + '/' + (NIVEAUX.length + 1) + '</button></div></div>';
+    html += '<div class="voyage" id="voyage"><svg class="route" id="route" aria-hidden="true"></svg>';
+    let decor = "";
+    NIVEAUX.forEach((n, i) => {
+      if (n.decor !== decor) { if (decor) html += "</div>"; decor = n.decor; html += '<div class="zone" style="background:' + DECORS[decor][1] + '"><div class="zone-nom">' + DECORS[decor][0] + "</div>"; }
+      const ok = ouvert(i), et = etoilesDe(n);
+      html += '<div class="etape"><button class="noeud' + (et ? " fini" : "") + (ok ? "" : " ferme") + (i === actuel ? " actuel" : "") + '" data-i="' + i + '" style="left:' + xDe(i) + 'px" aria-label="' + esc(n.lieu + ", " + n.titre) + '">' +
+        (i === actuel ? '<span class="moi">' + persoHTML() + "</span>" : "") +
+        '<span class="bulle">' + (ok ? esc(n.icone) : "🔒") + '</span><span class="lieu">' + esc(n.lieu) + "</span>" + (et ? etoilesHTML(et) : "") + "</button></div>";
+    });
+    html += "</div>";
+    const bOk = bossOuvert(), bEt = etoilesDe(NIVEAU_BOSS);
+    html += '<div class="zone" style="background:' + (BOSS.fond || "var(--foret)") + '"><div class="zone-nom">' + esc(BOSS.zone) + '</div><div class="etape" style="height:150px"><button class="noeud boss' + (bOk ? (bEt ? " fini" : " actuel") : " ferme") + '" data-i="boss" style="left:' + Math.round(largeur / 2) + 'px">' +
+      '<span class="bulle">' + (bOk ? BOSS.e : "🔒") + '</span><span class="lieu">' + esc(BOSS.titre) + "</span>" + (bEt ? etoilesHTML(bEt) : "") + "</button></div></div></div>";
+    $ecran.innerHTML = html;
+    // Route en pointillés entre les étapes
+    requestAnimationFrame(() => {
+      const v = document.getElementById("voyage"), svg = document.getElementById("route");
+      if (!v || !svg) return;
+      const r0 = v.getBoundingClientRect();
+      const pts = [...v.querySelectorAll(".noeud .bulle")].map(b => { const r = b.getBoundingClientRect(); return [r.left + r.width / 2 - r0.left, r.top + r.height / 2 - r0.top]; });
+      svg.setAttribute("viewBox", "0 0 " + r0.width + " " + r0.height);
+      let d = "";
+      pts.forEach((p, i) => { if (!i) d = "M" + p[0] + " " + p[1]; else { const a = pts[i - 1]; d += " C" + a[0] + " " + (a[1] + 50) + " " + p[0] + " " + (p[1] - 50) + " " + p[0] + " " + p[1]; } });
+      svg.innerHTML = '<path d="' + d + '" fill="none" stroke="rgba(43,33,24,.28)" stroke-width="9" stroke-linecap="round" stroke-dasharray="2 18"/>';
+      const cible = v.querySelector(".noeud.actuel");
+      if (cible) $ecran.scrollTop = Math.max(0, cible.getBoundingClientRect().top - $ecran.getBoundingClientRect().top - 200);
+    });
+    $ecran.querySelectorAll(".noeud").forEach(b => b.onclick = () => {
+      if (b.dataset.i === "boss") return bOk ? presenter(NIVEAU_BOSS) : dire(BOSS.bloque);
+      const i = +b.dataset.i;
+      if (!ouvert(i)) { son("faux"); dire("Termine d'abord l'étape d'avant."); return; }
+      presenter(NIVEAUX[i]);
+    });
+    document.getElementById("btnParent").onclick = () => codeParent();
+    document.getElementById("btnPerso").onclick = boutique;
+    document.getElementById("btnAlbum").onclick = album;
+  }
+
+  function presenter(n) {
+    const j = JEUX[n.jeu];
+    const v = document.createElement("div"); v.className = "voile";
+    v.innerHTML = '<div class="fenetre" role="dialog" aria-label="' + esc(n.lieu) + '"><div class="grosse-icone">' + (n.boss ? BOSS.e : j.e) + "</div>" +
+      "<h2>" + esc(n.boss ? BOSS.titre : j.nom + " " + (H.a || "à") + " " + n.lieu) + "</h2><p>" + esc(n.boss ? BOSS.aide : j.aide) + "</p>" +
+      '<p style="font-size:15px">' + esc(n.titre) + "</p>" + (etoilesDe(n) ? etoilesHTML(etoilesDe(n)) : "") +
+      '<div class="boutons"><button class="bouton second" id="fermer">Retour</button><button class="bouton" id="jouer">Jouer !</button></div></div>';
+    document.body.appendChild(v);
+    dire(n.boss ? BOSS.titre + " ! " + BOSS.aide : j.nom + " " + (H.a || "à") + " " + n.lieu + ". " + j.aide);
+    v.onclick = e => { if (e.target === v) v.remove(); };
+    v.querySelector("#fermer").onclick = () => v.remove();
+    v.querySelector("#jouer").onclick = () => { v.remove(); jouer(n); };
+  }
+
+  // ----- Les mini-jeux -----
+  function jouer(n) {
+    changer();
+    $ecran.className = "ecran sans-marge";
+    const questions = n.questions().slice(0, n.boss ? 10 : 8);
+    const partie = { n, questions, k: 0, justes: 0, premier: true };
+    ({ peche: jeuPeche, ballons: jeuBallons, pirogue: jeuPirogue })[n.jeu](partie);
+  }
+
+  function enTete(p, q) {
+    return '<div class="jeu-haut"><div class="barre"><button class="rond" id="quitter" aria-label="Quitter">✕</button><div class="progression"><i style="width:' + Math.round(100 * p.k / p.questions.length) + '%"></i></div>' +
+      '<span class="pastille">' + (p.n.boss ? BOSS.e : JEUX[p.n.jeu].e) + " " + p.k + "/" + p.questions.length + "</span></div>" +
+      '<div class="consigne"><button class="haut-parleur" id="ecouter" aria-label="Écouter">🔊</button><p>' + esc(q.consigne) + "</p></div>" +
+      (q.scene ? '<div class="scene">' + rendu(q.scene) + "</div>" : "") + "</div>";
+  }
+  function brancher(p, q) {
+    const ecoute = () => dire(q.dire || q.consigne);
+    document.getElementById("ecouter").onclick = ecoute;
+    document.getElementById("quitter").onclick = carte;
+    if (C.voixAuto !== false) ecoute();
+  }
+  function reussite(p, suite) {
+    if (p.premier) p.justes++;
+    son("bon");
+    const mot = MOTS_BRAVO[Math.floor(Math.random() * MOTS_BRAVO.length)];
+    bravo(mot); dire(mot);
+    p.k++; p.premier = true;
+    setTimeout(() => (p.k < p.questions.length ? suite() : fin(p)), 1000);
+  }
+  function rate(p, choix) {
+    p.premier = false;
+    son("faux");
+    dire("Essaie encore." + (choix && choix.dire ? " Ça, c'est " + choix.dire + "." : ""));
+  }
+  function eclats(aire, x, y, emojis) {
+    for (let i = 0; i < 8; i++) {
+      const s = document.createElement("span"); s.className = "eclat"; s.textContent = emojis[i % emojis.length];
+      s.style.left = x + "px"; s.style.top = y + "px";
+      const a = (i / 8) * Math.PI * 2; s.style.setProperty("--dx", Math.cos(a) * 70 + "px"); s.style.setProperty("--dy", Math.sin(a) * 70 + "px");
+      aire.appendChild(s); setTimeout(() => s.remove(), 750);
+    }
+  }
+
+  // Des réponses qui bougent dans une aire (poissons qui nagent, ballons qui montent)
+  function jeuMobile(p, mode) {
+    function poser() {
+      arreter();
+      const q = p.questions[p.k];
+      const ordre = melange(q.choix.map((c, i) => i));
+      $ecran.innerHTML = '<div class="jeu">' + enTete(p, q) + '<div class="aire ' + (mode === "peche" ? H.eau : H.ciel) + '" id="aire">' +
+        (mode === "peche" ? '<span class="bateau">' + H.bateau + "</span>" : "") + '<span class="prises">' + H.prises[mode] + " " + p.k + "</span></div></div>";
+      brancher(p, q);
+      const aire = document.getElementById("aire");
+      const W = aire.clientWidth, HA = aire.clientHeight;
+      const objets = ordre.map((ci, rang) => {
+        const b = document.createElement("button");
+        b.className = "mobile r " + H.mobiles[mode] + " c" + (rang % 4);
+        b.innerHTML = rendu(q.choix[ci]);
+        b.dataset.i = ci;
+        aire.appendChild(b);
+        const w = b.offsetWidth, h = b.offsetHeight;
+        const o = { b, ci, w, h, vivant: true };
+        if (mode === "peche") {
+          const couloirs = ordre.length, haut = 70, bas = HA - h - 10;
+          o.y = haut + (couloirs > 1 ? (rang * (bas - haut)) / (couloirs - 1) : 0);
+          o.dir = rang % 2 ? -1 : 1;
+          b.classList.add(o.dir > 0 ? "droite" : "gauche");
+          o.v = (34 + Math.random() * 22) * VITESSE;
+          o.x = Math.random() * Math.max(10, W - w);
+        } else {
+          const col = ordre.length;
+          o.x = ((rang + 0.5) * W) / col - w / 2 + (Math.random() * 20 - 10);
+          o.y = HA * 0.3 + Math.random() * HA * 0.45;
+          o.v = (26 + Math.random() * 16) * VITESSE;
+          o.phase = Math.random() * 6;
+        }
+        b.onclick = () => toucher(o, q);
+        return o;
+      });
+      let dernier = performance.now(), anim = 0, fini = false;
+      function boucle(t) {
+        const dt = Math.min(0.05, (t - dernier) / 1000); dernier = t;
+        objets.forEach(o => {
+          if (!o.vivant) return;
+          if (mode === "peche") {
+            o.x += o.dir * o.v * dt;
+            if (o.dir > 0 && o.x > W + 20) o.x = -o.w - 20;
+            if (o.dir < 0 && o.x < -o.w - 20) o.x = W + 20;
+            o.b.style.transform = "translate(" + o.x + "px," + (o.y + Math.sin(t / 500 + o.v) * 6) + "px)";
+          } else {
+            o.y -= o.v * dt;
+            if (o.y < -o.h - 50) o.y = HA + 30;
+            o.b.style.transform = "translate(" + (o.x + Math.sin(t / 700 + o.phase) * 10) + "px," + o.y + "px)";
+          }
+        });
+        if (!fini) anim = requestAnimationFrame(boucle);
+      }
+      anim = requestAnimationFrame(boucle);
+      arreter = () => { fini = true; cancelAnimationFrame(anim); };
+      function toucher(o, q) {
+        if (!o.vivant) return;
+        const r = o.b.getBoundingClientRect(), ra = aire.getBoundingClientRect();
+        if (o.ci === q.bonne) {
+          objets.forEach(x => x.vivant = false);
+          if (mode === "peche") { o.b.classList.add("pris"); o.b.style.transform = "translate(" + (W / 2 - o.w / 2) + "px,-40px) scale(.5)"; eclats(aire, r.left - ra.left + r.width / 2, r.top - ra.top, ["💧", "✨"]); }
+          else { son("pop"); o.b.style.visibility = "hidden"; eclats(aire, r.left - ra.left + r.width / 2, r.top - ra.top + r.height / 2, ["🎉", "✨", "⭐"]); }
+          reussite(p, poser);
+        } else {
+          o.b.classList.add("faux"); o.vivant = false; o.b.disabled = true;
+          if (mode === "ballons") { son("pop"); setTimeout(() => o.b.style.visibility = "hidden", 150); }
+          rate(p, q.choix[o.ci]);
+        }
+      }
+    }
+    poser();
+  }
+  const jeuPeche = p => jeuMobile(p, "peche");
+  const jeuBallons = p => jeuMobile(p, "ballons");
+
+  function jeuPirogue(p) {
+    const parQuestion = (p.n.boss ? 8 : 10) / VITESSE; // secondes laissées au rival par question
+    const duree = parQuestion * p.questions.length;
+    const debut = performance.now();
+    let rivalArrive = false;
+    p.rival = false;
+    function poser() {
+      arreter();
+      const q = p.questions[p.k];
+      const ordre = melange(q.choix.map((c, i) => i));
+      const nb = q.choix.length;
+      const dispo = q.disposition || (nb === 3 ? "trois" : "");
+      $ecran.innerHTML = '<div class="jeu">' + enTete(p, q) +
+        '<div class="course' + (H.course ? " " + H.course : "") + '" aria-hidden="true"><span class="arrivee"></span>' +
+        '<div class="couloir"><span class="pirogue" id="pMoi">' + H.monture + '</span><span class="qui" id="qMoi">' + (H.passager || C.avatar) + '</span><span class="nom">' + esc(prenom()) + "</span></div>" +
+        '<div class="couloir"><span class="pirogue" id="pRival">' + (H.montureRival || H.monture) + '</span><span class="qui" id="qRival">' + (p.n.boss ? BOSS.e : H.rival[0]) + '</span><span class="nom">' + esc(p.n.boss ? BOSS.rival : H.rival[1]) + "</span></div></div>" +
+        '<div class="choix ' + dispo + '">' + ordre.map(i => '<button class="reponse r" data-i="' + i + '">' + rendu(q.choix[i]) + "</button>").join("") + "</div></div>";
+      brancher(p, q);
+      const course = $ecran.querySelector(".course");
+      const L = course.clientWidth - 90;
+      const placer = (id, f) => { const x = 4 + f * L; document.getElementById("p" + id).style.left = x + "px"; document.getElementById("q" + id).style.left = x + 12 + "px"; };
+      placer("Moi", p.k / p.questions.length);
+      let anim = 0, fini = false;
+      function boucle(t) {
+        const f = Math.min(1, (t - debut) / 1000 / duree);
+        placer("Rival", f);
+        if (f >= 1 && !rivalArrive) { rivalArrive = true; p.rival = true; dire((p.n.boss ? BOSS.rival : H.rival[1]) + " est arrivé ! Termine quand même."); }
+        if (!fini) anim = requestAnimationFrame(boucle);
+      }
+      anim = requestAnimationFrame(boucle);
+      arreter = () => { fini = true; cancelAnimationFrame(anim); };
+      $ecran.querySelectorAll(".reponse").forEach(b => b.onclick = () => {
+        const i = +b.dataset.i;
+        if (i === q.bonne) {
+          b.classList.add("bon");
+          $ecran.querySelectorAll(".reponse").forEach(x => x.disabled = true);
+          placer("Moi", (p.k + 1) / p.questions.length);
+          reussite(p, poser);
+        } else { b.classList.add("faux"); b.disabled = true; rate(p, q.choix[i]); }
+      });
+    }
+    poser();
+  }
+
+  // ----- Fin d'un niveau -----
+  function fin(p) {
+    changer();
+    $ecran.className = "ecran";
+    const n = p.n, total = p.questions.length;
+    const ratio = p.justes / total;
+    let etoiles = ratio >= 0.9 ? 3 : ratio >= 0.65 ? 2 : 1;
+    const avant = E.progres[n.id] || { etoiles: 0, fois: 0 };
+    let gain = etoiles * 5 + (avant.fois ? 0 : 10);
+    const gagneCourse = n.jeu === "pirogue" && !p.rival;
+    if (gagneCourse) gain += 5;
+    E.progres[n.id] = { etoiles: Math.max(avant.etoiles, etoiles), fois: (avant.fois || 0) + 1, dernier: p.justes + "/" + total, date: new Date().toISOString() };
+    E.journal.unshift({ id: n.id, score: p.justes + "/" + total, date: new Date().toISOString() });
+    E.journal = E.journal.slice(0, 60);
+    E.pieces += gain;
+    serieDuJour();
+    const nouveau = !E.album.includes(n.animal);
+    if (nouveau) E.album.push(n.animal);
+    sauver();
+    son("gagne");
+    const titres = ["Continue, tu progresses !", "Bien joué !", C.feminin ? "Championne !" : "Champion !"];
+    $ecran.innerHTML = '<div class="resultat"><div class="grandes-etoiles">' + etoilesHTML(etoiles) + "</div><h1>" + esc(titres[etoiles - 1]) + "</h1>" +
+      "<p>" + p.justes + " sur " + total + " du premier coup" + (n.jeu === "pirogue" ? (gagneCourse ? " · " + H.victoire : " · " + H.defaite) : "") + "</p>" +
+      '<div class="gain"><span>🪙 +' + gain + "</span><span>🔥 " + E.serie.n + " jour" + (E.serie.n > 1 ? "s" : "") + "</span></div>" +
+      (nouveau ? '<div class="nouvel-animal"><b>' + n.animal + "</b><span>" + esc(H.album.nouveau) + esc(n.nomAnimal) + " !</span></div>" : "") +
+      '<div class="boutons"><button class="bouton second" id="encore">Rejouer</button><button class="bouton" id="suite">Continuer</button></div></div>';
+    dire(titres[etoiles - 1] + " Tu gagnes " + gain + " pièces." + (nouveau ? " " + H.album.nouveau + n.nomAnimal + " !" : ""));
+    document.getElementById("encore").onclick = () => jouer(n);
+    document.getElementById("suite").onclick = carte;
+  }
+
+  // ----- Boutique du personnage -----
+  function boutique(message) {
+    changer();
+    $ecran.className = "ecran";
+    $ecran.innerHTML = '<div class="titre-page"><button class="rond" id="retour" aria-label="Retour">←</button><h1>Mon personnage</h1><span class="espace" style="flex:1"></span><span class="pastille">🪙 ' + E.pieces + "</span></div>" +
+      '<div style="display:grid;justify-items:center;gap:6px;padding:14px 0">' + persoHTML(true) + '<p class="aide">' + esc(message || "Gagne des pièces en jouant et habille ton personnage.") + "</p></div>" +
+      '<div class="grille">' + BOUTIQUE.map(([e, nom, prix]) => {
+        const a = E.achats.includes(e);
+        return '<button class="objet' + (E.porte === e ? " porte" : "") + '" data-e="' + e + '"><b>' + e + "</b><span>" + esc(nom) + '</span><span class="prix">' + (E.porte === e ? "Porté" : a ? "À toi" : "🪙 " + prix) + "</span></button>";
+      }).join("") + "</div>";
+    document.getElementById("retour").onclick = carte;
+    $ecran.querySelectorAll(".objet").forEach(b => b.onclick = () => {
+      const [e, nom, prix] = BOUTIQUE.find(x => x[0] === b.dataset.e);
+      if (E.achats.includes(e)) { E.porte = E.porte === e ? "" : e; sauver(); son("pop"); return boutique(E.porte ? "Tu portes : " + nom : "Tu as enlevé : " + nom); }
+      if (E.pieces < prix) { son("faux"); dire("Il te manque " + (prix - E.pieces) + " pièces. Joue encore !"); return boutique("Il te manque " + (prix - E.pieces) + " pièces pour : " + nom); }
+      E.pieces -= prix; E.achats.push(e); E.porte = e; sauver(); son("piece"); dire("Super ! Tu as acheté : " + nom);
+      boutique("Bravo, tu as acheté : " + nom + " !");
+    });
+  }
+
+  function album() {
+    changer();
+    $ecran.className = "ecran";
+    const tous = NIVEAUX.map(n => [n.animal, n.nomAnimal, n.lieu]).concat([[BOSS.e, BOSS.animal, BOSS.nom]]);
+    $ecran.innerHTML = '<div class="titre-page"><button class="rond" id="retour" aria-label="Retour">←</button><h1>' + esc(H.album.titre) + '</h1></div>' +
+      '<p class="aide">' + esc(H.album.aide) + " " + E.album.length + " sur " + tous.length + " trouvés.</p>" +
+      '<div class="grille">' + tous.map(([e, nom, lieu]) => { const a = E.album.includes(e); return '<button class="objet' + (a ? "" : " cache") + '" data-nom="' + esc(a ? nom : "") + '"><b>' + e + "</b><span>" + esc(a ? nom.replace(/^(un |une |le |la |l')/, "") : "?") + '</span><span class="note">' + esc(lieu) + "</span></button>"; }).join("") + "</div>";
+    document.getElementById("retour").onclick = carte;
+    $ecran.querySelectorAll(".objet").forEach(b => b.onclick = () => b.dataset.nom ? dire(b.dataset.nom) : dire("Pas encore trouvé !"));
+  }
+
+  // ----- Espace parent -----
+  function codeParent() {
+    changer();
+    $ecran.className = "ecran";
+    let saisie = "";
+    function dessiner(erreur) {
+      $ecran.innerHTML = '<div class="barre"><button class="rond" id="retour" aria-label="Retour">←</button></div>' +
+        '<div class="resultat" style="justify-content:flex-start;padding-top:20px"><h1 style="font-size:28px">Espace parent</h1><p>' + (erreur ? "Code incorrect, réessaie" : "Tape le code parent") + "</p>" +
+        '<div class="points">' + [0, 1, 2, 3].map(i => '<i class="' + (i < saisie.length ? "plein" : "") + '"></i>').join("") + "</div>" +
+        '<div class="pave">' + [1, 2, 3, 4, 5, 6, 7, 8, 9, "", 0, "⌫"].map(c => (c === "" ? "<span></span>" : '<button data-c="' + c + '">' + c + "</button>")).join("") + "</div></div>";
+      document.getElementById("retour").onclick = carte;
+      $ecran.querySelectorAll(".pave button").forEach(b => b.onclick = () => {
+        const c = b.dataset.c;
+        if (c === "⌫") saisie = saisie.slice(0, -1); else if (saisie.length < 4) saisie += c;
+        if (saisie.length === 4) { if (saisie === E.code) return parent(); saisie = ""; return dessiner(true); }
+        dessiner();
+      });
+    }
+    dessiner();
+  }
+
+  function parent(message) {
+    changer();
+    $ecran.className = "ecran";
+    const tous = NIVEAUX.concat([NIVEAU_BOSS]);
+    const faits = tous.filter(n => etoilesDe(n) > 0).length;
+    const jours = Object.keys(E.jours).sort().reverse().slice(0, 7);
+    const minutes = s => Math.round((s || 0) / 60);
+    const nomNiveau = id => { const n = tous.find(x => x.id === id); return n ? n.lieu + " · " + n.titre : id; };
+    const dateCourte = d => new Date(d).toLocaleString("fr-FR", { weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
+    const ligne = n => { const p = E.progres[n.id]; return "<tr><td>" + esc(n.titre) + '<br><span class="note">' + esc(n.lieu + " · " + JEUX[n.jeu].nom + (n.objectif ? " · " + n.objectif : "")) + "</span></td><td>" + (p ? etoilesHTML(p.etoiles) + '<br><span class="note">' + p.dernier + " · " + p.fois + " fois</span>" : '<span class="note">pas encore</span>') + "</td></tr>"; };
+    $ecran.innerHTML = '<div class="parent" style="display:grid;gap:12px">' +
+      '<div class="barre"><button class="rond" id="retour" aria-label="Retour">←</button><h1>Espace parent</h1></div>' +
+      (message ? '<p class="note" style="color:var(--vert);font-weight:700">' + esc(message) + "</p>" : "") +
+      '<div class="bloc"><div class="stat"><div><b>' + faits + "/" + tous.length + '</b><span>étapes réussies</span></div><div><b>' + totalEtoiles() + '</b><span>étoiles</span></div><div><b>' + minutes(E.jours[aujourdhui()]) + " min</b><span>aujourd'hui</span></div></div></div>" +
+      "<h2>Progrès par matière</h2>" +
+      C.mondes.map(m => '<div class="bloc"><strong>' + m.icone + " " + esc(m.titre) + "</strong><table>" + NIVEAUX.filter(n => n.monde === m).map(ligne).join("") + "</table></div>").join("") +
+      '<div class="bloc"><strong>' + BOSS.e + " Révision finale</strong><table>" + ligne(NIVEAU_BOSS) + "</table></div>" +
+      "<h2>Dernières parties</h2><div class=\"bloc\"><table>" + (E.journal.length ? E.journal.slice(0, 12).map(j => "<tr><td>" + esc(nomNiveau(j.id)) + '<br><span class="note">' + dateCourte(j.date) + "</span></td><td>" + j.score + "</td></tr>").join("") : '<tr><td class="note">Aucune partie pour l\'instant.</td><td></td></tr>') + "</table></div>" +
+      "<h2>Temps passé dans l'appli</h2><div class=\"bloc\"><table>" + (jours.length ? jours.map(j => "<tr><td>" + new Date(j + "T12:00").toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long" }) + "</td><td>" + minutes(E.jours[j]) + " min</td></tr>").join("") : '<tr><td class="note">Pas encore de temps enregistré.</td><td></td></tr>') + "</table>" +
+      '<p class="note">Pour limiter le temps d\'écran depuis ton téléphone, utilise Google Family Link.</p></div>' +
+      '<h2>Réglages</h2><div class="bloc">' +
+      '<div class="rangee"><label for="champPrenom">Prénom affiché</label><input type="text" id="champPrenom" value="' + esc(prenom()) + '" maxlength="20"><button class="petit-bouton" id="okPrenom">Enregistrer</button></div>' +
+      '<div class="rangee"><label for="champCode">Nouveau code parent (4 chiffres)</label><input type="password" id="champCode" inputmode="numeric" maxlength="4" placeholder="••••"><button class="petit-bouton" id="okCode">Changer</button></div>' +
+      '<div class="rangee"><label>Ouvrir toutes les étapes sans suivre l\'ordre</label><button class="petit-bouton ' + (E.toutOuvert ? "" : "neutre") + '" id="okOuvert">' + (E.toutOuvert ? "Activé" : "Désactivé") + "</button></div>" +
+      '<div class="rangee"><label for="champPieces">Donner des pièces en récompense</label><input type="text" id="champPieces" inputmode="numeric" maxlength="3" placeholder="20"><button class="petit-bouton" id="okPieces">Donner</button></div>' +
+      '<div class="rangee"><label>Effacer tous les progrès de ce téléphone</label><button class="petit-bouton danger" id="effacer">Effacer</button></div>' +
+      '<div id="confirme" hidden class="rangee"><label><strong>Sûr ? Étoiles, pièces, album et historique seront perdus.</strong></label><button class="petit-bouton neutre" id="non">Annuler</button><button class="petit-bouton danger" id="oui">Oui, effacer</button></div>' +
+      "</div>" + (E.code === "1234" ? '<p class="note">Le code est encore 1234. Change-le pour que les enfants ne puissent pas entrer ici.</p>' : "") +
+      '<p class="discret">' + esc(C.titreAppli) + " · " + esc(C.version) + "</p></div>";
+    $ecran.scrollTop = 0;
+    document.getElementById("retour").onclick = carte;
+    document.getElementById("okPrenom").onclick = () => { const v = document.getElementById("champPrenom").value.trim(); if (v) { E.prenom = v; sauver(); parent("Prénom enregistré."); } };
+    document.getElementById("okCode").onclick = () => { const v = document.getElementById("champCode").value.trim(); if (/^\d{4}$/.test(v)) { E.code = v; sauver(); parent("Nouveau code enregistré. Retiens-le bien."); } else parent("Le code doit faire exactement 4 chiffres."); };
+    document.getElementById("okOuvert").onclick = () => { E.toutOuvert = !E.toutOuvert; sauver(); parent(E.toutOuvert ? "Toutes les étapes sont ouvertes." : "Les étapes s'ouvrent à nouveau dans l'ordre."); };
+    document.getElementById("okPieces").onclick = () => { const v = parseInt(document.getElementById("champPieces").value, 10); if (v > 0 && v <= 500) { E.pieces += v; sauver(); parent(v + " pièces données."); } else parent("Indique un nombre de pièces entre 1 et 500."); };
+    document.getElementById("effacer").onclick = () => { document.getElementById("confirme").hidden = false; };
+    document.getElementById("non").onclick = () => { document.getElementById("confirme").hidden = true; };
+    document.getElementById("oui").onclick = () => { const garde = { prenom: E.prenom, code: E.code }; E = Object.assign(defaut(), garde); sauver(); parent("Progrès effacés."); };
+  }
+
+  window.addEventListener("resize", () => { if (document.getElementById("voyage")) carte(); });
+  carte();
+})();
+</script>
+
+<script>if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js");</script>
+</body>
+</html>

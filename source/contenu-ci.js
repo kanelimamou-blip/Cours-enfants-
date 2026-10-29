@@ -177,7 +177,7 @@
     id: "ci",
     titreAppli: "Mon école CI",
     version: "Palier 1",
-    prenom: "Champion",
+    prenom: "Soubeyrou",
     classe: "Cours d'Initiation",
     avatar: "🦁",
     paliers: [{ id: "p1", titre: "Palier 1", periode: "octobre à décembre" }],

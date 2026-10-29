@@ -4,128 +4,184 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Baloo+2:wght@600;800&display=swap">
 <style>
-/* Mise en page : une seule colonne façon appli de téléphone, un écran à la fois, gros boutons à toucher. */
+/* Mise en page : un jeu d'une seule colonne. La carte du voyage défile, chaque niveau ouvre un mini-jeu plein écran. */
 :root {
-  --sable: #fff6e6;       /* fond, couleur sable chaud */
+  --sable: #fff6e6;
   --carte: #ffffff;
-  --encre: #2b2118;       /* texte */
-  --doux: #7a6a58;        /* texte secondaire */
-  --theme: __COULEUR__;   /* couleur de l'enfant */
+  --encre: #2b2118;
+  --doux: #7a6a58;
+  --theme: __COULEUR__;
   --theme-clair: __COULEUR_CLAIRE__;
-  --mangue: #ffb21e;      /* étoiles et récompenses */
-  --vert: #2e9e5b;        /* bonne réponse */
-  --rouge: #e0533d;       /* mauvaise réponse */
+  --mangue: #ffb21e;
+  --vert: #2e9e5b;
+  --rouge: #e0533d;
   --trait: #ecdcc2;
+  --mer: #8fd3f0;
+  --mer-fonce: #3a9fd6;
+  --savane: #f6dc8c;
+  --fleuve: #a9e0c8;
+  --foret: #8fcf8a;
   --titre: "Baloo 2", "Trebuchet MS", system-ui, sans-serif;
-  --lecture: "Andika", "Segoe UI", system-ui, sans-serif; /* police pensée pour apprendre à lire */
+  --lecture: "Andika", "Segoe UI", system-ui, sans-serif;
   color-scheme: light;
 }
 html, body { height: 100%; }
 body {
-  background: var(--sable); color: var(--encre);
-  font-family: var(--lecture); font-size: 18px;
-  -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none;
-  overscroll-behavior: none;
+  background: var(--sable); color: var(--encre); font-family: var(--lecture); font-size: 18px;
+  -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none; overscroll-behavior: none; overflow: hidden;
 }
 body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--sable); }
-.app {
-  height: 100%; max-width: 560px; margin: 0 auto; display: flex; flex-direction: column;
-  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
-  padding-block: 12px 16px; box-sizing: border-box;
-}
-.ecran { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 14px; overflow-y: auto; }
+.app { height: 100%; max-width: 560px; margin: 0 auto; display: flex; flex-direction: column; position: relative; }
+.ecran { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 12px 16px; box-sizing: border-box; }
+.ecran.sans-marge { padding: 0; gap: 0; }
 button { font: inherit; color: inherit; border: 0; background: none; cursor: pointer; touch-action: manipulation; }
 button:focus-visible { outline: 3px solid var(--theme); outline-offset: 3px; }
 h1, h2, h3 { font-family: var(--titre); margin: 0; line-height: 1.1; text-wrap: balance; }
 
-/* En-tête */
-.barre { display: flex; align-items: center; gap: 10px; }
+/* Barre du haut */
+.barre { display: flex; align-items: center; gap: 8px; }
 .barre .espace { flex: 1; }
-.rond { width: 48px; height: 48px; border-radius: 50%; background: var(--carte); display: grid; place-items: center; font-size: 22px; box-shadow: 0 2px 0 var(--trait); flex: none; }
-.compteur { display: flex; align-items: center; gap: 6px; background: var(--carte); border-radius: 999px; padding: 6px 14px; font-family: var(--titre); font-weight: 800; font-size: 20px; box-shadow: 0 2px 0 var(--trait); font-variant-numeric: tabular-nums; }
-.compteur .etoile { color: var(--mangue); }
+.rond { width: 46px; height: 46px; border-radius: 50%; background: var(--carte); display: grid; place-items: center; font-size: 22px; box-shadow: 0 3px 0 var(--trait); flex: none; }
+.pastille { display: flex; align-items: center; gap: 4px; background: var(--carte); border-radius: 999px; padding: 4px 11px; font-family: var(--titre); font-weight: 800; font-size: 17px; box-shadow: 0 3px 0 var(--trait); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.perso { position: relative; width: 52px; height: 52px; border-radius: 16px; background: var(--theme); display: grid; place-items: center; font-size: 30px; flex: none; box-shadow: 0 3px 0 rgba(0,0,0,.18); }
+.perso .accessoire { position: absolute; top: -12px; right: -10px; font-size: 24px; transform: rotate(14deg); }
+.perso.grand { width: 96px; height: 96px; border-radius: 28px; font-size: 58px; }
+.perso.grand .accessoire { font-size: 42px; top: -22px; right: -18px; }
 
-/* Accueil */
-.bonjour { display: flex; align-items: center; gap: 14px; padding: 6px 2px; }
-.avatar { width: 76px; height: 76px; border-radius: 24px; background: var(--theme); display: grid; place-items: center; font-size: 44px; flex: none; transform: rotate(-4deg); }
-.bonjour h1 { font-size: 32px; font-weight: 800; }
-.bonjour p { margin: 2px 0 0; color: var(--doux); }
-.mondes { display: grid; gap: 12px; }
-.monde {
-  display: grid; grid-template-columns: 72px 1fr auto; align-items: center; gap: 14px; text-align: left;
-  background: var(--carte); border-radius: 22px; padding: 14px; box-shadow: 0 4px 0 var(--trait);
-}
-.monde:active { transform: translateY(2px); box-shadow: 0 2px 0 var(--trait); }
-.monde .ico { width: 72px; height: 72px; border-radius: 18px; display: grid; place-items: center; font-size: 40px; }
-.monde h2 { font-size: 26px; font-weight: 800; }
-.monde p { margin: 2px 0 0; color: var(--doux); font-size: 15px; }
-.jauge { height: 10px; border-radius: 99px; background: var(--trait); overflow: hidden; margin-top: 8px; }
-.jauge i { display: block; height: 100%; background: var(--mangue); border-radius: 99px; }
-.fleche { font-size: 28px; color: var(--doux); }
-.palier-info { font-size: 14px; color: var(--doux); text-align: center; }
-
-/* Parcours d'un monde */
-.titre-monde { display: flex; align-items: center; gap: 12px; }
-.titre-monde h1 { font-size: 30px; font-weight: 800; }
-.palier-titre { font-family: var(--titre); font-weight: 800; font-size: 15px; letter-spacing: .06em; text-transform: uppercase; color: var(--doux); margin-top: 6px; }
-.chemin { display: grid; gap: 10px; }
-.lecon {
-  display: grid; grid-template-columns: 60px 1fr auto; align-items: center; gap: 12px; text-align: left;
-  background: var(--carte); border-radius: 18px; padding: 10px 14px 10px 10px; box-shadow: 0 3px 0 var(--trait);
-}
-.lecon .num { width: 60px; height: 60px; border-radius: 50%; display: grid; place-items: center; font-size: 30px; background: var(--theme-clair); }
-.lecon.fermee { opacity: .5; }
-.lecon.fermee .num { background: var(--trait); }
-.lecon h3 { font-size: 20px; font-weight: 600; font-family: var(--lecture); }
-.lecon .etoiles { font-size: 18px; letter-spacing: 1px; white-space: nowrap; }
+/* Carte du voyage */
+.carte-haut { position: sticky; top: 0; z-index: 3; display: grid; gap: 8px; padding: 12px max(16px, env(safe-area-inset-right, 0px)) 10px max(16px, env(safe-area-inset-left, 0px)); background: linear-gradient(var(--sable) 75%, rgba(255,246,230,0)); }
+.salut { font-family: var(--titre); font-weight: 800; font-size: 22px; line-height: 1.1; }
+.salut small { display: block; font-family: var(--lecture); font-weight: 400; font-size: 14px; color: var(--doux); }
+.voyage { position: relative; padding: 10px 0 40px; }
+.voyage svg.route { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
+.zone { position: relative; }
+.zone-nom { position: relative; z-index: 1; text-align: center; font-family: var(--titre); font-weight: 800; font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: rgba(43,33,24,.55); padding: 14px 0 0; }
+.etape { position: relative; z-index: 2; height: 118px; }
+.noeud { position: absolute; top: 14px; transform: translateX(-50%); display: grid; justify-items: center; gap: 2px; width: 120px; }
+.noeud .bulle { width: 70px; height: 70px; border-radius: 50%; background: var(--carte); display: grid; place-items: center; font-size: 32px; box-shadow: 0 5px 0 rgba(0,0,0,.18); border: 4px solid var(--theme); font-family: var(--lecture); font-weight: 700; }
+.noeud.fini .bulle { background: var(--theme); color: #fff; border-color: #fff; }
+.noeud.ferme .bulle { background: #e9e2d6; border-color: #d4c9b6; filter: grayscale(1); opacity: .8; }
+.noeud.actuel .bulle { animation: battre 1.4s infinite; }
+.noeud.boss .bulle { width: 88px; height: 88px; font-size: 46px; border-color: var(--rouge); }
+.noeud .lieu { font-family: var(--titre); font-weight: 800; font-size: 15px; background: rgba(255,255,255,.85); border-radius: 999px; padding: 0 10px; white-space: nowrap; }
+.noeud .etoiles { font-size: 14px; letter-spacing: 1px; line-height: 1; }
+.noeud .moi { position: absolute; left: -26px; top: -10px; }
+@keyframes battre { 50% { transform: scale(1.08); } }
 .etoiles .on { color: var(--mangue); }
-.etoiles .off { color: var(--trait); }
+.etoiles .off { color: rgba(0,0,0,.18); }
 
-/* Leçon */
-.progression { flex: 1; height: 16px; border-radius: 99px; background: var(--carte); overflow: hidden; box-shadow: inset 0 0 0 2px var(--trait); }
+/* Fenêtre */
+.voile { position: fixed; inset: 0; z-index: 20; background: rgba(43,33,24,.45); display: grid; place-items: end center; padding: 16px max(16px, env(safe-area-inset-right, 0px)) calc(16px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); }
+.fenetre { width: 100%; max-width: 520px; background: var(--sable); border-radius: 28px; padding: 20px; display: grid; gap: 12px; justify-items: center; text-align: center; animation: monter .25s ease-out; }
+.fenetre .grosse-icone { font-size: 64px; line-height: 1; }
+.fenetre h2 { font-size: 30px; font-weight: 800; }
+.fenetre p { margin: 0; color: var(--doux); }
+@keyframes monter { from { transform: translateY(40px); opacity: 0; } }
+
+.bouton { background: var(--theme); color: #fff; font-family: var(--titre); font-weight: 800; font-size: 24px; border-radius: 18px; padding: 12px 28px; box-shadow: 0 5px 0 rgba(0,0,0,.2); }
+.bouton.second { background: var(--carte); color: var(--encre); box-shadow: 0 5px 0 var(--trait); }
+.bouton:active { transform: translateY(3px); box-shadow: 0 2px 0 rgba(0,0,0,.2); }
+.boutons { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
+
+/* Jeux : en-tête commun */
+.jeu { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.jeu-haut { display: grid; gap: 10px; padding: 12px max(16px, env(safe-area-inset-right, 0px)) 10px max(16px, env(safe-area-inset-left, 0px)); }
+.progression { flex: 1; height: 14px; border-radius: 99px; background: var(--carte); overflow: hidden; box-shadow: inset 0 0 0 2px var(--trait); }
 .progression i { display: block; height: 100%; background: var(--theme); border-radius: 99px; transition: width .3s; }
-.consigne { display: flex; align-items: center; gap: 12px; }
-.consigne p { margin: 0; font-size: 22px; font-weight: 700; flex: 1; }
-.haut-parleur { width: 60px; height: 60px; border-radius: 50%; background: var(--theme); color: #fff; font-size: 28px; flex: none; box-shadow: 0 4px 0 rgba(0,0,0,.18); }
-.haut-parleur:active { transform: translateY(2px); box-shadow: 0 2px 0 rgba(0,0,0,.18); }
-.scene { background: var(--carte); border-radius: 24px; min-height: 120px; display: grid; place-items: center; padding: 16px; box-shadow: 0 4px 0 var(--trait); text-align: center; }
-.scene .gros { font-size: 64px; line-height: 1.15; word-break: break-word; }
-.scene .lettre { font-size: 110px; line-height: 1; font-weight: 700; }
-.scene .mots { font-size: 40px; font-weight: 700; }
-.scene .tas { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 10px; font-size: 48px; max-width: 320px; }
-.choix { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.consigne { display: flex; align-items: center; gap: 10px; }
+.consigne p { margin: 0; font-size: 21px; font-weight: 700; flex: 1; line-height: 1.25; }
+.haut-parleur { width: 54px; height: 54px; border-radius: 50%; background: var(--theme); color: #fff; font-size: 24px; flex: none; box-shadow: 0 4px 0 rgba(0,0,0,.18); }
+.scene { background: var(--carte); border-radius: 20px; padding: 10px 14px; box-shadow: 0 3px 0 var(--trait); text-align: center; display: grid; place-items: center; min-height: 64px; }
+.scene .gros { font-size: 48px; line-height: 1.15; }
+.scene .lettre { font-size: 72px; line-height: 1; font-weight: 700; }
+.scene .mots { font-size: 34px; font-weight: 700; }
+.scene .chiffre { font-family: var(--titre); font-size: 64px; font-weight: 800; line-height: 1; }
+.scene .tas { display: flex; flex-wrap: wrap; justify-content: center; gap: 2px 8px; font-size: 38px; max-width: 320px; }
+.scene .texte { margin: 0; font-size: 18px; line-height: 1.5; text-align: left; user-select: text; -webkit-user-select: text; }
+.scene .phrase { font-size: 24px; font-weight: 700; line-height: 1.3; }
+.tas i { font-style: normal; }
+
+/* Contenu d'une réponse, quel que soit le jeu */
+.r .lettre { font-size: 46px; font-weight: 700; line-height: 1; }
+.r .chiffre { font-family: var(--titre); font-size: 44px; font-weight: 800; line-height: 1; }
+.r .mots { font-size: 28px; font-weight: 700; line-height: 1.1; }
+.r .phrase { font-size: 20px; font-weight: 700; line-height: 1.25; }
+.r .emoji { font-size: 44px; line-height: 1.1; display: block; }
+.r .legende { font-size: 15px; display: block; }
+.r .gros { font-size: 40px; }
+.r .tas { display: flex; flex-wrap: wrap; justify-content: center; gap: 0 2px; font-size: 24px; max-width: 120px; }
+
+/* Jeu de la pêche et des ballons : une aire où les réponses bougent */
+.aire { position: relative; flex: 1; min-height: 260px; overflow: hidden; }
+.aire.eau { background: linear-gradient(#bfe9fb, var(--mer) 30%, var(--mer-fonce)); }
+.aire.eau::before { content: ""; position: absolute; inset: 0 0 auto; height: 16px; background: radial-gradient(circle at 10px -4px, transparent 12px, #bfe9fb 13px) 0 0 / 20px 16px repeat-x; opacity: .9; }
+.aire.ciel { background: linear-gradient(#9fd8ff, #dff3ff 70%, var(--savane)); }
+.mobile { position: absolute; left: 0; top: 0; will-change: transform; display: grid; place-items: center; text-align: center; }
+.poisson { min-width: 96px; height: 84px; padding: 0 16px 0 22px; border-radius: 50% 44% 44% 50% / 50%; background: #ffcf5a; box-shadow: inset -6px -6px 0 rgba(0,0,0,.08); }
+.poisson::after { content: ""; position: absolute; top: 50%; width: 0; height: 0; border-top: 20px solid transparent; border-bottom: 20px solid transparent; transform: translateY(-50%); }
+.poisson.droite::after { left: -22px; border-right: 26px solid #ffcf5a; }
+.poisson.gauche::after { right: -22px; border-left: 26px solid #ffcf5a; }
+.poisson::before { content: ""; position: absolute; top: 24px; width: 10px; height: 10px; border-radius: 50%; background: var(--encre); }
+.poisson.droite::before { right: 12px; }
+.poisson.gauche::before { left: 12px; }
+.poisson.c1, .poisson.c1::after { background: #ff9f7a; border-left-color: #ff9f7a; border-right-color: #ff9f7a; }
+.poisson.c2, .poisson.c2::after { background: #b9a4ff; border-left-color: #b9a4ff; border-right-color: #b9a4ff; }
+.poisson.c3, .poisson.c3::after { background: #7fe0a8; border-left-color: #7fe0a8; border-right-color: #7fe0a8; }
+.poisson.c1::after, .poisson.c2::after, .poisson.c3::after { background: none; }
+.ballon { width: 104px; height: 120px; border-radius: 50% 50% 48% 48% / 56% 56% 44% 44%; background: #ff7a6b; box-shadow: inset -10px -10px 0 rgba(0,0,0,.1); padding: 8px; box-sizing: border-box; }
+.ballon::after { content: ""; position: absolute; left: 50%; bottom: -40px; width: 2px; height: 40px; background: rgba(0,0,0,.25); }
+.ballon.c1 { background: #ffd23f; } .ballon.c2 { background: #7cc6ff; } .ballon.c3 { background: #8ee08a; }
+.mobile.faux { filter: grayscale(.8) brightness(.9); }
+.mobile.pris { transition: transform .5s ease-in, opacity .5s; opacity: 0; }
+.bateau { position: absolute; top: -6px; left: 50%; transform: translateX(-50%); font-size: 50px; z-index: 2; pointer-events: none; }
+.prises { position: absolute; top: 10px; right: 12px; z-index: 2; font-family: var(--titre); font-weight: 800; font-size: 20px; background: rgba(255,255,255,.85); border-radius: 999px; padding: 2px 12px; }
+.eclat { position: absolute; z-index: 3; pointer-events: none; font-size: 26px; animation: eclat .7s ease-out forwards; }
+@keyframes eclat { to { transform: translate(var(--dx), var(--dy)) scale(.4); opacity: 0; } }
+
+/* Course de pirogues */
+.course { margin: 0 max(16px, env(safe-area-inset-right, 0px)) 0 max(16px, env(safe-area-inset-left, 0px)); border-radius: 20px; background: linear-gradient(var(--mer), var(--mer-fonce)); padding: 10px 12px; display: grid; gap: 6px; position: relative; }
+.couloir { position: relative; height: 46px; border-bottom: 2px dashed rgba(255,255,255,.5); }
+.couloir:last-of-type { border-bottom: 0; }
+.couloir .pirogue { position: absolute; top: 0; left: 0; font-size: 38px; transition: left .5s ease-out; transform: scaleX(-1); }
+.couloir .qui { position: absolute; top: 10px; font-size: 18px; transition: left .5s ease-out; }
+.couloir .nom { position: absolute; right: 26px; top: 12px; font-size: 12px; font-weight: 700; color: rgba(255,255,255,.95); }
+.arrivee { position: absolute; right: 10px; top: 6px; bottom: 6px; width: 8px; background: repeating-linear-gradient(#fff 0 8px, var(--encre) 8px 16px); border-radius: 2px; }
+.choix { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; padding: 12px max(16px, env(safe-area-inset-right, 0px)) 16px max(16px, env(safe-area-inset-left, 0px)); }
 .choix.trois { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .choix.ligne { grid-template-columns: 1fr; }
-.reponse {
-  background: var(--carte); border-radius: 20px; min-height: 92px; padding: 10px; display: grid; place-items: center; text-align: center;
-  box-shadow: 0 5px 0 var(--trait); border: 3px solid transparent; font-size: 22px; transition: transform .1s;
-}
+.reponse { background: var(--carte); border-radius: 18px; min-height: 76px; padding: 8px; display: grid; place-items: center; text-align: center; box-shadow: 0 5px 0 var(--trait); border: 3px solid transparent; }
 .reponse:active { transform: translateY(3px); box-shadow: 0 2px 0 var(--trait); }
-.reponse .lettre { font-size: 54px; font-weight: 700; line-height: 1; }
-.reponse .emoji { font-size: 48px; line-height: 1.1; }
-.reponse .tas { display: flex; flex-wrap: wrap; justify-content: center; gap: 0 4px; font-size: 30px; }
-.reponse .mots { font-size: 34px; font-weight: 700; }
-.tas i { font-style: normal; }
-.scene .chiffre { font-family: var(--titre); font-size: 96px; font-weight: 800; line-height: 1; }
-.reponse .legende { font-size: 18px; margin-top: 4px; }
-.reponse .chiffre { font-family: var(--titre); font-size: 56px; font-weight: 800; line-height: 1; }
 .reponse.bon { border-color: var(--vert); background: #e6f6ec; animation: saute .4s; }
 .reponse.faux { border-color: var(--rouge); background: #fdeae6; animation: secoue .4s; }
-.reponse:disabled { cursor: default; }
 @keyframes saute { 40% { transform: scale(1.06); } }
 @keyframes secoue { 20%, 60% { transform: translateX(-6px); } 40%, 80% { transform: translateX(6px); } }
-.bravo { position: fixed; inset: auto 0 calc(24px + env(safe-area-inset-bottom, 0px)); text-align: center; font-family: var(--titre); font-weight: 800; font-size: 34px; color: var(--vert); pointer-events: none; animation: monte .9s forwards; }
-@keyframes monte { from { opacity: 0; transform: translateY(20px); } 30% { opacity: 1; transform: none; } to { opacity: 0; } }
+.bravo { position: fixed; left: 0; right: 0; top: 40%; z-index: 30; text-align: center; font-family: var(--titre); font-weight: 800; font-size: 40px; color: var(--vert); text-shadow: 0 3px 0 #fff, 0 -3px 0 #fff, 3px 0 0 #fff, -3px 0 0 #fff; pointer-events: none; animation: pop .9s forwards; }
+@keyframes pop { from { opacity: 0; transform: scale(.6); } 25% { opacity: 1; transform: scale(1.1); } 60% { transform: scale(1); opacity: 1; } to { opacity: 0; transform: translateY(-30px); } }
 
 /* Résultat */
-.resultat { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; text-align: center; }
-.resultat .grandes-etoiles { font-size: 64px; letter-spacing: 6px; }
-.resultat h1 { font-size: 40px; font-weight: 800; }
-.resultat p { margin: 0; color: var(--doux); font-size: 20px; }
-.bouton { background: var(--theme); color: #fff; font-family: var(--titre); font-weight: 800; font-size: 24px; border-radius: 18px; padding: 14px 28px; box-shadow: 0 5px 0 rgba(0,0,0,.2); }
-.bouton.second { background: var(--carte); color: var(--encre); box-shadow: 0 5px 0 var(--trait); }
-.bouton:active { transform: translateY(3px); }
-.boutons { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
+.resultat { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; text-align: center; }
+.resultat .grandes-etoiles { font-size: 60px; letter-spacing: 6px; }
+.resultat .grandes-etoiles span { display: inline-block; animation: etoile .5s backwards; }
+.resultat .grandes-etoiles span:nth-child(2) { animation-delay: .25s; } .resultat .grandes-etoiles span:nth-child(3) { animation-delay: .5s; }
+@keyframes etoile { from { transform: scale(0) rotate(-90deg); } }
+.resultat h1 { font-size: 38px; font-weight: 800; }
+.resultat p { margin: 0; color: var(--doux); font-size: 19px; }
+.gain { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+.gain span { background: var(--carte); border-radius: 999px; padding: 6px 14px; font-family: var(--titre); font-weight: 800; font-size: 20px; box-shadow: 0 3px 0 var(--trait); }
+.nouvel-animal { display: grid; gap: 4px; justify-items: center; background: var(--carte); border-radius: 22px; padding: 12px 22px; box-shadow: 0 4px 0 var(--trait); }
+.nouvel-animal b { font-size: 60px; line-height: 1; animation: etoile .6s .7s backwards; }
+
+/* Boutique et album */
+.grille { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.objet { background: var(--carte); border-radius: 18px; padding: 10px 6px; display: grid; justify-items: center; gap: 4px; box-shadow: 0 4px 0 var(--trait); border: 3px solid transparent; }
+.objet b { font-size: 40px; line-height: 1.1; }
+.objet span { font-size: 14px; }
+.objet .prix { font-family: var(--titre); font-weight: 800; font-size: 16px; }
+.objet.porte { border-color: var(--vert); }
+.objet.cache b { filter: brightness(0); opacity: .25; }
+.titre-page { display: flex; align-items: center; gap: 12px; }
+.titre-page h1 { font-size: 28px; font-weight: 800; }
+.aide { color: var(--doux); font-size: 15px; margin: 0; }
 
 /* Espace parent */
 .pave { display: grid; grid-template-columns: repeat(3, 76px); gap: 12px; justify-content: center; }
@@ -143,16 +199,26 @@ h1, h2, h3 { font-family: var(--titre); margin: 0; line-height: 1.1; text-wrap: 
 .bloc tr:first-child td { border-top: 0; }
 .rangee { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .rangee label { flex: 1; min-width: 160px; }
-.rangee input[type=text], .rangee input[type=password] { font: inherit; padding: 8px 10px; border-radius: 10px; border: 2px solid var(--trait); width: 140px; background: var(--sable); color: var(--encre); }
+.rangee input { font: inherit; padding: 8px 10px; border-radius: 10px; border: 2px solid var(--trait); width: 140px; background: var(--sable); color: var(--encre); }
 .petit-bouton { background: var(--theme); color: #fff; border-radius: 10px; padding: 8px 14px; font-weight: 700; }
 .petit-bouton.danger { background: var(--rouge); }
 .petit-bouton.neutre { background: var(--trait); color: var(--encre); }
 .note { color: var(--doux); font-size: 14px; margin: 0; }
 .stat { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; text-align: center; }
-.stat b { display: block; font-family: var(--titre); font-size: 28px; font-variant-numeric: tabular-nums; }
+.stat b { display: block; font-family: var(--titre); font-size: 26px; font-variant-numeric: tabular-nums; }
 .stat span { font-size: 13px; color: var(--doux); }
 .discret { font-size: 13px; color: var(--doux); text-align: center; padding: 6px; }
-@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+/* Habillage football */
+.aire.terrain { background: repeating-linear-gradient(90deg, #4caf50 0 40px, #45a049 40px 80px); }
+.aire.terrain::before { content: ""; position: absolute; left: 50%; top: 50%; width: 120px; height: 120px; margin: -60px; border: 3px solid rgba(255,255,255,.6); border-radius: 50%; }
+.aire.tribune { background: linear-gradient(#1d3b78, #3d6fc4 55%, #4caf50 55%, #45a049); }
+.joueur { width: 96px; min-height: 86px; padding: 18px 8px 8px; border-radius: 22px 22px 16px 16px; background: linear-gradient(90deg, #a50044 0 25%, #004d98 25% 50%, #a50044 50% 75%, #004d98 75%); color: #fff; box-shadow: 0 5px 0 rgba(0,0,0,.25); box-sizing: border-box; }
+.joueur .lettre, .joueur .chiffre, .joueur .mots, .joueur .phrase, .joueur .legende { background: rgba(0,0,0,.35); border-radius: 10px; padding: 0 6px; }
+.joueur::before { content: ""; position: absolute; top: -14px; left: 50%; width: 30px; height: 30px; margin-left: -15px; border-radius: 50%; background: #7a4a2a; }
+.joueur.c1, .joueur.c3 { background: linear-gradient(90deg, #004d98 0 25%, #a50044 25% 50%, #004d98 50% 75%, #a50044 75%); }
+.balle { width: 104px; height: 104px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #fff 0 55%, #e6e6e6 56%); box-shadow: inset -8px -8px 0 rgba(0,0,0,.08), 0 6px 0 rgba(0,0,0,.15); border: 3px solid #222; box-sizing: border-box; padding: 8px; }
+.course.pelouse { background: repeating-linear-gradient(90deg, #4caf50 0 30px, #45a049 30px 60px); }
+@media (prefers-reduced-motion: reduce) { .noeud.actuel .bulle, .resultat .grandes-etoiles span, .nouvel-animal b { animation: none !important; } }
 </style>
 
 <div class="app"><main class="ecran" id="ecran"></main></div>
@@ -162,20 +228,74 @@ h1, h2, h3 { font-family: var(--titre); margin: 0; line-height: 1.1; text-wrap: 
 __CONTENU__
 </script>
 <script>
-/* ---------- Moteur commun aux trois applis ---------- */
+/* ---------- Moteur de jeu commun aux trois applis ---------- */
 (function () {
   const C = window.CONTENU;
   const CLE = "coursEnfants:" + C.id;
   const $ecran = document.getElementById("ecran");
+  const VITESSE = C.vitesse || 1; // 0.7 en GS, 1 au CI, 1.3 au CE2
+
+  // ----- Le voyage : lieux, décors et animaux à gagner -----
+  let LIEUX = [
+    ["Dakar", "mer", "🐬", "un dauphin"], ["Gorée", "mer", "🐢", "une tortue de mer"], ["Rufisque", "mer", "🦀", "un crabe"], ["Lac Rose", "mer", "🦩", "un flamant rose"],
+    ["Thiès", "savane", "🐪", "un dromadaire"], ["Mbour", "mer", "🐠", "un poisson-perroquet"], ["Joal", "mer", "🐋", "une baleine"], ["Fatick", "savane", "🦜", "un perroquet"],
+    ["Kaolack", "savane", "🐄", "un zébu"], ["Kaffrine", "savane", "🐐", "une chèvre"], ["Diourbel", "savane", "🐑", "un mouton"], ["Touba", "savane", "🐎", "un cheval"],
+    ["Louga", "savane", "🦅", "un aigle"], ["Saint-Louis", "fleuve", "🦢", "un pélican"], ["Podor", "fleuve", "🐊", "un crocodile"], ["Matam", "fleuve", "🦛", "un hippopotame"],
+    ["Bakel", "fleuve", "🦒", "une girafe"], ["Tambacounda", "savane", "🐒", "un singe"], ["Kédougou", "foret", "🐘", "un éléphant"], ["Kolda", "foret", "🐆", "un léopard"],
+    ["Sédhiou", "foret", "🦓", "un zèbre"], ["Ziguinchor", "foret", "🦔", "un hérisson"], ["Cap Skirring", "mer", "🐙", "une pieuvre"],
+  ];
+  let BOSS = { nom: "Niokolo-Koba", zone: "Le parc du Niokolo-Koba", e: "🦁", animal: "le lion", titre: "Le défi du Lion", rival: "Le Lion", aide: "Bats le lion à la course de pirogues !", bloque: "Termine toutes les étapes pour affronter le lion !" };
+  let DECORS = { mer: ["Au bord de la mer", "var(--mer)"], savane: ["Dans la savane", "var(--savane)"], fleuve: ["Le long du fleuve", "var(--fleuve)"], foret: ["Dans la forêt", "var(--foret)"] };
+  let JEUX = {
+    peche: { nom: "La pêche", e: "🎣", aide: "Attrape le bon poisson !" },
+    ballons: { nom: "Les ballons", e: "🎈", aide: "Éclate le bon ballon !" },
+    pirogue: { nom: "La course de pirogues", e: "🛶", aide: "Réponds vite pour gagner la course !" },
+  };
+  let BOUTIQUE = [["🧢", "Casquette", 20], ["🕶️", "Lunettes", 30], ["🎀", "Nœud", 30], ["⚽", "Ballon", 40], ["🎩", "Chapeau", 50], ["🌺", "Fleur", 50], ["🎧", "Casque", 70], ["⭐", "Étoile", 80], ["👑", "Couronne", 120]];
+
+  // Habillage : chaque appli peut remplacer le voyage, les jeux et les récompenses (ex. le football au CE2).
+  let H = {
+    eau: "eau", ciel: "ciel", mobiles: { peche: "poisson", ballons: "ballon" }, bateau: "🚣🏾", prises: { peche: "🐟", ballons: "🎈" },
+    monture: "🛶", rival: ["🐊", "Croco"], victoire: "Tu as gagné la course !", defaite: "Le rival est arrivé avant toi",
+    album: { titre: "Mon album", aide: "Chaque étape gagnée t'offre un nouvel animal.", nouveau: "Nouvel ami dans ton album : " },
+  };
+  if (C.habillage) {
+    const h = C.habillage;
+    if (h.lieux) LIEUX = h.lieux; if (h.boss) BOSS = Object.assign({}, BOSS, h.boss); if (h.decors) DECORS = h.decors;
+    if (h.jeux) JEUX = Object.assign({}, JEUX, h.jeux); if (h.boutique) BOUTIQUE = h.boutique;
+    H = Object.assign({}, H, h);
+  }
+
+  // Les niveaux : on alterne les mondes (Lire, Compter, Découvrir…) le long du voyage.
+  const NIVEAUX = [];
+  (function () {
+    const files = C.mondes.map(m => m.lecons.map(l => Object.assign({ monde: m }, l)));
+    let tour = 0;
+    while (files.some(f => f.length)) { files.forEach(f => { if (f.length) NIVEAUX.push(f.shift()); }); tour++; }
+    NIVEAUX.forEach((n, i) => {
+      const lieu = LIEUX[i % LIEUX.length];
+      n.lieu = lieu[0]; n.decor = lieu[1]; n.animal = lieu[2]; n.nomAnimal = lieu[3]; n.index = i;
+      n.jeu = n.jeu || choisirJeu(n, i);
+    });
+  })();
+  const NIVEAU_BOSS = { id: C.id + "-boss", titre: BOSS.titre, lieu: BOSS.nom, decor: "boss", animal: BOSS.e, nomAnimal: BOSS.animal, jeu: "pirogue", boss: true, icone: BOSS.e, objectif: "Révision de tout le palier",
+    questions: () => melange(NIVEAUX.flatMap(n => n.questions().slice(0, 2))).slice(0, 10) };
+
+  function choisirJeu(n, i) {
+    const exemple = n.questions()[0];
+    const court = exemple.choix.every(c => ["lettre", "chiffre", "image", "tas", "html"].includes(c.k) || (c.k === "mots" && String(c.t).length <= 9));
+    if (!court || i % 3 === 2) return "pirogue";
+    const tas = exemple.choix.some(c => c.k === "tas" || c.k === "html");
+    return tas || i % 2 ? "ballons" : "peche";
+  }
 
   // ----- Mémoire du téléphone -----
-  const defaut = () => ({ prenom: C.prenom, code: "1234", toutOuvert: false, progres: {}, journal: [], jours: {} });
+  const defaut = () => ({ prenom: "", code: "1234", toutOuvert: false, progres: {}, journal: [], jours: {}, pieces: 0, achats: [], porte: "", album: [], serie: { jour: "", n: 0 } });
   let E = defaut();
   try { const brut = localStorage.getItem(CLE); if (brut) E = Object.assign(defaut(), JSON.parse(brut)); } catch (e) {}
   function sauver() { try { localStorage.setItem(CLE, JSON.stringify(E)); } catch (e) {} }
-
-  // Temps passé dans l'appli, compté seulement quand l'écran est visible
-  const aujourdhui = () => new Date().toISOString().slice(0, 10);
+  const prenom = () => E.prenom || C.prenom;
+  const aujourdhui = () => { const d = new Date(); return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); };
   setInterval(() => {
     if (document.visibilityState !== "visible") return;
     const j = aujourdhui();
@@ -184,8 +304,16 @@ __CONTENU__
     while (cles.length > 30) delete E.jours[cles.shift()];
     sauver();
   }, 15000);
+  function serieDuJour() {
+    const j = aujourdhui();
+    if (E.serie.jour === j) return;
+    const hier = new Date(); hier.setDate(hier.getDate() - 1);
+    const h = hier.getFullYear() + "-" + String(hier.getMonth() + 1).padStart(2, "0") + "-" + String(hier.getDate()).padStart(2, "0");
+    E.serie = { jour: j, n: E.serie.jour === h ? E.serie.n + 1 : 1 };
+  }
+  const serieActive = () => { const j = aujourdhui(); const hier = new Date(); hier.setDate(hier.getDate() - 1); const h = hier.toISOString().slice(0, 10); return E.serie.jour === j || E.serie.jour === h ? E.serie.n : 0; };
 
-  // ----- Voix -----
+  // ----- Voix et sons -----
   let voix = null;
   const parole = "speechSynthesis" in window ? window.speechSynthesis : null;
   function choisirVoix() {
@@ -196,12 +324,19 @@ __CONTENU__
   if (parole) { choisirVoix(); parole.onvoiceschanged = choisirVoix; }
   function dire(texte) {
     if (!parole || !texte) return;
+    try { parole.cancel(); const u = new SpeechSynthesisUtterance(texte); u.lang = "fr-FR"; u.rate = 0.85; u.pitch = 1.05; if (voix) u.voice = voix; parole.speak(u); } catch (e) {}
+  }
+  let audio = null;
+  function son(type) {
     try {
-      parole.cancel();
-      const u = new SpeechSynthesisUtterance(texte);
-      u.lang = "fr-FR"; u.rate = 0.85; u.pitch = 1.05;
-      if (voix) u.voice = voix;
-      parole.speak(u);
+      audio = audio || new (window.AudioContext || window.webkitAudioContext)();
+      const notes = { bon: [660, 880], faux: [220, 180], piece: [988, 1319], gagne: [523, 659, 784, 1047], pop: [500] }[type];
+      notes.forEach((f, i) => {
+        const o = audio.createOscillator(), g = audio.createGain(), t = audio.currentTime + i * 0.11;
+        o.type = type === "faux" ? "triangle" : "sine"; o.frequency.value = f;
+        g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.25, t + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.18);
+        o.connect(g).connect(audio.destination); o.start(t); o.stop(t + 0.2);
+      });
     } catch (e) {}
   }
 
@@ -209,140 +344,335 @@ __CONTENU__
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   const melange = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
   const etoilesHTML = (n, max = 3) => '<span class="etoiles" aria-label="' + n + ' étoiles sur ' + max + '">' + Array.from({ length: max }, (_, i) => '<span class="' + (i < n ? "on" : "off") + '">★</span>').join("") + "</span>";
-  const toutesLecons = () => C.mondes.flatMap(m => m.lecons.map(l => Object.assign({ monde: m }, l)));
+  const etoilesDe = n => (E.progres[n.id] && E.progres[n.id].etoiles) || 0;
   const totalEtoiles = () => Object.values(E.progres).reduce((s, p) => s + (p.etoiles || 0), 0);
-  function ouverte(monde, i) {
-    if (E.toutOuvert || i === 0) return true;
-    const prec = monde.lecons[i - 1];
-    return !!(E.progres[prec.id] && E.progres[prec.id].etoiles > 0);
-  }
-
-  // Affichage d'un élément (scène ou réponse)
+  const ouvert = i => E.toutOuvert || i === 0 || etoilesDe(NIVEAUX[i - 1]) > 0;
+  const bossOuvert = () => E.toutOuvert || NIVEAUX.every(n => etoilesDe(n) > 0);
+  function persoHTML(grand) { return '<span class="perso' + (grand ? " grand" : "") + '" aria-hidden="true">' + C.avatar + (E.porte ? '<span class="accessoire">' + E.porte + "</span>" : "") + "</span>"; }
   function rendu(x) {
     if (x == null) return "";
     if (typeof x === "string") return '<span class="gros">' + esc(x) + "</span>";
     switch (x.k) {
       case "lettre": return '<span class="lettre">' + esc(x.t) + "</span>";
       case "mots": return '<span class="mots">' + esc(x.t) + "</span>";
+      case "texte": return '<p class="texte">' + esc(x.t) + "</p>";
+      case "phrase": return '<span class="phrase">' + esc(x.t) + "</span>";
       case "chiffre": return '<span class="chiffre">' + esc(x.t) + "</span>";
       case "tas": return '<span class="tas">' + x.items.map(e => "<i>" + esc(e) + "</i>").join("") + "</span>";
       case "html": return x.html;
-      case "image": return '<span class="emoji">' + esc(x.e) + '</span>' + (x.t ? '<span class="legende">' + esc(x.t) + "</span>" : "");
+      case "image": return '<span class="emoji">' + esc(x.e) + "</span>" + (x.t ? '<span class="legende">' + esc(x.t) + "</span>" : "");
       default: return '<span class="gros">' + esc(x.t || "") + "</span>";
     }
   }
+  function bravo(mot) { const t = document.createElement("div"); t.className = "bravo"; t.textContent = mot; document.body.appendChild(t); setTimeout(() => t.remove(), 950); }
+  const MOTS_BRAVO = ["Bravo !", "Super !", "Très bien !", "Génial !", "Excellent !", "Waouh !"];
+  let arreter = () => {};
+  function changer() { arreter(); arreter = () => {}; document.querySelectorAll(".voile").forEach(v => v.remove()); }
 
-  // ----- Écrans -----
-  function accueil() {
-    const total = totalEtoiles();
-    $ecran.innerHTML =
-      '<div class="barre"><div class="compteur"><span class="etoile">★</span>' + total + '</div><span class="espace"></span>' +
+  // ----- La carte -----
+  function carte() {
+    changer();
+    $ecran.className = "ecran sans-marge";
+    const actuel = NIVEAUX.findIndex((n, i) => ouvert(i) && etoilesDe(n) === 0);
+    const largeur = Math.min(560, window.innerWidth);
+    const xDe = i => Math.round(largeur / 2 + Math.sin(i * 1.15) * (largeur * 0.27));
+    let html = '<div class="carte-haut"><div class="barre"><button id="btnPerso" aria-label="Mon personnage et la boutique">' + persoHTML() + '</button>' +
+      '<span class="salut">' + esc(prenom()) + '<small>' + esc(C.classe) + '</small></span><span class="espace"></span>' +
       '<button class="rond" id="btnParent" aria-label="Espace parent">🔒</button></div>' +
-      '<div class="bonjour"><div class="avatar" aria-hidden="true">' + C.avatar + '</div><div><h1>Bonjour ' + esc(E.prenom) + ' !</h1><p>' + esc(C.classe) + ' · Que veux-tu apprendre ?</p></div></div>' +
-      '<div class="mondes">' + C.mondes.map((m, i) => {
-        const faites = m.lecons.filter(l => E.progres[l.id] && E.progres[l.id].etoiles > 0).length;
-        return '<button class="monde" data-i="' + i + '"><span class="ico" style="background:' + m.couleur + '">' + m.icone + '</span>' +
-          '<span><h2>' + esc(m.titre) + '</h2><p>' + faites + ' leçon' + (faites > 1 ? "s" : "") + ' sur ' + m.lecons.length + '</p>' +
-          '<span class="jauge"><i style="width:' + Math.round(100 * faites / m.lecons.length) + '%"></i></span></span><span class="fleche">›</span></button>';
-      }).join("") + '</div>' +
-      '<p class="palier-info">' + esc(C.paliers.map(p => p.titre + " : " + p.periode).join(" · ")) + '</p>';
-    $ecran.querySelectorAll(".monde").forEach(b => b.onclick = () => { const m = C.mondes[+b.dataset.i]; dire(m.titre); voirMonde(m); });
-    document.getElementById("btnParent").onclick = () => codeParent();
-  }
-
-  function voirMonde(m) {
-    let html = '<div class="barre"><button class="rond" id="retour" aria-label="Retour">←</button><span class="espace"></span><div class="compteur"><span class="etoile">★</span>' + totalEtoiles() + '</div></div>' +
-      '<div class="titre-monde"><span class="avatar" style="background:' + m.couleur + ';width:60px;height:60px;font-size:34px;border-radius:18px">' + m.icone + '</span><h1>' + esc(m.titre) + '</h1></div>';
-    C.paliers.forEach(p => {
-      const lecons = m.lecons.map((l, i) => ({ l, i })).filter(x => x.l.palier === p.id);
-      if (!lecons.length) return;
-      html += '<div class="palier-titre">' + esc(p.titre) + '</div><div class="chemin">' + lecons.map(({ l, i }) => {
-        const ok = ouverte(m, i), pr = E.progres[l.id];
-        return '<button class="lecon' + (ok ? "" : " fermee") + '" data-i="' + i + '"' + (ok ? "" : ' aria-disabled="true"') + '>' +
-          '<span class="num">' + (ok ? l.icone : "🔒") + '</span><span><h3>' + esc(l.titre) + '</h3></span>' + etoilesHTML(pr ? pr.etoiles : 0) + '</button>';
-      }).join("") + '</div>';
+      '<div class="barre compteurs"><span class="pastille" title="Jours de suite">🔥 ' + serieActive() + '</span><span class="pastille" title="Pièces">🪙 ' + E.pieces + '</span><span class="pastille" title="Étoiles">⭐ ' + totalEtoiles() + '</span>' +
+      '<span class="espace"></span><button class="pastille" id="btnAlbum">📒 ' + E.album.length + '/' + (NIVEAUX.length + 1) + '</button></div></div>';
+    html += '<div class="voyage" id="voyage"><svg class="route" id="route" aria-hidden="true"></svg>';
+    let decor = "";
+    NIVEAUX.forEach((n, i) => {
+      if (n.decor !== decor) { if (decor) html += "</div>"; decor = n.decor; html += '<div class="zone" style="background:' + DECORS[decor][1] + '"><div class="zone-nom">' + DECORS[decor][0] + "</div>"; }
+      const ok = ouvert(i), et = etoilesDe(n);
+      html += '<div class="etape"><button class="noeud' + (et ? " fini" : "") + (ok ? "" : " ferme") + (i === actuel ? " actuel" : "") + '" data-i="' + i + '" style="left:' + xDe(i) + 'px" aria-label="' + esc(n.lieu + ", " + n.titre) + '">' +
+        (i === actuel ? '<span class="moi">' + persoHTML() + "</span>" : "") +
+        '<span class="bulle">' + (ok ? esc(n.icone) : "🔒") + '</span><span class="lieu">' + esc(n.lieu) + "</span>" + (et ? etoilesHTML(et) : "") + "</button></div>";
     });
+    html += "</div>";
+    const bOk = bossOuvert(), bEt = etoilesDe(NIVEAU_BOSS);
+    html += '<div class="zone" style="background:' + (BOSS.fond || "var(--foret)") + '"><div class="zone-nom">' + esc(BOSS.zone) + '</div><div class="etape" style="height:150px"><button class="noeud boss' + (bOk ? (bEt ? " fini" : " actuel") : " ferme") + '" data-i="boss" style="left:' + Math.round(largeur / 2) + 'px">' +
+      '<span class="bulle">' + (bOk ? BOSS.e : "🔒") + '</span><span class="lieu">' + esc(BOSS.titre) + "</span>" + (bEt ? etoilesHTML(bEt) : "") + "</button></div></div></div>";
     $ecran.innerHTML = html;
-    $ecran.scrollTop = 0;
-    document.getElementById("retour").onclick = accueil;
-    $ecran.querySelectorAll(".lecon").forEach(b => b.onclick = () => {
-      const i = +b.dataset.i;
-      if (!ouverte(m, i)) { dire("Termine d'abord la leçon d'avant."); return; }
-      lancer(m, m.lecons[i]);
+    // Route en pointillés entre les étapes
+    requestAnimationFrame(() => {
+      const v = document.getElementById("voyage"), svg = document.getElementById("route");
+      if (!v || !svg) return;
+      const r0 = v.getBoundingClientRect();
+      const pts = [...v.querySelectorAll(".noeud .bulle")].map(b => { const r = b.getBoundingClientRect(); return [r.left + r.width / 2 - r0.left, r.top + r.height / 2 - r0.top]; });
+      svg.setAttribute("viewBox", "0 0 " + r0.width + " " + r0.height);
+      let d = "";
+      pts.forEach((p, i) => { if (!i) d = "M" + p[0] + " " + p[1]; else { const a = pts[i - 1]; d += " C" + a[0] + " " + (a[1] + 50) + " " + p[0] + " " + (p[1] - 50) + " " + p[0] + " " + p[1]; } });
+      svg.innerHTML = '<path d="' + d + '" fill="none" stroke="rgba(43,33,24,.28)" stroke-width="9" stroke-linecap="round" stroke-dasharray="2 18"/>';
+      const cible = v.querySelector(".noeud.actuel");
+      if (cible) $ecran.scrollTop = Math.max(0, cible.getBoundingClientRect().top - $ecran.getBoundingClientRect().top - 200);
     });
+    $ecran.querySelectorAll(".noeud").forEach(b => b.onclick = () => {
+      if (b.dataset.i === "boss") return bOk ? presenter(NIVEAU_BOSS) : dire(BOSS.bloque);
+      const i = +b.dataset.i;
+      if (!ouvert(i)) { son("faux"); dire("Termine d'abord l'étape d'avant."); return; }
+      presenter(NIVEAUX[i]);
+    });
+    document.getElementById("btnParent").onclick = () => codeParent();
+    document.getElementById("btnPerso").onclick = boutique;
+    document.getElementById("btnAlbum").onclick = album;
   }
 
-  function lancer(m, l) {
-    const questions = l.questions().slice(0, 8);
-    let n = 0, justes = 0;
+  function presenter(n) {
+    const j = JEUX[n.jeu];
+    const v = document.createElement("div"); v.className = "voile";
+    v.innerHTML = '<div class="fenetre" role="dialog" aria-label="' + esc(n.lieu) + '"><div class="grosse-icone">' + (n.boss ? BOSS.e : j.e) + "</div>" +
+      "<h2>" + esc(n.boss ? BOSS.titre : j.nom + " " + (H.a || "à") + " " + n.lieu) + "</h2><p>" + esc(n.boss ? BOSS.aide : j.aide) + "</p>" +
+      '<p style="font-size:15px">' + esc(n.titre) + "</p>" + (etoilesDe(n) ? etoilesHTML(etoilesDe(n)) : "") +
+      '<div class="boutons"><button class="bouton second" id="fermer">Retour</button><button class="bouton" id="jouer">Jouer !</button></div></div>';
+    document.body.appendChild(v);
+    dire(n.boss ? BOSS.titre + " ! " + BOSS.aide : j.nom + " " + (H.a || "à") + " " + n.lieu + ". " + j.aide);
+    v.onclick = e => { if (e.target === v) v.remove(); };
+    v.querySelector("#fermer").onclick = () => v.remove();
+    v.querySelector("#jouer").onclick = () => { v.remove(); jouer(n); };
+  }
+
+  // ----- Les mini-jeux -----
+  function jouer(n) {
+    changer();
+    $ecran.className = "ecran sans-marge";
+    const questions = n.questions().slice(0, n.boss ? 10 : 8);
+    const partie = { n, questions, k: 0, justes: 0, premier: true };
+    ({ peche: jeuPeche, ballons: jeuBallons, pirogue: jeuPirogue })[n.jeu](partie);
+  }
+
+  function enTete(p, q) {
+    return '<div class="jeu-haut"><div class="barre"><button class="rond" id="quitter" aria-label="Quitter">✕</button><div class="progression"><i style="width:' + Math.round(100 * p.k / p.questions.length) + '%"></i></div>' +
+      '<span class="pastille">' + (p.n.boss ? BOSS.e : JEUX[p.n.jeu].e) + " " + p.k + "/" + p.questions.length + "</span></div>" +
+      '<div class="consigne"><button class="haut-parleur" id="ecouter" aria-label="Écouter">🔊</button><p>' + esc(q.consigne) + "</p></div>" +
+      (q.scene ? '<div class="scene">' + rendu(q.scene) + "</div>" : "") + "</div>";
+  }
+  function brancher(p, q) {
+    const ecoute = () => dire(q.dire || q.consigne);
+    document.getElementById("ecouter").onclick = ecoute;
+    document.getElementById("quitter").onclick = carte;
+    if (C.voixAuto !== false) ecoute();
+  }
+  function reussite(p, suite) {
+    if (p.premier) p.justes++;
+    son("bon");
+    const mot = MOTS_BRAVO[Math.floor(Math.random() * MOTS_BRAVO.length)];
+    bravo(mot); dire(mot);
+    p.k++; p.premier = true;
+    setTimeout(() => (p.k < p.questions.length ? suite() : fin(p)), 1000);
+  }
+  function rate(p, choix) {
+    p.premier = false;
+    son("faux");
+    dire("Essaie encore." + (choix && choix.dire ? " Ça, c'est " + choix.dire + "." : ""));
+  }
+  function eclats(aire, x, y, emojis) {
+    for (let i = 0; i < 8; i++) {
+      const s = document.createElement("span"); s.className = "eclat"; s.textContent = emojis[i % emojis.length];
+      s.style.left = x + "px"; s.style.top = y + "px";
+      const a = (i / 8) * Math.PI * 2; s.style.setProperty("--dx", Math.cos(a) * 70 + "px"); s.style.setProperty("--dy", Math.sin(a) * 70 + "px");
+      aire.appendChild(s); setTimeout(() => s.remove(), 750);
+    }
+  }
+
+  // Des réponses qui bougent dans une aire (poissons qui nagent, ballons qui montent)
+  function jeuMobile(p, mode) {
     function poser() {
-      const q = questions[n];
-      const ordre = q.fixe ? q.choix.map((c, i) => i) : melange(q.choix.map((c, i) => i));
+      arreter();
+      const q = p.questions[p.k];
+      const ordre = melange(q.choix.map((c, i) => i));
+      $ecran.innerHTML = '<div class="jeu">' + enTete(p, q) + '<div class="aire ' + (mode === "peche" ? H.eau : H.ciel) + '" id="aire">' +
+        (mode === "peche" ? '<span class="bateau">' + H.bateau + "</span>" : "") + '<span class="prises">' + H.prises[mode] + " " + p.k + "</span></div></div>";
+      brancher(p, q);
+      const aire = document.getElementById("aire");
+      const W = aire.clientWidth, HA = aire.clientHeight;
+      const objets = ordre.map((ci, rang) => {
+        const b = document.createElement("button");
+        b.className = "mobile r " + H.mobiles[mode] + " c" + (rang % 4);
+        b.innerHTML = rendu(q.choix[ci]);
+        b.dataset.i = ci;
+        aire.appendChild(b);
+        const w = b.offsetWidth, h = b.offsetHeight;
+        const o = { b, ci, w, h, vivant: true };
+        if (mode === "peche") {
+          const couloirs = ordre.length, haut = 70, bas = HA - h - 10;
+          o.y = haut + (couloirs > 1 ? (rang * (bas - haut)) / (couloirs - 1) : 0);
+          o.dir = rang % 2 ? -1 : 1;
+          b.classList.add(o.dir > 0 ? "droite" : "gauche");
+          o.v = (34 + Math.random() * 22) * VITESSE;
+          o.x = Math.random() * Math.max(10, W - w);
+        } else {
+          const col = ordre.length;
+          o.x = ((rang + 0.5) * W) / col - w / 2 + (Math.random() * 20 - 10);
+          o.y = HA * 0.3 + Math.random() * HA * 0.45;
+          o.v = (26 + Math.random() * 16) * VITESSE;
+          o.phase = Math.random() * 6;
+        }
+        b.onclick = () => toucher(o, q);
+        return o;
+      });
+      let dernier = performance.now(), anim = 0, fini = false;
+      function boucle(t) {
+        const dt = Math.min(0.05, (t - dernier) / 1000); dernier = t;
+        objets.forEach(o => {
+          if (!o.vivant) return;
+          if (mode === "peche") {
+            o.x += o.dir * o.v * dt;
+            if (o.dir > 0 && o.x > W + 20) o.x = -o.w - 20;
+            if (o.dir < 0 && o.x < -o.w - 20) o.x = W + 20;
+            o.b.style.transform = "translate(" + o.x + "px," + (o.y + Math.sin(t / 500 + o.v) * 6) + "px)";
+          } else {
+            o.y -= o.v * dt;
+            if (o.y < -o.h - 50) o.y = HA + 30;
+            o.b.style.transform = "translate(" + (o.x + Math.sin(t / 700 + o.phase) * 10) + "px," + o.y + "px)";
+          }
+        });
+        if (!fini) anim = requestAnimationFrame(boucle);
+      }
+      anim = requestAnimationFrame(boucle);
+      arreter = () => { fini = true; cancelAnimationFrame(anim); };
+      function toucher(o, q) {
+        if (!o.vivant) return;
+        const r = o.b.getBoundingClientRect(), ra = aire.getBoundingClientRect();
+        if (o.ci === q.bonne) {
+          objets.forEach(x => x.vivant = false);
+          if (mode === "peche") { o.b.classList.add("pris"); o.b.style.transform = "translate(" + (W / 2 - o.w / 2) + "px,-40px) scale(.5)"; eclats(aire, r.left - ra.left + r.width / 2, r.top - ra.top, ["💧", "✨"]); }
+          else { son("pop"); o.b.style.visibility = "hidden"; eclats(aire, r.left - ra.left + r.width / 2, r.top - ra.top + r.height / 2, ["🎉", "✨", "⭐"]); }
+          reussite(p, poser);
+        } else {
+          o.b.classList.add("faux"); o.vivant = false; o.b.disabled = true;
+          if (mode === "ballons") { son("pop"); setTimeout(() => o.b.style.visibility = "hidden", 150); }
+          rate(p, q.choix[o.ci]);
+        }
+      }
+    }
+    poser();
+  }
+  const jeuPeche = p => jeuMobile(p, "peche");
+  const jeuBallons = p => jeuMobile(p, "ballons");
+
+  function jeuPirogue(p) {
+    const parQuestion = (p.n.boss ? 8 : 10) / VITESSE; // secondes laissées au rival par question
+    const duree = parQuestion * p.questions.length;
+    const debut = performance.now();
+    let rivalArrive = false;
+    p.rival = false;
+    function poser() {
+      arreter();
+      const q = p.questions[p.k];
+      const ordre = melange(q.choix.map((c, i) => i));
       const nb = q.choix.length;
-      const classe = q.disposition || (nb === 3 ? "trois" : "");
-      let premierEssai = true;
-      $ecran.innerHTML =
-        '<div class="barre"><button class="rond" id="quitter" aria-label="Quitter la leçon">✕</button><div class="progression"><i style="width:' + Math.round(100 * n / questions.length) + '%"></i></div></div>' +
-        '<div class="consigne"><button class="haut-parleur" id="ecouter" aria-label="Écouter la consigne">🔊</button><p>' + esc(q.consigne) + '</p></div>' +
-        (q.scene ? '<div class="scene">' + rendu(q.scene) + '</div>' : "") +
-        '<div class="choix ' + classe + '">' + ordre.map(i => '<button class="reponse" data-i="' + i + '">' + rendu(q.choix[i]) + '</button>').join("") + '</div>';
-      const ecoute = () => dire(q.dire || q.consigne);
-      document.getElementById("ecouter").onclick = ecoute;
-      document.getElementById("quitter").onclick = () => voirMonde(m);
-      ecoute();
+      const dispo = q.disposition || (nb === 3 ? "trois" : "");
+      $ecran.innerHTML = '<div class="jeu">' + enTete(p, q) +
+        '<div class="course' + (H.course ? " " + H.course : "") + '" aria-hidden="true"><span class="arrivee"></span>' +
+        '<div class="couloir"><span class="pirogue" id="pMoi">' + H.monture + '</span><span class="qui" id="qMoi">' + (H.passager || C.avatar) + '</span><span class="nom">' + esc(prenom()) + "</span></div>" +
+        '<div class="couloir"><span class="pirogue" id="pRival">' + (H.montureRival || H.monture) + '</span><span class="qui" id="qRival">' + (p.n.boss ? BOSS.e : H.rival[0]) + '</span><span class="nom">' + esc(p.n.boss ? BOSS.rival : H.rival[1]) + "</span></div></div>" +
+        '<div class="choix ' + dispo + '">' + ordre.map(i => '<button class="reponse r" data-i="' + i + '">' + rendu(q.choix[i]) + "</button>").join("") + "</div></div>";
+      brancher(p, q);
+      const course = $ecran.querySelector(".course");
+      const L = course.clientWidth - 90;
+      const placer = (id, f) => { const x = 4 + f * L; document.getElementById("p" + id).style.left = x + "px"; document.getElementById("q" + id).style.left = x + 12 + "px"; };
+      placer("Moi", p.k / p.questions.length);
+      let anim = 0, fini = false;
+      function boucle(t) {
+        const f = Math.min(1, (t - debut) / 1000 / duree);
+        placer("Rival", f);
+        if (f >= 1 && !rivalArrive) { rivalArrive = true; p.rival = true; dire((p.n.boss ? BOSS.rival : H.rival[1]) + " est arrivé ! Termine quand même."); }
+        if (!fini) anim = requestAnimationFrame(boucle);
+      }
+      anim = requestAnimationFrame(boucle);
+      arreter = () => { fini = true; cancelAnimationFrame(anim); };
       $ecran.querySelectorAll(".reponse").forEach(b => b.onclick = () => {
         const i = +b.dataset.i;
         if (i === q.bonne) {
           b.classList.add("bon");
-          if (premierEssai) justes++;
           $ecran.querySelectorAll(".reponse").forEach(x => x.disabled = true);
-          const mot = ["Bravo !", "Super !", "Très bien !", "Génial !", "Excellent !"][Math.floor(Math.random() * 5)];
-          dire(mot);
-          const t = document.createElement("div"); t.className = "bravo"; t.textContent = mot; document.body.appendChild(t);
-          setTimeout(() => { t.remove(); n++; n < questions.length ? poser() : fin(); }, 1100);
-        } else {
-          premierEssai = false;
-          b.classList.add("faux"); b.disabled = true;
-          const c = q.choix[i];
-          dire("Essaie encore." + (c && c.dire ? " Ça, c'est " + c.dire + "." : ""));
-        }
+          placer("Moi", (p.k + 1) / p.questions.length);
+          reussite(p, poser);
+        } else { b.classList.add("faux"); b.disabled = true; rate(p, q.choix[i]); }
       });
-    }
-    function fin() {
-      const ratio = justes / questions.length;
-      const etoiles = ratio >= 0.9 ? 3 : ratio >= 0.65 ? 2 : 1;
-      const avant = E.progres[l.id] || { etoiles: 0, fois: 0 };
-      E.progres[l.id] = { etoiles: Math.max(avant.etoiles, etoiles), fois: (avant.fois || 0) + 1, dernier: justes + "/" + questions.length, date: new Date().toISOString() };
-      E.journal.unshift({ id: l.id, score: justes + "/" + questions.length, date: new Date().toISOString() });
-      E.journal = E.journal.slice(0, 60);
-      sauver();
-      const mots = ["Continue, tu vas y arriver !", "Bien joué !", "Bravo, champion !"];
-      dire(mots[etoiles - 1] + " Tu as gagné " + etoiles + " étoile" + (etoiles > 1 ? "s" : "") + ".");
-      $ecran.innerHTML = '<div class="resultat"><div class="grandes-etoiles">' + etoilesHTML(etoiles) + '</div><h1>' + esc(mots[etoiles - 1]) + '</h1>' +
-        '<p>' + justes + ' bonne' + (justes > 1 ? "s" : "") + ' réponse' + (justes > 1 ? "s" : "") + ' du premier coup sur ' + questions.length + '</p>' +
-        '<div class="boutons"><button class="bouton second" id="encore">Recommencer</button><button class="bouton" id="suite">Continuer</button></div></div>';
-      document.getElementById("encore").onclick = () => lancer(m, l);
-      document.getElementById("suite").onclick = () => voirMonde(m);
     }
     poser();
   }
 
+  // ----- Fin d'un niveau -----
+  function fin(p) {
+    changer();
+    $ecran.className = "ecran";
+    const n = p.n, total = p.questions.length;
+    const ratio = p.justes / total;
+    let etoiles = ratio >= 0.9 ? 3 : ratio >= 0.65 ? 2 : 1;
+    const avant = E.progres[n.id] || { etoiles: 0, fois: 0 };
+    let gain = etoiles * 5 + (avant.fois ? 0 : 10);
+    const gagneCourse = n.jeu === "pirogue" && !p.rival;
+    if (gagneCourse) gain += 5;
+    E.progres[n.id] = { etoiles: Math.max(avant.etoiles, etoiles), fois: (avant.fois || 0) + 1, dernier: p.justes + "/" + total, date: new Date().toISOString() };
+    E.journal.unshift({ id: n.id, score: p.justes + "/" + total, date: new Date().toISOString() });
+    E.journal = E.journal.slice(0, 60);
+    E.pieces += gain;
+    serieDuJour();
+    const nouveau = !E.album.includes(n.animal);
+    if (nouveau) E.album.push(n.animal);
+    sauver();
+    son("gagne");
+    const titres = ["Continue, tu progresses !", "Bien joué !", C.feminin ? "Championne !" : "Champion !"];
+    $ecran.innerHTML = '<div class="resultat"><div class="grandes-etoiles">' + etoilesHTML(etoiles) + "</div><h1>" + esc(titres[etoiles - 1]) + "</h1>" +
+      "<p>" + p.justes + " sur " + total + " du premier coup" + (n.jeu === "pirogue" ? (gagneCourse ? " · " + H.victoire : " · " + H.defaite) : "") + "</p>" +
+      '<div class="gain"><span>🪙 +' + gain + "</span><span>🔥 " + E.serie.n + " jour" + (E.serie.n > 1 ? "s" : "") + "</span></div>" +
+      (nouveau ? '<div class="nouvel-animal"><b>' + n.animal + "</b><span>" + esc(H.album.nouveau) + esc(n.nomAnimal) + " !</span></div>" : "") +
+      '<div class="boutons"><button class="bouton second" id="encore">Rejouer</button><button class="bouton" id="suite">Continuer</button></div></div>';
+    dire(titres[etoiles - 1] + " Tu gagnes " + gain + " pièces." + (nouveau ? " " + H.album.nouveau + n.nomAnimal + " !" : ""));
+    document.getElementById("encore").onclick = () => jouer(n);
+    document.getElementById("suite").onclick = carte;
+  }
+
+  // ----- Boutique du personnage -----
+  function boutique(message) {
+    changer();
+    $ecran.className = "ecran";
+    $ecran.innerHTML = '<div class="titre-page"><button class="rond" id="retour" aria-label="Retour">←</button><h1>Mon personnage</h1><span class="espace" style="flex:1"></span><span class="pastille">🪙 ' + E.pieces + "</span></div>" +
+      '<div style="display:grid;justify-items:center;gap:6px;padding:14px 0">' + persoHTML(true) + '<p class="aide">' + esc(message || "Gagne des pièces en jouant et habille ton personnage.") + "</p></div>" +
+      '<div class="grille">' + BOUTIQUE.map(([e, nom, prix]) => {
+        const a = E.achats.includes(e);
+        return '<button class="objet' + (E.porte === e ? " porte" : "") + '" data-e="' + e + '"><b>' + e + "</b><span>" + esc(nom) + '</span><span class="prix">' + (E.porte === e ? "Porté" : a ? "À toi" : "🪙 " + prix) + "</span></button>";
+      }).join("") + "</div>";
+    document.getElementById("retour").onclick = carte;
+    $ecran.querySelectorAll(".objet").forEach(b => b.onclick = () => {
+      const [e, nom, prix] = BOUTIQUE.find(x => x[0] === b.dataset.e);
+      if (E.achats.includes(e)) { E.porte = E.porte === e ? "" : e; sauver(); son("pop"); return boutique(E.porte ? "Tu portes : " + nom : "Tu as enlevé : " + nom); }
+      if (E.pieces < prix) { son("faux"); dire("Il te manque " + (prix - E.pieces) + " pièces. Joue encore !"); return boutique("Il te manque " + (prix - E.pieces) + " pièces pour : " + nom); }
+      E.pieces -= prix; E.achats.push(e); E.porte = e; sauver(); son("piece"); dire("Super ! Tu as acheté : " + nom);
+      boutique("Bravo, tu as acheté : " + nom + " !");
+    });
+  }
+
+  function album() {
+    changer();
+    $ecran.className = "ecran";
+    const tous = NIVEAUX.map(n => [n.animal, n.nomAnimal, n.lieu]).concat([[BOSS.e, BOSS.animal, BOSS.nom]]);
+    $ecran.innerHTML = '<div class="titre-page"><button class="rond" id="retour" aria-label="Retour">←</button><h1>' + esc(H.album.titre) + '</h1></div>' +
+      '<p class="aide">' + esc(H.album.aide) + " " + E.album.length + " sur " + tous.length + " trouvés.</p>" +
+      '<div class="grille">' + tous.map(([e, nom, lieu]) => { const a = E.album.includes(e); return '<button class="objet' + (a ? "" : " cache") + '" data-nom="' + esc(a ? nom : "") + '"><b>' + e + "</b><span>" + esc(a ? nom.replace(/^(un |une |le |la |l')/, "") : "?") + '</span><span class="note">' + esc(lieu) + "</span></button>"; }).join("") + "</div>";
+    document.getElementById("retour").onclick = carte;
+    $ecran.querySelectorAll(".objet").forEach(b => b.onclick = () => b.dataset.nom ? dire(b.dataset.nom) : dire("Pas encore trouvé !"));
+  }
+
   // ----- Espace parent -----
   function codeParent() {
+    changer();
+    $ecran.className = "ecran";
     let saisie = "";
-    function dessiner() {
+    function dessiner(erreur) {
       $ecran.innerHTML = '<div class="barre"><button class="rond" id="retour" aria-label="Retour">←</button></div>' +
-        '<div class="resultat" style="justify-content:flex-start;padding-top:20px"><h1 style="font-size:28px">Espace parent</h1><p>Tape le code parent</p>' +
-        '<div class="points">' + [0, 1, 2, 3].map(i => '<i class="' + (i < saisie.length ? "plein" : "") + '"></i>').join("") + '</div>' +
-        '<div class="pave">' + [1, 2, 3, 4, 5, 6, 7, 8, 9, "", 0, "⌫"].map(c => c === "" ? "<span></span>" : '<button data-c="' + c + '">' + c + '</button>').join("") + '</div></div>';
-      document.getElementById("retour").onclick = accueil;
+        '<div class="resultat" style="justify-content:flex-start;padding-top:20px"><h1 style="font-size:28px">Espace parent</h1><p>' + (erreur ? "Code incorrect, réessaie" : "Tape le code parent") + "</p>" +
+        '<div class="points">' + [0, 1, 2, 3].map(i => '<i class="' + (i < saisie.length ? "plein" : "") + '"></i>').join("") + "</div>" +
+        '<div class="pave">' + [1, 2, 3, 4, 5, 6, 7, 8, 9, "", 0, "⌫"].map(c => (c === "" ? "<span></span>" : '<button data-c="' + c + '">' + c + "</button>")).join("") + "</div></div>";
+      document.getElementById("retour").onclick = carte;
       $ecran.querySelectorAll(".pave button").forEach(b => b.onclick = () => {
         const c = b.dataset.c;
         if (c === "⌫") saisie = saisie.slice(0, -1); else if (saisie.length < 4) saisie += c;
-        if (saisie.length === 4) {
-          if (saisie === E.code) return parent();
-          saisie = ""; dessiner(); $ecran.querySelector(".points").style.animation = "secoue .4s"; return;
-        }
+        if (saisie.length === 4) { if (saisie === E.code) return parent(); saisie = ""; return dessiner(true); }
         dessiner();
       });
     }
@@ -350,42 +680,46 @@ __CONTENU__
   }
 
   function parent(message) {
-    const lecons = toutesLecons();
-    const faites = lecons.filter(l => E.progres[l.id] && E.progres[l.id].etoiles > 0).length;
+    changer();
+    $ecran.className = "ecran";
+    const tous = NIVEAUX.concat([NIVEAU_BOSS]);
+    const faits = tous.filter(n => etoilesDe(n) > 0).length;
     const jours = Object.keys(E.jours).sort().reverse().slice(0, 7);
     const minutes = s => Math.round((s || 0) / 60);
-    const nomLecon = id => { const l = lecons.find(x => x.id === id); return l ? l.monde.titre + " · " + l.titre : id; };
+    const nomNiveau = id => { const n = tous.find(x => x.id === id); return n ? n.lieu + " · " + n.titre : id; };
     const dateCourte = d => new Date(d).toLocaleString("fr-FR", { weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
+    const ligne = n => { const p = E.progres[n.id]; return "<tr><td>" + esc(n.titre) + '<br><span class="note">' + esc(n.lieu + " · " + JEUX[n.jeu].nom + (n.objectif ? " · " + n.objectif : "")) + "</span></td><td>" + (p ? etoilesHTML(p.etoiles) + '<br><span class="note">' + p.dernier + " · " + p.fois + " fois</span>" : '<span class="note">pas encore</span>') + "</td></tr>"; };
     $ecran.innerHTML = '<div class="parent" style="display:grid;gap:12px">' +
       '<div class="barre"><button class="rond" id="retour" aria-label="Retour">←</button><h1>Espace parent</h1></div>' +
-      (message ? '<p class="note" style="color:var(--vert);font-weight:700">' + esc(message) + '</p>' : "") +
-      '<div class="bloc"><div class="stat"><div><b>' + faites + '/' + lecons.length + '</b><span>leçons réussies</span></div><div><b>' + totalEtoiles() + '</b><span>étoiles</span></div><div><b>' + minutes(E.jours[aujourdhui()]) + ' min</b><span>aujourd\'hui</span></div></div></div>' +
-      '<h2>Progrès par leçon</h2>' +
-      C.mondes.map(m => '<div class="bloc"><strong>' + m.icone + ' ' + esc(m.titre) + '</strong><table>' + m.lecons.map(l => {
-        const p = E.progres[l.id];
-        return '<tr><td>' + esc(l.titre) + (l.objectif ? '<br><span class="note">' + esc(l.objectif) + '</span>' : "") + '</td><td>' + (p ? etoilesHTML(p.etoiles) + '<br><span class="note">' + p.dernier + ' · ' + p.fois + ' fois</span>' : '<span class="note">pas encore</span>') + '</td></tr>';
-      }).join("") + '</table></div>').join("") +
-      '<h2>Dernières activités</h2><div class="bloc"><table>' + (E.journal.length ? E.journal.slice(0, 12).map(j => '<tr><td>' + esc(nomLecon(j.id)) + '<br><span class="note">' + dateCourte(j.date) + '</span></td><td>' + j.score + '</td></tr>').join("") : '<tr><td class="note">Aucune leçon faite pour l\'instant.</td><td></td></tr>') + '</table></div>' +
-      '<h2>Temps passé dans l\'appli</h2><div class="bloc"><table>' + (jours.length ? jours.map(j => '<tr><td>' + new Date(j + "T12:00").toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long" }) + '</td><td>' + minutes(E.jours[j]) + ' min</td></tr>').join("") : '<tr><td class="note">Pas encore de temps enregistré.</td><td></td></tr>') + '</table>' +
+      (message ? '<p class="note" style="color:var(--vert);font-weight:700">' + esc(message) + "</p>" : "") +
+      '<div class="bloc"><div class="stat"><div><b>' + faits + "/" + tous.length + '</b><span>étapes réussies</span></div><div><b>' + totalEtoiles() + '</b><span>étoiles</span></div><div><b>' + minutes(E.jours[aujourdhui()]) + " min</b><span>aujourd'hui</span></div></div></div>" +
+      "<h2>Progrès par matière</h2>" +
+      C.mondes.map(m => '<div class="bloc"><strong>' + m.icone + " " + esc(m.titre) + "</strong><table>" + NIVEAUX.filter(n => n.monde === m).map(ligne).join("") + "</table></div>").join("") +
+      '<div class="bloc"><strong>' + BOSS.e + " Révision finale</strong><table>" + ligne(NIVEAU_BOSS) + "</table></div>" +
+      "<h2>Dernières parties</h2><div class=\"bloc\"><table>" + (E.journal.length ? E.journal.slice(0, 12).map(j => "<tr><td>" + esc(nomNiveau(j.id)) + '<br><span class="note">' + dateCourte(j.date) + "</span></td><td>" + j.score + "</td></tr>").join("") : '<tr><td class="note">Aucune partie pour l\'instant.</td><td></td></tr>') + "</table></div>" +
+      "<h2>Temps passé dans l'appli</h2><div class=\"bloc\"><table>" + (jours.length ? jours.map(j => "<tr><td>" + new Date(j + "T12:00").toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long" }) + "</td><td>" + minutes(E.jours[j]) + " min</td></tr>").join("") : '<tr><td class="note">Pas encore de temps enregistré.</td><td></td></tr>') + "</table>" +
       '<p class="note">Pour limiter le temps d\'écran depuis ton téléphone, utilise Google Family Link.</p></div>' +
       '<h2>Réglages</h2><div class="bloc">' +
-      '<div class="rangee"><label for="champPrenom">Prénom affiché</label><input type="text" id="champPrenom" value="' + esc(E.prenom) + '" maxlength="20"><button class="petit-bouton" id="okPrenom">Enregistrer</button></div>' +
+      '<div class="rangee"><label for="champPrenom">Prénom affiché</label><input type="text" id="champPrenom" value="' + esc(prenom()) + '" maxlength="20"><button class="petit-bouton" id="okPrenom">Enregistrer</button></div>' +
       '<div class="rangee"><label for="champCode">Nouveau code parent (4 chiffres)</label><input type="password" id="champCode" inputmode="numeric" maxlength="4" placeholder="••••"><button class="petit-bouton" id="okCode">Changer</button></div>' +
-      '<div class="rangee"><label>Ouvrir toutes les leçons sans suivre l\'ordre</label><button class="petit-bouton ' + (E.toutOuvert ? "" : "neutre") + '" id="okOuvert">' + (E.toutOuvert ? "Activé" : "Désactivé") + '</button></div>' +
+      '<div class="rangee"><label>Ouvrir toutes les étapes sans suivre l\'ordre</label><button class="petit-bouton ' + (E.toutOuvert ? "" : "neutre") + '" id="okOuvert">' + (E.toutOuvert ? "Activé" : "Désactivé") + "</button></div>" +
+      '<div class="rangee"><label for="champPieces">Donner des pièces en récompense</label><input type="text" id="champPieces" inputmode="numeric" maxlength="3" placeholder="20"><button class="petit-bouton" id="okPieces">Donner</button></div>' +
       '<div class="rangee"><label>Effacer tous les progrès de ce téléphone</label><button class="petit-bouton danger" id="effacer">Effacer</button></div>' +
-      '<div id="confirme" hidden class="rangee"><label><strong>Sûr ? Les étoiles et l\'historique seront perdus.</strong></label><button class="petit-bouton neutre" id="non">Annuler</button><button class="petit-bouton danger" id="oui">Oui, effacer</button></div>' +
-      '</div>' + (E.code === "1234" ? '<p class="note">Le code est encore 1234. Change-le pour que les enfants ne puissent pas entrer ici.</p>' : "") +
-      '<p class="discret">' + esc(C.titreAppli) + ' · ' + esc(C.version) + '</p></div>';
+      '<div id="confirme" hidden class="rangee"><label><strong>Sûr ? Étoiles, pièces, album et historique seront perdus.</strong></label><button class="petit-bouton neutre" id="non">Annuler</button><button class="petit-bouton danger" id="oui">Oui, effacer</button></div>' +
+      "</div>" + (E.code === "1234" ? '<p class="note">Le code est encore 1234. Change-le pour que les enfants ne puissent pas entrer ici.</p>' : "") +
+      '<p class="discret">' + esc(C.titreAppli) + " · " + esc(C.version) + "</p></div>";
     $ecran.scrollTop = 0;
-    document.getElementById("retour").onclick = accueil;
+    document.getElementById("retour").onclick = carte;
     document.getElementById("okPrenom").onclick = () => { const v = document.getElementById("champPrenom").value.trim(); if (v) { E.prenom = v; sauver(); parent("Prénom enregistré."); } };
     document.getElementById("okCode").onclick = () => { const v = document.getElementById("champCode").value.trim(); if (/^\d{4}$/.test(v)) { E.code = v; sauver(); parent("Nouveau code enregistré. Retiens-le bien."); } else parent("Le code doit faire exactement 4 chiffres."); };
-    document.getElementById("okOuvert").onclick = () => { E.toutOuvert = !E.toutOuvert; sauver(); parent(E.toutOuvert ? "Toutes les leçons sont ouvertes." : "Les leçons s'ouvrent à nouveau dans l'ordre."); };
+    document.getElementById("okOuvert").onclick = () => { E.toutOuvert = !E.toutOuvert; sauver(); parent(E.toutOuvert ? "Toutes les étapes sont ouvertes." : "Les étapes s'ouvrent à nouveau dans l'ordre."); };
+    document.getElementById("okPieces").onclick = () => { const v = parseInt(document.getElementById("champPieces").value, 10); if (v > 0 && v <= 500) { E.pieces += v; sauver(); parent(v + " pièces données."); } else parent("Indique un nombre de pièces entre 1 et 500."); };
     document.getElementById("effacer").onclick = () => { document.getElementById("confirme").hidden = false; };
     document.getElementById("non").onclick = () => { document.getElementById("confirme").hidden = true; };
-    document.getElementById("oui").onclick = () => { E.progres = {}; E.journal = []; E.jours = {}; sauver(); parent("Progrès effacés."); };
+    document.getElementById("oui").onclick = () => { const garde = { prenom: E.prenom, code: E.code }; E = Object.assign(defaut(), garde); sauver(); parent("Progrès effacés."); };
   }
 
-  accueil();
+  window.addEventListener("resize", () => { if (document.getElementById("voyage")) carte(); });
+  carte();
 })();
 </script>
