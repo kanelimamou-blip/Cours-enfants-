@@ -591,11 +591,13 @@ __CONTENU__
   }
 
   // ----- Mémoire du téléphone -----
-  const defaut = () => ({ prenom: "", code: "1234", toutOuvert: false, progres: {}, journal: [], jours: {}, pieces: 0, achats: [], porte: "", album: [], serie: { jour: "", n: 0 }, erreurs: [], diff: {}, qdj: "", bulletins: [], bons: [], catalogue: null, bonjour: "", equipe: {}, animal: null, jetons: { manger: 2, laver: 2, jouer: 2 }, coloriages: {}, lettresTracees: [], famille: "", recus: [],
+  const defaut = () => ({ prenom: "", code: "1234", toutOuvert: true, progres: {}, journal: [], jours: {}, pieces: 0, achats: [], porte: "", album: [], serie: { jour: "", n: 0 }, erreurs: [], diff: {}, qdj: "", bulletins: [], bons: [], catalogue: null, bonjour: "", equipe: {}, animal: null, jetons: { manger: 2, laver: 2, jouer: 2 }, coloriages: {}, lettresTracees: [], famille: "", recus: [],
     records: {}, stats: { parfaits: 0, coffres: 0, corrigees: 0, matins: 0, duels: 0, defis: 0, lutte: 0 }, badges: [], dico: {}, matin: "", motJour: "", avatarChoisi: "", fond: "", avatars: [], fonds: [], anniv: "", annivFete: "", reglages: { soir: "auto", taille: 0, police: false }, village: {}, gainsJour: null, autocollants: [], club: "", ballonsOr: [], gestes: null });
   let E = defaut();
   try { const brut = localStorage.getItem(CLE); if (brut) E = Object.assign(defaut(), JSON.parse(brut)); } catch (e) {}
   E.stats = Object.assign(defaut().stats, E.stats); E.reglages = Object.assign(defaut().reglages, E.reglages);
+  // Tout est ouvert par défaut (demande d'Est) : les enfants avancent à leur rythme ; le parent peut remettre l'ordre.
+  if (!E.libreV5) { E.toutOuvert = true; E.libreV5 = true; }
   const palierOuvert = k => E.toutOuvert || k === 0 || etoilesDe(BOSSES[k - 1]) > 0;
   function choisirPalier(id) {
     const k = Math.max(0, PALIERS.findIndex(pa => pa.id === id));
@@ -2348,7 +2350,7 @@ __CONTENU__
     v.innerHTML = '<div class="fenetre" role="dialog" aria-label="Les paliers"><h2>Mes paliers</h2><div class="bons">' + PALIERS.map((pa, k) => {
       const l = TOUS_NIVEAUX.filter(n => n.palier === pa.id), faits = l.filter(n => etoilesDe(n) > 0).length, ok = palierOuvert(k);
       return '<button class="bon-ligne' + (pa.id === NIVEAU_BOSS.palier ? " choisi-p" : "") + '" data-p="' + k + '"' + (ok ? "" : " disabled") + "><b>" + (ok ? (etoilesDe(BOSSES[k]) ? "🏅" : ["1️⃣", "2️⃣", "3️⃣", "4️⃣"][k] || "📘") : "🔒") + "</b><span><strong>" + esc(pa.titre) + "</strong><br><small>" + esc(pa.periode || "") + " · " + faits + "/" + l.length + " étapes</small></span>" + '<span class="prix">' + (ok ? "▶" : "") + "</span></button>";
-    }).join("") + '</div><p class="aide">Réussis la composition d\'un palier pour ouvrir le suivant.</p><div class="boutons"><button class="bouton second" id="fermerP">Fermer</button></div></div>';
+    }).join("") + '</div><p class="aide">' + (E.toutOuvert ? "Tous les paliers sont ouverts : avance à ton rythme !" : "Réussis la composition d\'un palier pour ouvrir le suivant.") + "</p>" + '<div class="boutons"><button class="bouton second" id="fermerP">Fermer</button></div></div>';
     document.body.appendChild(v);
     lire("Choisis ton palier.");
     v.onclick = e => { if (e.target === v) v.remove(); };
