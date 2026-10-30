@@ -912,6 +912,11 @@ window.TOUS_CONTENUS["gs"] = window.CONTENU; window.CONTENU = garde; })();
     habillage: {
       a: "·",
       grades: ["Espoir du quartier", "Centre de formation", "Équipe réserve", "Titulaire", "Capitaine", "Star mondiale", "Ballon d'or"],
+      village: { titre: "Mon stade", fond: "stade", items: [
+        ["🥅", "un but"], ["⚽", "un ballon"], ["🚩", "un drapeau de coin"], ["🏟️", "une tribune"], ["💡", "un projecteur"], ["🧍🏾", "un supporter"], ["📣", "un mégaphone"], ["🥁", "un tambour de supporters"], ["🇸🇳", "un drapeau du Sénégal"], ["🧑🏾‍🦱", "un entraîneur"],
+        ["🧤", "des gants de gardien"], ["👟", "des crampons"], ["🏆", "une coupe"], ["🥇", "une médaille"], ["📺", "un écran géant"], ["🎥", "une caméra"], ["🚑", "une ambulance"], ["🚌", "le bus de l'équipe"], ["🍿", "un stand de pop-corn"], ["🥤", "un stand de boissons"],
+        ["🌴", "un palmier"], ["🦁", "la mascotte lion"], ["🎺", "une trompette"], ["🎉", "des confettis"], ["⏱️", "le chronomètre"], ["🟨", "un carton jaune"], ["🧑🏾‍⚖️", "un arbitre"], ["🎙️", "un commentateur"], ["🚿", "les vestiaires"], ["🏅", "le trophée Ballon d'or"],
+      ] },
       lieux: [
         ["Le terrain du quartier", "quartier", "👟", "des crampons"], ["L'école de foot", "quartier", "🧦", "des chaussettes de match"], ["Le tournoi Navétanes", "quartier", "🥁", "un tam-tam de supporter"],
         ["Les petits ponts", "quartier", "🎽", "un maillot d'entraînement"], ["Le match de rue", "quartier", "⚽", "un ballon"], ["L'académie", "senegal", "📋", "un carnet de tactique"],

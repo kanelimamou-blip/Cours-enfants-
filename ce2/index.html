@@ -340,6 +340,69 @@ details[open] { display: grid; gap: 8px; }
 .course.route { background: linear-gradient(#6b6b6b, #555); }
 .course.route .couloir { border-bottom-color: #f5c518; }
 .course.pelouse { background: repeating-linear-gradient(90deg, #4caf50 0 30px, #45a049 30px 60px); }
+/* Vague 2 : jeux */
+.sous-titre { font-size: 22px; margin: 18px 0 8px; }
+.salle { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 10px; }
+.salle .objet span { font-weight: 700; font-size: 15px; }
+.village-ligne { width: 100%; }
+.zone-plateau { position: relative; margin: 6px 12px; }
+.pion { font-size: 26px; line-height: 1; display: inline-block; animation: battre 1.4s infinite; }
+.plateau { display: grid; gap: 4px; }
+.case-oie { aspect-ratio: 1; border-radius: 10px; background: var(--carte); display: grid; place-items: center; font-weight: 800; font-size: 13px; color: var(--doux); box-shadow: 0 2px 0 var(--trait); }
+.case-oie.bonus { background: #fff1c2; }
+.case-oie.passee { background: var(--theme-clair); }
+.case-oie.arrivee-oie { background: #c8f0d5; font-size: 22px; }
+.de { position: absolute; right: 6px; top: -10px; background: var(--mangue); color: var(--encre); font-weight: 800; border-radius: 999px; padding: 4px 12px; font-size: 20px; animation: monter .3s ease-out; }
+.labyrinthe { display: grid; width: min(100%, 360px); margin: 0 auto; background: #5a3b22; border-radius: 10px; padding: 3px; }
+.labyrinthe span { aspect-ratio: 1; display: grid; place-items: center; font-size: 20px; line-height: 1; }
+.labyrinthe .mur { background: #5a3b22; }
+.labyrinthe .allee { background: #f6dc8c; }
+.labyrinthe .allee.vu { background: #ffe9a8; box-shadow: inset 0 0 0 40px rgba(46,158,91,.25); }
+.labyrinthe .pion { font-size: 22px; }
+.memory { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.carte-m { aspect-ratio: 3 / 4; border-radius: 14px; background: var(--theme); color: #fff; font-size: 30px; display: grid; place-items: center; box-shadow: 0 4px 0 rgba(0,0,0,.18); transition: transform .25s; padding: 2px; }
+.carte-m .face { display: none; }
+.carte-m.retournee { background: var(--carte); color: var(--encre); transform: rotateY(180deg) scaleX(-1); }
+.carte-m.retournee .dos { display: none; }
+.carte-m.retournee .face { display: block; }
+.carte-m.trouvee { background: #c8f0d5; }
+.carte-m b { font-size: 38px; font-weight: 400; }
+.carte-m i { font-style: normal; font-weight: 800; font-size: 16px; font-family: var(--lecture); word-break: break-word; }
+.puzzle { display: grid; gap: 3px; width: min(100%, 360px); margin: 0 auto; background: var(--trait); padding: 3px; border-radius: 12px; }
+.piece { aspect-ratio: 1; border-radius: 6px; background-repeat: no-repeat; border: 3px solid transparent; }
+.piece.choisie { border-color: var(--mangue); transform: scale(.93); }
+.puzzle.resolu { gap: 0; padding: 0; } .puzzle.resolu .piece { border-radius: 0; border: 0; }
+.modele { margin-top: 12px; text-align: center; font-weight: 700; } .modele-img { width: 140px; aspect-ratio: 1; margin: 8px auto; background-size: cover; border-radius: 10px; }
+.tambour { font-size: 110px; background: none; display: block; margin: 8px auto; transition: transform .1s; }
+.tambour.frappe { animation: frappe .2s; }
+@keyframes frappe { 50% { transform: scale(.85); } }
+.cases-syl { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
+.case-syl { min-width: 64px; height: 56px; border-radius: 12px; border: 3px dashed var(--doux); display: grid; place-items: center; font-family: var(--lecture); font-weight: 800; font-size: 26px; padding: 0 8px; }
+.case-syl:not(:empty) { border-style: solid; border-color: var(--vert); background: #e6f7ec; }
+.tuiles { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin: 10px 0; }
+.tuile { background: var(--carte); border-radius: 14px; padding: 12px 18px; font-family: var(--lecture); font-weight: 800; font-size: 28px; box-shadow: 0 4px 0 var(--trait); }
+.tuile:disabled { opacity: .3; }
+.tuile.secoue { animation: secoue .4s; background: #fdeae6; color: var(--rouge); }
+.tambours { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; max-width: 340px; margin: 10px auto; }
+.tambour-c { aspect-ratio: 1; border-radius: 50%; font-size: 48px; opacity: .55; box-shadow: 0 6px 0 rgba(0,0,0,.2); transition: opacity .1s, transform .1s; }
+.tambour-c.allume { opacity: 1; transform: scale(1.08); box-shadow: 0 0 0 6px #fff, 0 0 24px 8px rgba(255,255,255,.9); }
+.sudoku { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); width: min(100%, 320px); margin: 10px auto; border: 4px solid var(--encre); border-radius: 10px; overflow: hidden; }
+.case-s { aspect-ratio: 1; background: var(--carte); border: 1px solid var(--trait); font-size: 34px; font-weight: 800; font-family: var(--titre); }
+.case-s:nth-child(4n+2) { border-right: 3px solid var(--encre); }
+.case-s:nth-child(n+5):nth-child(-n+8) { border-bottom: 3px solid var(--encre); }
+.case-s.fixe { background: #f1e6d3; }
+.case-s.conflit { background: #fdeae6; color: var(--rouge); }
+.sudoku.resolu .case-s { background: #c8f0d5; }
+.pinceaux { display: flex; gap: 10px; justify-content: center; }
+.pinceau { width: 62px; height: 62px; border-radius: 16px; background: var(--carte); font-size: 32px; font-weight: 800; font-family: var(--titre); box-shadow: 0 4px 0 var(--trait); border: 3px solid transparent; }
+.pinceau.choisi { border-color: var(--theme); }
+.village { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 3px; background: linear-gradient(#a8e0ff 0 18%, #e8c27a 18%); padding: 8px; border-radius: 18px; }
+.village.stade { background: repeating-linear-gradient(90deg, #4caf50 0 34px, #45a049 34px 68px); }
+.village.arene { background: radial-gradient(circle, #f2d79a 0 55%, #c9a55a 56%); }
+.tuile-v { aspect-ratio: 1; font-size: 28px; line-height: 1; border-radius: 8px; background: rgba(255,255,255,.12); }
+.tuile-v.libre { background: rgba(255,255,255,.55); outline: 2px dashed var(--theme); }
+.a-placer { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+.a-placer .objet { padding: 6px 10px; }
 /* Vague 1 : quotidien, sac, défis, badges, dictionnaire, fête, affichage */
 .quotidien { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; padding-bottom: 4px; }
 .quotidien .qdj { flex: none; padding: 6px 12px; animation: none; }
@@ -746,6 +809,11 @@ body.lisible { --lecture: "Lexend", "Andika", system-ui, sans-serif; letter-spac
     habillage: {
       a: "·",
       grades: ["Espoir du quartier", "Centre de formation", "Équipe réserve", "Titulaire", "Capitaine", "Star mondiale", "Ballon d'or"],
+      village: { titre: "Mon stade", fond: "stade", items: [
+        ["🥅", "un but"], ["⚽", "un ballon"], ["🚩", "un drapeau de coin"], ["🏟️", "une tribune"], ["💡", "un projecteur"], ["🧍🏾", "un supporter"], ["📣", "un mégaphone"], ["🥁", "un tambour de supporters"], ["🇸🇳", "un drapeau du Sénégal"], ["🧑🏾‍🦱", "un entraîneur"],
+        ["🧤", "des gants de gardien"], ["👟", "des crampons"], ["🏆", "une coupe"], ["🥇", "une médaille"], ["📺", "un écran géant"], ["🎥", "une caméra"], ["🚑", "une ambulance"], ["🚌", "le bus de l'équipe"], ["🍿", "un stand de pop-corn"], ["🥤", "un stand de boissons"],
+        ["🌴", "un palmier"], ["🦁", "la mascotte lion"], ["🎺", "une trompette"], ["🎉", "des confettis"], ["⏱️", "le chronomètre"], ["🟨", "un carton jaune"], ["🧑🏾‍⚖️", "un arbitre"], ["🎙️", "un commentateur"], ["🚿", "les vestiaires"], ["🏅", "le trophée Ballon d'or"],
+      ] },
       lieux: [
         ["Le terrain du quartier", "quartier", "👟", "des crampons"], ["L'école de foot", "quartier", "🧦", "des chaussettes de match"], ["Le tournoi Navétanes", "quartier", "🥁", "un tam-tam de supporter"],
         ["Les petits ponts", "quartier", "🎽", "un maillot d'entraînement"], ["Le match de rue", "quartier", "⚽", "un ballon"], ["L'académie", "senegal", "📋", "un carnet de tactique"],
@@ -848,6 +916,8 @@ body.lisible { --lecture: "Lexend", "Andika", system-ui, sans-serif; letter-spac
     peche: { nom: "La pêche", e: "🎣", aide: "Attrape le bon poisson !" },
     ballons: { nom: "Les ballons", e: "🎈", aide: "Éclate le bon ballon !" },
     pirogue: { nom: "La course de pirogues", e: "🛶", aide: "Réponds vite pour gagner la course !" },
+    oie: { nom: "Le jeu de l'oie", e: "🎲", aide: "Chaque bonne réponse lance le dé. Arrive au bout du plateau !" },
+    labyrinthe: { nom: "Le labyrinthe", e: "🌀", aide: "Chaque bonne réponse ouvre une porte. Trouve la sortie !" },
   };
   let BOUTIQUE = [["🧢", "Casquette", 20], ["🕶️", "Lunettes", 30], ["🎀", "Nœud", 30], ["⚽", "Ballon", 40], ["🎩", "Chapeau", 50], ["🌺", "Fleur", 50], ["🎧", "Casque", 70], ["⭐", "Étoile", 80], ["👑", "Couronne", 120]];
 
@@ -881,6 +951,8 @@ body.lisible { --lecture: "Lexend", "Andika", system-ui, sans-serif; letter-spac
     questions: () => melange(NIVEAUX.flatMap(n => n.questions().slice(0, 2))).slice(0, 10) };
 
   function choisirJeu(n, i) {
+    if (i % 7 === 3) return "labyrinthe";
+    if (i % 7 === 6) return "oie";
     const exemple = n.questions()[0];
     const court = exemple.choix.every(c => ["lettre", "chiffre", "image", "tas", "html"].includes(c.k) || (c.k === "mots" && String(c.t).length <= 9));
     if (!court || i % 3 === 2) return H.match && i % 2 === 0 ? "match" : H.lutte && i % 2 === 0 ? "lutte" : "pirogue";
@@ -891,7 +963,7 @@ body.lisible { --lecture: "Lexend", "Andika", system-ui, sans-serif; letter-spac
 
   // ----- Mémoire du téléphone -----
   const defaut = () => ({ prenom: "", code: "1234", toutOuvert: false, progres: {}, journal: [], jours: {}, pieces: 0, achats: [], porte: "", album: [], serie: { jour: "", n: 0 }, erreurs: [], diff: {}, qdj: "", bulletins: [], bons: [], catalogue: null, bonjour: "", equipe: {}, animal: null, jetons: { manger: 2, laver: 2, jouer: 2 }, coloriages: {}, lettresTracees: [], famille: "", recus: [],
-    records: {}, stats: { parfaits: 0, coffres: 0, corrigees: 0, matins: 0, duels: 0, defis: 0 }, badges: [], dico: {}, matin: "", motJour: "", avatarChoisi: "", fond: "", avatars: [], fonds: [], anniv: "", annivFete: "", reglages: { soir: "auto", taille: 0, police: false } });
+    records: {}, stats: { parfaits: 0, coffres: 0, corrigees: 0, matins: 0, duels: 0, defis: 0 }, badges: [], dico: {}, matin: "", motJour: "", avatarChoisi: "", fond: "", avatars: [], fonds: [], anniv: "", annivFete: "", reglages: { soir: "auto", taille: 0, police: false }, village: {}, gainsJour: null });
   let E = defaut();
   try { const brut = localStorage.getItem(CLE); if (brut) E = Object.assign(defaut(), JSON.parse(brut)); } catch (e) {}
   E.stats = Object.assign(defaut().stats, E.stats); E.reglages = Object.assign(defaut().reglages, E.reglages);
@@ -1109,7 +1181,7 @@ body.lisible { --lecture: "Lexend", "Andika", system-ui, sans-serif; letter-spac
     if (d === 1) questions = questions.map(alleger);
     const partie = { n, questions, k: 0, justes: 0, premier: true, d, vit: d === 1 ? 0.75 : d === 3 ? 1.25 : 1, debut: Date.now() };
     setTimeout(() => mascotte("debut", true), 900);
-    ({ peche: jeuPeche, ballons: jeuBallons, pirogue: jeuPirogue, match: jeuMatch, lutte: jeuLutte, taupes: jeuTaupes })[n.jeu](partie);
+    ({ peche: jeuPeche, ballons: jeuBallons, pirogue: jeuPirogue, match: jeuMatch, lutte: jeuLutte, taupes: jeuTaupes, oie: jeuOie, labyrinthe: jeuLabyrinthe })[n.jeu](partie);
   }
 
   function enTete(p, q) {
@@ -2024,18 +2096,21 @@ body.lisible { --lecture: "Lexend", "Andika", system-ui, sans-serif; letter-spac
   function defis() {
     changer();
     $ecran.className = "ecran";
-    $ecran.innerHTML = '<div class="titre-page"><button class="rond" id="retour" aria-label="Retour">←</button><h1>Défis</h1></div>' +
+    $ecran.innerHTML = '<div class="titre-page"><button class="rond" id="retour" aria-label="Retour">←</button><h1>Défis et jeux</h1></div>' +
       '<div class="bons">' +
       '<button class="bon-ligne" data-d="calcul"><b>⚡</b><span><strong>Calcul mental</strong><br><small>Un maximum de calculs en 1 minute</small></span><span class="prix">🏆 ' + (E.records.calcul || 0) + "</span></button>" +
       '<button class="bon-ligne" data-d="bataille"><b>⏱️</b><span><strong>Contre la montre</strong><br><small>Les questions de tes étapes, en 1 minute</small></span><span class="prix">🏆 ' + (E.records.bataille || 0) + "</span></button>" +
       '<button class="bon-ligne" data-d="duel"><b>🤝</b><span><strong>Duel en famille</strong><br><small>À deux sur le même téléphone, chacun avec les questions de sa classe</small></span><span class="prix">▶</span></button>' +
-      "</div>";
-    lire("Les défis. Choisis ton défi !");
+      "</div><h2 class=\"sous-titre\">La salle de jeux</h2>" +
+      '<button class="bon-ligne village-ligne" data-d="village"><b>' + (VILLAGE.items[0][0]) + "</b><span><strong>" + esc(VILLAGE.titre) + "</strong><br><small>Chaque étape réussie te donne un élément à construire</small></span><span class=\"prix\">" + (debloques() - Object.keys(E.village).length > 0 ? "🆕 " + (debloques() - Object.keys(E.village).length) : Object.keys(E.village).length + "/" + VILLAGE.items.length) + "</span></button>" +
+      '<div class="salle">' + [["memory", "🃏", "Memory"], ["puzzle", "🧩", "Puzzle du Sénégal"], ["assembler", "🧱", "J'assemble les syllabes"], ["frapper", "🥁", "Frappe les syllabes"], ["simon", "🎵", "Répète le rythme"], ["logique", "🧠", "Suites et intrus"], ["sudoku", "🔢", "Sudoku"]]
+        .map(([d, e, t]) => '<button class="objet" data-d="' + d + '"><b>' + e + "</b><span>" + t + "</span></button>").join("") + "</div>";
+    lire("Les défis et la salle de jeux. Choisis !");
     document.getElementById("retour").onclick = carte;
     $ecran.querySelectorAll("[data-d]").forEach(b => b.onclick = () => ({
       calcul: () => jeuChrono({ cle: "calcul", titre: "Calcul mental", e: "⚡", generer: calculMental }),
       bataille: () => jeuChrono({ cle: "bataille", titre: "Contre la montre", e: "⏱️", generer: () => questionsRevision(1)[0] }),
-      duel: duel,
+      duel: duel, village: () => village(), memory, puzzle: () => puzzle(Object.keys(E.village).length), assembler: () => assembler(), frapper: () => frapper(), simon, logique, sudoku,
     })[b.dataset.d]());
   }
   // Calcul mental adapté à la classe
@@ -2221,6 +2296,384 @@ body.lisible { --lecture: "Lexend", "Andika", system-ui, sans-serif; letter-spac
       } catch (e) { parent("Fichier illisible."); }
     };
     lecteurF.readAsText(fichier);
+  }
+
+  // ----- Jeux de niveau : le jeu de l'oie et le labyrinthe -----
+  const choixHTML = q => '<div class="choix ' + (q.disposition || (q.choix.length === 3 ? "trois" : "")) + '">' + melange(q.choix.map((c, i) => i)).map(i => '<button class="reponse r" data-i="' + i + '">' + rendu(q.choix[i]) + "</button>").join("") + "</div>";
+  const pion = () => '<span class="pion">' + (E.avatarChoisi || C.avatar) + "</span>";
+  function brancherChoix(p, q, bon) {
+    $ecran.querySelectorAll(".reponse").forEach(b => b.onclick = () => {
+      const i = +b.dataset.i;
+      if (i === q.bonne) { b.classList.add("bon"); $ecran.querySelectorAll(".reponse").forEach(x => x.disabled = true); bon(); }
+      else { b.classList.add("faux"); b.disabled = true; rate(p, q.choix[i]); }
+    });
+  }
+  function jeuOie(p) {
+    const L = p.questions.length * 2 + 2, BONUS = new Set([4, 9, 14, 19].filter(x => x < L - 1)), COLS = 6;
+    let pos = 0;
+    const plateau = () => '<div class="plateau" style="grid-template-columns:repeat(' + COLS + ',minmax(0,1fr))">' + Array.from({ length: L }, (_, i) => {
+      const r = Math.floor(i / COLS), c = r % 2 ? COLS - 1 - (i % COLS) : i % COLS;
+      return '<span class="case-oie' + (BONUS.has(i) ? " bonus" : "") + (i === L - 1 ? " arrivee-oie" : "") + (i < pos ? " passee" : "") + '" style="grid-row:' + (r + 1) + ";grid-column:" + (c + 1) + '">' + (i === pos ? pion() : i === L - 1 ? "🏁" : BONUS.has(i) ? "⭐" : i + 1) + "</span>";
+    }).join("") + "</div>";
+    p.fin = pp => { const ok = pos >= L - 1; pp.texteFin = ok ? "Tu es arrivé" + (C.feminin ? "e" : "") + " au bout du plateau !" : "Tu t'es arrêté" + (C.feminin ? "e" : "") + " à la case " + (pos + 1); pp.bonus = ok ? 10 : 0; fin(pp); };
+    function poser() {
+      arreter();
+      const q = p.questions[p.k];
+      $ecran.innerHTML = '<div class="jeu">' + enTete(p, q) + '<div class="zone-plateau" id="plateau">' + plateau() + "</div>" + choixHTML(q) + "</div>";
+      brancher(p, q);
+      brancherChoix(p, q, () => {
+        if (p.premier) {
+          const de = 1 + Math.floor(Math.random() * 3);
+          pos = Math.min(L - 1, pos + de);
+          let msg = "🎲 " + de;
+          if (BONUS.has(pos)) { pos = Math.min(L - 1, pos + 2); msg += " · ⭐ +2"; }
+          document.getElementById("plateau").innerHTML = plateau() + '<span class="de">' + msg + "</span>";
+        }
+        reussite(p, poser);
+      });
+    }
+    poser();
+  }
+  function genererLabyrinthe(w, h, min) {
+    let meilleur = null;
+    for (let essai = 0; essai < 60; essai++) {
+      const ouv = Array.from({ length: w * h }, () => new Set()), vu = new Set([0]), pile = [0];
+      while (pile.length) {
+        const c = pile[pile.length - 1], x = c % w, y = Math.floor(c / w);
+        const v = [[1, 0], [-1, 0], [0, 1], [0, -1]].map(([dx, dy]) => [x + dx, y + dy]).filter(([a, b]) => a >= 0 && b >= 0 && a < w && b < h && !vu.has(b * w + a));
+        if (!v.length) { pile.pop(); continue; }
+        const [a, b] = v[Math.floor(Math.random() * v.length)], n = b * w + a;
+        ouv[c].add(n); ouv[n].add(c); vu.add(n); pile.push(n);
+      }
+      const prec = { 0: -1 }, file = [0];
+      while (file.length) { const c = file.shift(); ouv[c].forEach(n => { if (!(n in prec)) { prec[n] = c; file.push(n); } }); }
+      const chemin = []; for (let c = w * h - 1; c !== -1; c = prec[c]) chemin.unshift(c);
+      if (!meilleur || chemin.length > meilleur.chemin.length) meilleur = { ouv, chemin };
+      if (chemin.length >= min) break;
+    }
+    return meilleur;
+  }
+  function jeuLabyrinthe(p) {
+    const w = 5, h = 4, N = p.questions.length;
+    const { ouv, chemin } = genererLabyrinthe(w, h, N + 1);
+    const arrets = Array.from({ length: N + 1 }, (_, j) => Math.round(j * (chemin.length - 1) / N));
+    const portes = new Set(arrets.slice(1, -1).map(j => chemin[j]));
+    const grille = () => {
+      const ici = arrets[p.k], trace = new Set(chemin.slice(0, ici + 1));
+      let html = '<div class="labyrinthe" style="grid-template-columns:repeat(' + (2 * w + 1) + ',1fr)">';
+      for (let gy = 0; gy < 2 * h + 1; gy++) for (let gx = 0; gx < 2 * w + 1; gx++) {
+        let classe = "mur", contenu = "";
+        if (gx % 2 && gy % 2) {
+          const c = ((gy - 1) / 2) * w + (gx - 1) / 2;
+          classe = "allee" + (trace.has(c) ? " vu" : "");
+          if (c === chemin[ici]) contenu = pion(); else if (c === w * h - 1) contenu = "🏁"; else if (portes.has(c)) contenu = trace.has(c) ? "" : "🚪";
+        } else if (gx % 2 !== gy % 2 && gx > 0 && gy > 0 && gx < 2 * w && gy < 2 * h) {
+          const a = gx % 2 ? ((gy - 2) / 2) * w + (gx - 1) / 2 : ((gy - 1) / 2) * w + (gx - 2) / 2;
+          const b = gx % 2 ? a + w : a + 1;
+          if (ouv[a] && ouv[a].has(b)) classe = "allee" + (trace.has(a) && trace.has(b) ? " vu" : "");
+        }
+        html += '<span class="' + classe + '">' + contenu + "</span>";
+      }
+      return html + "</div>";
+    };
+    p.fin = pp => { pp.texteFin = pp.justes === N ? "Sortie trouvée sans te tromper !" : "Tu as trouvé la sortie !"; pp.bonus = pp.justes === N ? 10 : 5; fin(pp); };
+    function poser() {
+      arreter();
+      const q = p.questions[p.k];
+      $ecran.innerHTML = '<div class="jeu">' + enTete(p, q) + '<div class="zone-plateau" id="laby">' + grille() + "</div>" + choixHTML(q) + "</div>";
+      brancher(p, q);
+      brancherChoix(p, q, () => { const k = p.k; p.k++; document.getElementById("laby").innerHTML = grille(); p.k = k; son("pop"); reussite(p, poser); });
+    }
+    poser();
+  }
+
+  // ----- Salle de jeux -----
+  function gainJeu(n) {
+    const j = aujourdhui();
+    if (!E.gainsJour || E.gainsJour.date !== j) E.gainsJour = { date: j, n: 0 };
+    const g = Math.max(0, Math.min(n, 60 - E.gainsJour.n));
+    E.gainsJour.n += g; E.pieces += g; serieDuJour(); sauver();
+    return g;
+  }
+  function finActivite(o) {
+    changer();
+    $ecran.className = "ecran";
+    son("gagne");
+    $ecran.innerHTML = '<div class="resultat"><div class="grosse-icone" style="font-size:80px">' + o.e + "</div><h1>" + esc(o.titre) + "</h1>" + (o.texte ? "<p>" + esc(o.texte) + "</p>" : "") +
+      '<div class="gain">' + (o.gain ? "<span>🪙 +" + o.gain + "</span>" : '<span class="aide">Pièces du jour déjà gagnées</span>') + (o.record ? "<span>🏆 Nouveau record !</span>" : "") + "</div>" +
+      '<div class="boutons"><button class="bouton second" id="encore">' + esc(o.encore || "Rejouer") + '</button><button class="bouton" id="suite">Continuer</button></div></div>';
+    dire(o.titre + (o.texte ? ". " + o.texte : ""));
+    document.getElementById("encore").onclick = o.rejouer;
+    document.getElementById("suite").onclick = defis;
+    verifierBadges();
+  }
+  const enTeteActivite = (titre, droite) => '<div class="titre-page"><button class="rond" id="retour" aria-label="Retour">←</button><h1>' + esc(titre) + '</h1><span style="flex:1"></span>' + (droite != null ? '<span class="pastille" id="info">' + droite + "</span>" : "") + "</div>";
+  function ecranActivite(titre, droite) { changer(); $ecran.className = "ecran"; $ecran.innerHTML = enTeteActivite(titre, droite); }
+
+  // Memory
+  function paires() {
+    if (C.id === "gs") return melange(["🐶", "🐱", "🐟", "🦁", "🥭", "🍌", "⚽", "🚗", "☀️", "🌙", "🦋", "🐢"]).slice(0, 4).map(e => [{ e }, { e }]);
+    if (C.id === "ci") return melange(MOTS_JOUR).slice(0, 6).map(([mot, e]) => [{ e }, { t: mot.replace(/^(le |la |les |l')/, "") }]);
+    const r = [], vus = new Set();
+    while (r.length < 8) { const a = 2 + Math.floor(Math.random() * 8), b = 2 + Math.floor(Math.random() * 8); if (vus.has(a * b)) continue; vus.add(a * b); r.push([{ t: a + " × " + b }, { t: String(a * b) }]); }
+    return r;
+  }
+  function memory() {
+    ecranActivite("Memory", "Coups : 0");
+    const p = paires(), cartesM = melange(p.flatMap((x, i) => [Object.assign({ id: i }, x[0]), Object.assign({ id: i }, x[1])]));
+    let ouvertes = [], trouvees = 0, coups = 0, bloque = false;
+    $ecran.insertAdjacentHTML("beforeend", '<p class="aide">Retourne deux cartes. Trouve toutes les paires !</p><div class="memory">' +
+      cartesM.map((c, k) => '<button class="carte-m" data-k="' + k + '"><span class="dos">❓</span><span class="face">' + (c.e ? "<b>" + c.e + "</b>" : "<i>" + esc(c.t) + "</i>") + "</span></button>").join("") + "</div>");
+    lire("Memory. Trouve les paires.");
+    document.getElementById("retour").onclick = defis;
+    $ecran.querySelectorAll(".carte-m").forEach(b => b.onclick = () => {
+      const c = cartesM[+b.dataset.k];
+      if (bloque || b.classList.contains("retournee")) return;
+      b.classList.add("retournee"); son("pop"); if (c.t && C.id !== "ce2") dire(c.t);
+      ouvertes.push([b, c]);
+      if (ouvertes.length < 2) return;
+      coups++; document.getElementById("info").textContent = "Coups : " + coups;
+      const [[b1, c1], [b2, c2]] = ouvertes; ouvertes = [];
+      if (c1.id === c2.id) {
+        trouvees++; b1.classList.add("trouvee"); b2.classList.add("trouvee"); setTimeout(() => son("bon"), 200);
+        if (trouvees === p.length) setTimeout(() => { if (!$ecran.querySelector(".memory")) return;
+          const best = E.records.memory, record = !best || coups < best; if (record) E.records.memory = coups;
+          finActivite({ e: "🃏", titre: "Toutes les paires !", texte: "En " + coups + " coups.", gain: gainJeu(8), record: record && !!best, rejouer: memory });
+        }, 900);
+      } else { bloque = true; setTimeout(() => { b1.classList.remove("retournee"); b2.classList.remove("retournee"); bloque = false; }, 1000); }
+    });
+  }
+
+  // Puzzle d'images du Sénégal
+  const SCENES = [
+    ["Le drapeau du Sénégal", "Le drapeau du Sénégal est vert, jaune et rouge, avec une étoile verte au milieu.", '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300"><rect width="100" height="300" fill="#00853F"/><rect x="100" width="100" height="300" fill="#FDEF42"/><rect x="200" width="100" height="300" fill="#E31B23"/><polygon points="150,110 161,140 193,141 168,160 177,191 150,173 123,191 132,160 107,141 139,140" fill="#00853F"/></svg>'],
+    ["Le baobab", "Le baobab est l'arbre emblème du Sénégal. Il peut vivre plus de mille ans.", '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300"><defs><linearGradient id="c" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff9a3c"/><stop offset="1" stop-color="#ffd27a"/></linearGradient></defs><rect width="300" height="300" fill="url(#c)"/><circle cx="225" cy="85" r="34" fill="#fff3b0"/><rect y="220" width="300" height="80" fill="#c9a55a"/><path d="M128 228 C134 182 126 150 118 120 L182 120 C174 150 166 182 172 228 Z" fill="#7a5230"/><path d="M122 125 C95 100 80 95 60 70 M128 120 C120 90 115 70 118 45 M150 118 C150 85 152 60 150 40 M172 120 C182 90 190 70 200 50 M178 125 C205 105 225 100 245 80" stroke="#7a5230" stroke-width="12" fill="none" stroke-linecap="round"/><g fill="#5e8c3a"><circle cx="60" cy="68" r="17"/><circle cx="118" cy="42" r="17"/><circle cx="150" cy="36" r="19"/><circle cx="200" cy="48" r="17"/><circle cx="246" cy="78" r="17"/></g><g fill="#8b6b3a"><circle cx="40" cy="250" r="6"/><circle cx="260" cy="262" r="5"/></g></svg>'],
+    ["La pirogue", "Les pirogues colorées de Kayar et de Joal partent pêcher en mer chaque matin.", '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300"><rect width="300" height="300" fill="#8fd3f0"/><circle cx="60" cy="60" r="28" fill="#ffe066"/><rect y="170" width="300" height="130" fill="#2f86c9"/><path d="M0 175 Q25 165 50 175 T100 175 T150 175 T200 175 T250 175 T300 175 V190 H0 Z" fill="#5fb0e6"/><path d="M40 170 L260 170 L235 205 L70 205 Z" fill="#e0533d"/><rect x="70" y="178" width="165" height="8" fill="#f5c518"/><rect x="76" y="190" width="153" height="7" fill="#2e9e5b"/><path d="M40 170 L18 148 L52 168 Z M260 170 L286 146 L250 168 Z" fill="#e0533d"/><line x1="150" y1="170" x2="150" y2="80" stroke="#7a5230" stroke-width="5"/><path d="M153 86 L212 160 L153 160 Z" fill="#fff"/><circle cx="110" cy="150" r="9" fill="#5a3b22"/><rect x="103" y="158" width="14" height="13" fill="#2f6fd1"/><path d="M0 240 Q40 230 80 240 T160 240 T240 240 T320 240" stroke="#5fb0e6" stroke-width="4" fill="none"/></svg>'],
+    ["Le Lac Rose", "Le Lac Rose, près de Dakar, est rose grâce à une toute petite algue. On y récolte du sel.", '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300"><rect width="300" height="300" fill="#bfe9fb"/><circle cx="240" cy="55" r="26" fill="#fff3b0"/><rect y="140" width="300" height="160" fill="#f29cc3"/><path d="M0 140 Q150 125 300 140 V152 H0 Z" fill="#e8c27a"/><g fill="#fff"><path d="M30 150 L60 108 L90 150 Z"/><path d="M80 150 L105 120 L130 150 Z"/><path d="M215 150 L248 104 L281 150 Z"/></g><ellipse cx="150" cy="222" rx="80" ry="11" fill="#f7b8d6"/><path d="M115 214 L185 214 L174 228 L126 228 Z" fill="#8b5a2b"/><circle cx="140" cy="200" r="7" fill="#5a3b22"/><rect x="134" y="206" width="12" height="9" fill="#2e9e5b"/></svg>'],
+    ["Le lion", "Le lion est le symbole du Sénégal : l'équipe nationale s'appelle les Lions de la Teranga.", '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300"><rect width="300" height="300" fill="#2e9e5b"/><circle cx="150" cy="155" r="118" fill="#b5651d"/><g fill="#8b4513"><circle cx="68" cy="98" r="30"/><circle cx="232" cy="98" r="30"/><circle cx="58" cy="192" r="30"/><circle cx="242" cy="192" r="30"/><circle cx="150" cy="48" r="32"/><circle cx="150" cy="262" r="30"/></g><circle cx="150" cy="160" r="80" fill="#f2b24a"/><circle cx="88" cy="98" r="18" fill="#f2b24a"/><circle cx="212" cy="98" r="18" fill="#f2b24a"/><circle cx="120" cy="140" r="10" fill="#2b2118"/><circle cx="180" cy="140" r="10" fill="#2b2118"/><path d="M134 174 L166 174 L150 192 Z" fill="#5a3b22"/><path d="M150 192 Q150 210 128 212 M150 192 Q150 210 172 212" stroke="#5a3b22" stroke-width="4" fill="none"/></svg>'],
+    ["La grande mosquée de Touba", "La grande mosquée de Touba a un très haut minaret, appelé Lamp Fall.", '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300"><rect width="300" height="300" fill="#7cc6ff"/><circle cx="50" cy="50" r="22" fill="#fff3b0"/><rect y="250" width="300" height="50" fill="#e8c27a"/><rect x="55" y="170" width="190" height="80" fill="#f4efe6"/><g fill="#2e9e5b"><path d="M85 170 A27 27 0 0 1 139 170 Z"/><path d="M161 170 A27 27 0 0 1 215 170 Z"/></g><rect x="138" y="40" width="24" height="210" fill="#f4efe6"/><path d="M136 40 L150 12 L164 40 Z" fill="#2e9e5b"/><rect x="133" y="90" width="34" height="8" fill="#d8cfc0"/><rect x="133" y="150" width="34" height="8" fill="#d8cfc0"/><g fill="#8b6b4a"><rect x="76" y="200" width="16" height="32" rx="8"/><rect x="106" y="200" width="16" height="32" rx="8"/><rect x="178" y="200" width="16" height="32" rx="8"/><rect x="208" y="200" width="16" height="32" rx="8"/></g></svg>'],
+  ];
+  function puzzle(k) {
+    k = k || 0;
+    const [nom, fait, svg] = SCENES[k % SCENES.length];
+    const n = C.id === "gs" ? 2 : C.id === "ci" ? 3 : (k % 2 ? 4 : 3);
+    let ordre; do { ordre = melange([...Array(n * n).keys()]); } while (ordre.every((v, i) => v === i));
+    let choisi = -1;
+    const url = "url('data:image/svg+xml;utf8," + encodeURIComponent(svg) + "')";
+    function dessiner() {
+      ecranActivite("Puzzle", (k % SCENES.length + 1) + "/" + SCENES.length);
+      $ecran.insertAdjacentHTML("beforeend", '<p class="aide">Touche deux morceaux pour les échanger.</p><div class="puzzle" style="grid-template-columns:repeat(' + n + ',1fr)">' +
+        ordre.map((v, i) => '<button class="piece' + (i === choisi ? " choisie" : "") + '" data-i="' + i + '" style="background-image:' + url + ";background-size:" + n * 100 + "% " + n * 100 + "%;background-position:" + (v % n) * 100 / (n - 1) + "% " + Math.floor(v / n) * 100 / (n - 1) + '%"></button>').join("") + "</div>" +
+        '<details class="modele"><summary>Voir le modèle</summary><div class="modele-img" style="background-image:' + url + '"></div></details>');
+      document.getElementById("retour").onclick = defis;
+      $ecran.querySelectorAll(".piece").forEach(b => b.onclick = () => {
+        const i = +b.dataset.i;
+        if (choisi < 0) { choisi = i; son("pop"); return dessiner(); }
+        [ordre[choisi], ordre[i]] = [ordre[i], ordre[choisi]]; choisi = -1; son("pop");
+        dessiner();
+        if (ordre.every((v, j) => v === j)) { $ecran.querySelector(".puzzle").classList.add("resolu"); son("gagne"); setTimeout(() => finActivite({ e: "🧩", titre: nom, texte: fait, gain: gainJeu(n * 3), rejouer: () => puzzle(k + 1), encore: "Image suivante" }), 1100); }
+      });
+    }
+    dessiner(); lire("Puzzle. Reconstitue l'image.");
+  }
+
+  // Mots découpés en syllabes : pour frapper le rythme et pour assembler.
+  const MOTS_SYL = [
+    ["mou-ton", "🐑"], ["ba-teau", "⛵"], ["ca-deau", "🎁"], ["vé-lo", "🚲"], ["pa-pa", "👨🏾"], ["ma-man", "👩🏾"], ["bé-bé", "👶🏾"], ["mo-to", "🏍️"], ["so-leil", "☀️"], ["ca-mion", "🚚"],
+    ["a-vion", "✈️"], ["pi-ment", "🌶️"], ["ca-fé", "☕"], ["ca-nard", "🦆"], ["che-val", "🐎"], ["la-pin", "🐰"], ["pois-son", "🐟"], ["sty-lo", "🖊️"], ["cou-teau", "🔪"], ["gâ-teau", "🎂"],
+    ["bal-lon", "⚽"], ["cha-peau", "🎩"], ["ro-bot", "🤖"], ["mi-cro", "🎤"], ["é-lé-phant", "🐘"], ["cho-co-lat", "🍫"], ["pa-pil-lon", "🦋"], ["ka-ra-té", "🥋"], ["a-na-nas", "🍍"], ["pa-ra-pluie", "☂️"],
+    ["kan-gou-rou", "🦘"], ["ha-ri-cot", "🫘"], ["po-ti-ron", "🎃"], ["to-bo-ggan", "🛝"], ["pi-a-no", "🎹"], ["vi-o-lon", "🎻"], ["ro-bi-net", "🚰"], ["ba-o-bab", "🌳"], ["mé-de-cin", "👩🏾‍⚕️"], ["Sé-né-gal", "🇸🇳"],
+    ["or-di-na-teur", "💻"], ["té-lé-vi-sion", "📺"], ["hé-li-co-ptè-re", "🚁"], ["a-li-ga-tor", "🐊"], ["ca-ra-mel", "🍬"], ["ma-ga-zi-ne", "📰"],
+  ].map(([m, e]) => ({ s: m.split("-"), mot: m.replace(/-/g, ""), e }));
+  const motsSyllabes = () => MOTS_SYL.filter(m => C.id === "gs" ? m.s.length <= 3 : C.id === "ci" ? m.s.length <= 4 && m.s.length >= 2 : m.s.length >= 3);
+  function frapper(tour, score) {
+    tour = tour || 0; score = score || 0;
+    if (tour >= 6) return finActivite({ e: "🥁", titre: score + " mot" + (score > 1 ? "s" : "") + " sur 6", texte: "Tu sais frapper les syllabes !", gain: gainJeu(score + 2), rejouer: () => frapper() });
+    const m = melange(motsSyllabes())[0];
+    let n = 0, fini = false;
+    ecranActivite("Frappe les syllabes", (tour + 1) + "/6");
+    $ecran.insertAdjacentHTML("beforeend", '<div class="mot-jour"><span class="mj-e">' + m.e + '</span><span class="mj-mot" id="motS">' + esc(m.mot) + '</span></div><p class="aide">Dis le mot et tape sur le tambour à chaque syllabe.</p>' +
+      '<button class="tambour" id="tam" aria-label="Tambour">🥁</button><div class="points" id="coups"></div><div class="boutons"><button class="bouton second" id="ecouterS">🔊</button><button class="bouton second" id="recom">↺</button><button class="bouton" id="fini">J\'ai fini</button></div>');
+    const dessinerCoups = () => document.getElementById("coups").innerHTML = Array.from({ length: n }, () => '<i class="plein"></i>').join("");
+    dire(m.mot); document.getElementById("retour").onclick = defis;
+    document.getElementById("ecouterS").onclick = () => dire(m.mot);
+    document.getElementById("tam").onclick = e => { if (fini) return; n++; ton(196 + n * 20); e.currentTarget.classList.remove("frappe"); void e.currentTarget.offsetWidth; e.currentTarget.classList.add("frappe"); dessinerCoups(); };
+    document.getElementById("recom").onclick = () => { n = 0; dessinerCoups(); };
+    document.getElementById("fini").onclick = () => {
+      if (fini || !n) return; fini = true;
+      const ok = n === m.s.length;
+      document.getElementById("motS").textContent = m.s.join(" - ");
+      if (ok) { son("bon"); bravo("Bravo !"); } else son("faux");
+      dire((ok ? "Bravo ! " : "Il y a " + m.s.length + " syllabes. ") + m.s.join(", "));
+      setTimeout(() => document.getElementById("motS") && frapper(tour + 1, score + (ok ? 1 : 0)), 2600);
+    };
+  }
+  function assembler(tour, score) {
+    tour = tour || 0; score = score || 0;
+    if (tour >= 6) return finActivite({ e: "🧱", titre: score + " mot" + (score > 1 ? "s" : "") + " sur 6 du premier coup", texte: "Tu sais assembler les syllabes !", gain: gainJeu(score + 2), rejouer: () => assembler() });
+    const m = melange(motsSyllabes())[0];
+    const intrus = C.id === "gs" ? [] : melange([...new Set(MOTS_SYL.flatMap(x => x.s))].filter(s => !m.s.includes(s))).slice(0, C.id === "ci" ? 1 : 2);
+    const tuiles = melange(m.s.concat(intrus));
+    let pos = 0, erreur = false;
+    ecranActivite("J'assemble les syllabes", (tour + 1) + "/6");
+    $ecran.insertAdjacentHTML("beforeend", '<div class="mot-jour"><span class="mj-e">' + m.e + '</span><div class="cases-syl">' + m.s.map((s, i) => '<span class="case-syl" data-c="' + i + '"></span>').join("") + "</div></div>" +
+      '<p class="aide">Touche les syllabes dans l\'ordre pour écrire le mot.</p><div class="tuiles">' + tuiles.map((s, i) => '<button class="tuile" data-t="' + i + '">' + esc(s) + "</button>").join("") + '</div><div class="boutons"><button class="bouton second" id="ecouterS">🔊 Écouter</button></div>');
+    dire(m.mot); document.getElementById("retour").onclick = defis;
+    document.getElementById("ecouterS").onclick = () => dire(m.mot);
+    $ecran.querySelectorAll(".tuile").forEach(b => b.onclick = () => {
+      if (pos >= m.s.length || b.disabled) return;
+      const s = tuiles[+b.dataset.t];
+      if (s === m.s[pos]) {
+        b.disabled = true; $ecran.querySelector('[data-c="' + pos + '"]').textContent = s; pos++; son("pop"); dire(s);
+        if (pos === m.s.length) { son("bon"); bravo(m.mot); setTimeout(() => dire(m.mot), 500); ajouterMot(m.mot, m.e); sauver(); setTimeout(() => $ecran.querySelector(".cases-syl") && assembler(tour + 1, score + (erreur ? 0 : 1)), 1800); }
+      } else { erreur = true; b.classList.add("secoue"); setTimeout(() => b.classList.remove("secoue"), 400); son("faux"); dire("Écoute bien : " + m.mot); }
+    });
+  }
+  // Répète le rythme : une suite de tambours à refaire, de plus en plus longue.
+  function ton(f, duree) {
+    try {
+      audio = audio || new (window.AudioContext || window.webkitAudioContext)();
+      const o = audio.createOscillator(), g = audio.createGain(), t = audio.currentTime, d = duree || 0.22;
+      o.type = "triangle"; o.frequency.value = f;
+      g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.35, t + 0.01); g.gain.exponentialRampToValueAtTime(0.0001, t + d);
+      o.connect(g).connect(audio.destination); o.start(t); o.stop(t + d + 0.02);
+    } catch (e) {}
+  }
+  function simon() {
+    const T = [["#e0533d", 196], ["#f5c518", 262], ["#2e9e5b", 330], ["#2f6fd1", 392]].slice(0, C.id === "gs" ? 3 : 4);
+    const vitesse = C.id === "ce2" ? 420 : 600;
+    let seq = [], k = 0, ecoute = false, timers = [];
+    ecranActivite("Répète le rythme", "0");
+    $ecran.insertAdjacentHTML("beforeend", '<p class="aide" id="etat">Écoute bien, puis refais le même rythme.</p><div class="tambours">' + T.map(([c], i) => '<button class="tambour-c" data-t="' + i + '" style="background:' + c + '" aria-label="Tambour ' + (i + 1) + '">🥁</button>').join("") + "</div>");
+    const bts = [...$ecran.querySelectorAll(".tambour-c")];
+    const allumer = i => { ton(T[i][1], 0.3); bts[i].classList.add("allume"); timers.push(setTimeout(() => bts[i].classList.remove("allume"), vitesse * 0.6)); };
+    arreter = () => timers.forEach(clearTimeout);
+    function tourSuivant() {
+      seq.push(Math.floor(Math.random() * T.length)); k = 0; ecoute = false;
+      document.getElementById("etat").textContent = "Écoute…";
+      seq.forEach((i, j) => timers.push(setTimeout(() => allumer(i), 700 + j * vitesse)));
+      timers.push(setTimeout(() => { ecoute = true; document.getElementById("etat").textContent = "À toi !"; }, 700 + seq.length * vitesse));
+    }
+    bts.forEach(b => b.onclick = () => {
+      if (!ecoute) return;
+      const i = +b.dataset.t; allumer(i);
+      if (i !== seq[k]) {
+        ecoute = false; son("faux");
+        const score = seq.length - 1, record = noterRecord("rythme", score);
+        return setTimeout(() => finActivite({ e: "🥁", titre: "Rythme de " + score + " coup" + (score > 1 ? "s" : ""), texte: "Ton record : " + (E.records.rythme || 0), gain: gainJeu(Math.min(10, score + 1)), record, rejouer: simon }), 700);
+      }
+      k++;
+      if (k === seq.length) { ecoute = false; document.getElementById("info").textContent = seq.length; bravo("👏 " + seq.length); setTimeout(tourSuivant, 800); }
+    });
+    document.getElementById("retour").onclick = defis;
+    lire("Répète le rythme. Écoute bien.");
+    tourSuivant();
+  }
+
+  // Logique : suites et intrus
+  const CATEGORIES = {
+    fruits: [["🍎", "la pomme"], ["🍌", "la banane"], ["🥭", "la mangue"], ["🍍", "l'ananas"], ["🍉", "la pastèque"], ["🍊", "l'orange"]],
+    animaux: [["🐶", "le chien"], ["🐱", "le chat"], ["🐐", "la chèvre"], ["🐑", "le mouton"], ["🐎", "le cheval"], ["🐄", "la vache"]],
+    vehicules: [["🚗", "la voiture"], ["🚌", "le bus"], ["🚚", "le camion"], ["🏍️", "la moto"], ["🚲", "le vélo"], ["✈️", "l'avion"]],
+    habits: [["👕", "le tee-shirt"], ["👗", "la robe"], ["👖", "le pantalon"], ["🧢", "la casquette"], ["👟", "la chaussure"], ["🧦", "la chaussette"]],
+    musique: [["🥁", "le tambour"], ["🎸", "la guitare"], ["🎺", "la trompette"], ["🎹", "le piano"], ["🎻", "le violon"]],
+  };
+  function questionLogique() {
+    const niv = C.id === "gs" ? 0 : C.id === "ci" ? 1 : 2, t = Math.random();
+    const img = ([e, nom]) => ({ k: "image", e, dire: nom });
+    if (t < 0.4) {
+      const motifs = [["AB", "AAB"], ["AB", "AAB", "ABC", "ABB"], ["AAB", "ABC", "ABB", "ABCD", "AABB"]][niv];
+      const motif = motifs[Math.floor(Math.random() * motifs.length)];
+      const cat = Object.values(CATEGORIES)[Math.floor(Math.random() * 5)], sym = melange(cat).slice(0, 4);
+      const lettres = [...new Set(motif)], suite = Array.from({ length: Math.max(6, motif.length * 2) + 1 }, (_, i) => sym[lettres.indexOf(motif[i % motif.length])]);
+      const bonne = suite.pop();
+      const autres = melange(sym.filter(x => x !== bonne)).slice(0, 2);
+      return { consigne: "Qu'est-ce qui vient après ?", scene: { k: "tas", items: suite.map(x => x[0]).concat(["❓"]) }, choix: [img(bonne)].concat(autres.map(img)), bonne: 0, dire: "Regarde bien la suite. Qu'est-ce qui vient après ?", disposition: "trois" };
+    }
+    if (t < 0.7 && niv > 0) {
+      const regles = niv === 1 ? [[1, "+"], [2, "+"], [1, "-"]] : [[2, "+"], [5, "+"], [10, "+"], [3, "+"], [10, "-"], [2, "×"]];
+      const [pas, op] = regles[Math.floor(Math.random() * regles.length)];
+      let x = op === "×" ? 1 + Math.floor(Math.random() * 3) : op === "-" ? (niv === 1 ? 8 : 60) + Math.floor(Math.random() * 10) : Math.floor(Math.random() * (niv === 1 ? 5 : 30));
+      const l = [x]; for (let i = 0; i < 4; i++) { x = op === "+" ? x + pas : op === "-" ? x - pas : x * pas; l.push(x); }
+      const bonne = l.pop(), ch = n => ({ k: "chiffre", t: String(n), dire: String(n) });
+      const autres = [...new Set([bonne + 1, bonne - 1, bonne + pas, bonne - 2, bonne + 2].filter(v => v !== bonne && v >= 0))].slice(0, 2);
+      return { consigne: "Quel nombre vient après ?", scene: { k: "mots", t: l.join("  ") + "  ?" }, choix: [ch(bonne)].concat(autres.map(ch)), bonne: 0, dire: "Trouve le nombre suivant : " + l.join(", "), disposition: "trois" };
+    }
+    const noms = melange(Object.keys(CATEGORIES)), a = melange(CATEGORIES[noms[0]]).slice(0, 3), b = melange(CATEGORIES[noms[1]])[0];
+    return { consigne: "Trouve l'intrus", scene: null, choix: [img(b)].concat(a.map(img)), bonne: 0, dire: "Trouve l'intrus : lequel n'est pas de la même famille que les autres ?" };
+  }
+  function logique() {
+    changer();
+    $ecran.className = "ecran sans-marge";
+    const p = { n: { id: "logique", jeu: "qdj", e: "🧠" }, questions: Array.from({ length: 8 }, questionLogique), k: 0, justes: 0, premier: true, d: 2 };
+    p.fin = pp => finActivite({ e: "🧠", titre: pp.justes + " sur 8 du premier coup", texte: "Ton cerveau a bien travaillé !", gain: gainJeu(pp.justes + 2), rejouer: logique });
+    jeuSimple(p, false);
+  }
+  // Sudoku 4 × 4
+  function sudoku() {
+    const S = C.id === "gs" ? ["🍎", "🍌", "🥭", "🍇"] : C.id === "ci" ? ["🚗", "⚽", "🦁", "⭐"] : ["1", "2", "3", "4"];
+    let g = [[0, 1, 2, 3], [2, 3, 0, 1], [1, 0, 3, 2], [3, 2, 1, 0]];
+    const perm = melange([0, 1, 2, 3]); g = g.map(r => r.map(v => perm[v]));
+    if (Math.random() < 0.5) g = [g[1], g[0], g[2], g[3]];
+    if (Math.random() < 0.5) g = [g[2], g[3], g[0], g[1]];
+    if (Math.random() < 0.5) g = g.map(r => [r[1], r[0], r[2], r[3]]);
+    if (Math.random() < 0.5) g = g[0].map((_, c) => g.map(r => r[c]));
+    const donnees = C.id === "gs" ? 10 : C.id === "ci" ? 8 : 6;
+    const fixes = new Set(melange([...Array(16).keys()]).slice(0, donnees));
+    const v = Array.from({ length: 16 }, (_, i) => fixes.has(i) ? g[Math.floor(i / 4)][i % 4] : null);
+    let pinceau = 0;
+    function conflits() {
+      const mauvais = new Set();
+      const groupes = [];
+      for (let i = 0; i < 4; i++) { groupes.push([0, 1, 2, 3].map(c => i * 4 + c)); groupes.push([0, 1, 2, 3].map(r => r * 4 + i)); }
+      [0, 2, 8, 10].forEach(s => groupes.push([s, s + 1, s + 4, s + 5]));
+      groupes.forEach(gr => gr.forEach(a => gr.forEach(b => { if (a !== b && v[a] != null && v[a] === v[b]) { mauvais.add(a); mauvais.add(b); } })));
+      return mauvais;
+    }
+    function dessiner() {
+      const m = conflits();
+      ecranActivite("Sudoku", "4 × 4");
+      $ecran.insertAdjacentHTML("beforeend", '<p class="aide">Chaque ligne, chaque colonne et chaque carré doit avoir les 4 ' + (C.id === "ce2" ? "chiffres" : "images") + ', une seule fois.</p>' +
+        '<div class="sudoku">' + v.map((x, i) => '<button class="case-s' + (fixes.has(i) ? " fixe" : "") + (m.has(i) ? " conflit" : "") + '" data-i="' + i + '">' + (x == null ? "" : S[x]) + "</button>").join("") + "</div>" +
+        '<div class="pinceaux">' + S.map((s, i) => '<button class="pinceau' + (i === pinceau ? " choisi" : "") + '" data-p="' + i + '">' + s + "</button>").join("") + "</div>");
+      document.getElementById("retour").onclick = defis;
+      $ecran.querySelectorAll(".pinceau").forEach(b => b.onclick = () => { pinceau = +b.dataset.p; son("pop"); dessiner(); });
+      $ecran.querySelectorAll(".case-s:not(.fixe)").forEach(b => b.onclick = () => {
+        const i = +b.dataset.i; v[i] = v[i] === pinceau ? null : pinceau; son("pop");
+        if (v.every(x => x != null) && !conflits().size) { dessiner(); $ecran.querySelector(".sudoku").classList.add("resolu"); son("gagne"); return setTimeout(() => finActivite({ e: "🔢", titre: "Sudoku réussi !", texte: "Bravo, tout est à sa place.", gain: gainJeu(10), rejouer: sudoku }), 1000); }
+        dessiner();
+        if (conflits().has(i)) dire("Attention, il y a deux fois le même.");
+      });
+    }
+    dessiner(); lire("Sudoku. Chaque ligne et chaque colonne doit avoir les quatre images, une seule fois.");
+  }
+
+  // ----- Le village : chaque étape réussie donne un nouvel élément à placer -----
+  const VILLAGE = H.village || { titre: "Mon village", fond: "village", items: [
+    ["🛖", "une case"], ["🌳", "un baobab"], ["🪣", "un puits"], ["🐐", "une chèvre"], ["🐓", "un coq"], ["🌴", "un palmier"], ["🏠", "une maison"], ["🕌", "une mosquée"], ["🏫", "une école"], ["🧺", "un marché"],
+    ["🌽", "un champ de maïs"], ["🐄", "une vache"], ["🐑", "un mouton"], ["🥭", "un manguier"], ["🛶", "une pirogue"], ["⛪", "une église"], ["🏥", "une case de santé"], ["⚽", "un terrain de foot"], ["🚰", "une fontaine"], ["💡", "un lampadaire"],
+    ["🚌", "un car rapide"], ["🐎", "une charrette"], ["🌻", "un jardin de fleurs"], ["🏪", "une boutique"], ["🥁", "un tam-tam"], ["🐔", "des poules"], ["🐕", "un chien"], ["🦜", "un perroquet"], ["🤼🏾", "une arène de lutte"], ["🛣️", "une route"],
+  ] };
+  const debloques = () => Math.min(VILLAGE.items.length, NIVEAUX.concat([NIVEAU_BOSS]).filter(n => etoilesDe(n) > 0).length + E.bulletins.length);
+  function village(choix) {
+    changer();
+    $ecran.className = "ecran";
+    const places = Object.values(E.village), libres = VILLAGE.items.slice(0, debloques()).map((x, i) => i).filter(i => !places.includes(i));
+    if (choix != null && !libres.includes(choix)) choix = null;
+    $ecran.innerHTML = enTeteActivite(VILLAGE.titre, places.length + "/" + VILLAGE.items.length) +
+      '<div class="village ' + VILLAGE.fond + '">' + Array.from({ length: 42 }, (_, t) => { const it = E.village[t]; return '<button class="tuile-v' + (it == null && choix != null ? " libre" : "") + '" data-t="' + t + '">' + (it != null ? VILLAGE.items[it][0] : "") + "</button>"; }).join("") + "</div>" +
+      (libres.length ? '<p class="aide">' + (choix == null ? "Choisis ce que tu veux construire :" : "Touche une place libre pour poser " + esc(VILLAGE.items[choix][1]) + ".") + '</p><div class="a-placer">' + libres.map(i => '<button class="objet petit' + (i === choix ? " porte" : "") + '" data-c="' + i + '"><b>' + VILLAGE.items[i][0] + "</b></button>").join("") + "</div>"
+        : '<p class="aide">' + (debloques() < VILLAGE.items.length ? "Réussis une nouvelle étape pour gagner un nouvel élément !" : "Ton " + VILLAGE.titre.replace(/^Mon /, "").toLowerCase() + " est complet. Bravo !") + "</p>");
+    lire(VILLAGE.titre + ". " + (libres.length ? "Tu as " + libres.length + " élément" + (libres.length > 1 ? "s" : "") + " à placer." : ""));
+    document.getElementById("retour").onclick = defis;
+    $ecran.querySelectorAll("[data-c]").forEach(b => b.onclick = () => { son("pop"); dire(VILLAGE.items[+b.dataset.c][1]); village(+b.dataset.c); });
+    $ecran.querySelectorAll(".tuile-v").forEach(b => b.onclick = () => {
+      const t = +b.dataset.t, it = E.village[t];
+      if (it != null) { if (choix == null) return dire(VILLAGE.items[it][1]); return; }
+      if (choix == null) return;
+      E.village[t] = choix; sauver(); son("piece"); dire("Tu as construit " + VILLAGE.items[choix][1] + " !");
+      village();
+    });
   }
 
   // ----- Espace parent -----
