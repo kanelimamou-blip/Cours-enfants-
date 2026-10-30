@@ -1686,6 +1686,7 @@ details[open] { display: grid; gap: 8px; }
     const ajout = document.getElementById("okBon");
     if (ajout) ajout.onclick = () => { const nom = document.getElementById("champBon").value.trim(), prix = parseInt(document.getElementById("champPrix").value, 10); if (!nom || !(prix > 0)) return parent("Indique un nom et un prix en pièces."); E.catalogue = catalogue().concat([["🎁", nom, prix]]); sauver(); parent("Récompense ajoutée : " + nom); };
     $ecran.querySelectorAll("[data-bul]").forEach(b => b.onclick = () => bulletin(E.bulletins[+b.dataset.bul], true));
+    document.getElementById("partagerResume").onclick = partagerResume;
     const of = document.getElementById("okFamille");
     if (of) of.onclick = () => { const c = window.Synchro.normaliser(document.getElementById("champFamille").value); if (!window.Synchro.valide(c)) return parent("Le code doit ressembler à ABCD-EFGH-JKLM."); E.famille = c; sauver(); demarrerSync(); parent("Téléphone relié ! Papa verra les progrès de " + prenom() + "."); };
     const dl = document.getElementById("delier"); if (dl) dl.onclick = () => { E.famille = ""; sauver(); parent("Téléphone délié."); };
@@ -1719,7 +1720,19 @@ details[open] { display: grid; gap: 8px; }
     const { parties, min, acquis, coince, reprendre } = donneesSemaine();
     const liste = a => a.length ? a.map(x => "<li>" + x + "</li>").join("") : '<li class="note">Rien pour l\'instant</li>';
     return "<h2>La semaine de " + esc(prenom()) + '</h2><div class="bloc"><div class="stat"><div><b>' + parties + "</b><span>parties</span></div><div><b>" + min + " min</b><span>de jeu</span></div><div><b>" + E.serie.n + "</b><span>jours de suite</span></div></div>" +
-      '<div class="resume"><strong>✅ Acquis</strong><ul>' + liste(acquis.map(esc)) + "</ul><strong>⚠️ Ça coince</strong><ul>" + liste(coince.map(esc)) + "</ul><strong>📌 À reprendre avec " + esc(prenom()) + "</strong><ul>" + liste(reprendre) + "</ul></div></div>";
+      '<div class="resume"><strong>✅ Acquis</strong><ul>' + liste(acquis.map(esc)) + "</ul><strong>⚠️ Ça coince</strong><ul>" + liste(coince.map(esc)) + "</ul><strong>📌 À reprendre avec " + esc(prenom()) + "</strong><ul>" + liste(reprendre) + "</ul></div><button class=\"petit-bouton\" id=\"partagerResume\">📤 Envoyer ce résumé à papa (WhatsApp)</button></div>";
+  }
+  // Résumé en texte simple, envoyé par WhatsApp (ou un autre moyen de partage du téléphone).
+  function partagerResume() {
+    const { parties, min, acquis, coince, reprendre } = donneesSemaine();
+    const texte = h => { const d = document.createElement("div"); d.innerHTML = h; return d.textContent; };
+    const liste = a => a.length ? a.map(x => "• " + texte(x)).join("\n") : "• rien pour l'instant";
+    const att = E.bons.filter(b => b.statut === "attente");
+    const msg = "📚 La semaine de " + prenom() + " (" + C.classe + ")\n" + parties + " parties · " + min + " min de jeu · 🔥 " + E.serie.n + " jours de suite · ⭐ " + totalEtoiles() + " étoiles\n\n✅ Acquis\n" + liste(acquis) + "\n\n⚠️ Ça coince\n" + liste(coince) + "\n\n📌 À reprendre ensemble\n" + liste(reprendre) +
+      (att.length ? "\n\n🎁 Récompenses demandées\n" + att.map(b => "• " + b.e + " " + b.nom + " (" + b.prix + " pièces)").join("\n") : "") +
+      (E.bulletins[0] ? "\n\n📝 Dernière composition : " + E.bulletins[0].moyenne + "/10 · " + E.bulletins[0].mention : "");
+    if (navigator.share) navigator.share({ text: msg }).catch(() => {});
+    else window.open("https://wa.me/?text=" + encodeURIComponent(msg), "_blank");
   }
   function bonsParent() {
     const att = E.bons.map((b, i) => [b, i]).filter(([b]) => b.statut === "attente");
