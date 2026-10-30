@@ -287,6 +287,20 @@ details[open] { display: grid; gap: 8px; }
 .lutteurs { position: absolute; top: 8px; transform: translateX(-50%); font-size: 40px; transition: left .5s; white-space: nowrap; }
 .nom-adv { position: absolute; right: 8px; bottom: 2px; font-size: 12px; font-weight: 700; color: var(--doux); }
 
+/* Mascotte et taupes */
+.mascotte { position: fixed; left: max(10px, env(safe-area-inset-left, 0px)); bottom: calc(14px + env(safe-area-inset-bottom, 0px)); z-index: 40; display: flex; align-items: flex-end; gap: 6px; pointer-events: none; animation: mascotte 2.6s forwards; max-width: 80%; }
+.mascotte .m-e { font-size: 52px; line-height: 1; animation: saute .6s 2; }
+.mascotte .m-b { background: #fff; border-radius: 16px 16px 16px 4px; padding: 8px 12px; font-weight: 700; font-size: 16px; box-shadow: 0 3px 0 var(--trait); }
+@keyframes mascotte { from { transform: translateX(-120%); } 12% { transform: none; } 88% { transform: none; opacity: 1; } to { transform: translateX(-120%); opacity: 0; } }
+.terrier { flex: 1; min-height: 300px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; padding: 16px max(16px, env(safe-area-inset-right, 0px)) 20px max(16px, env(safe-area-inset-left, 0px)); background: linear-gradient(#bfe9a6, #8fcf8a); align-content: center; }
+.trou { position: relative; height: 120px; overflow: hidden; border-radius: 0 0 50% 50% / 0 0 30% 30%; }
+.trou::after { content: ""; position: absolute; left: 4%; right: 4%; bottom: 0; height: 34px; border-radius: 50%; background: #5a3b22; box-shadow: inset 0 6px 0 #3e2716; z-index: 0; }
+.taupe { position: absolute; left: 50%; bottom: 6px; width: 92%; min-height: 86px; transform: translate(-50%, 110%); transition: transform .22s ease-out; z-index: 1; background: #c98c5a; border-radius: 46% 46% 18px 18px; display: grid; place-items: center; padding: 6px; box-shadow: inset 0 -6px 0 rgba(0,0,0,.12); }
+.taupe.dehors { transform: translate(-50%, 0); }
+.taupe.tape { background: var(--vert); }
+.taupe.faux { background: #9b8b7c; }
+.taupe .lettre, .taupe .chiffre { color: #fff; text-shadow: 0 2px 0 rgba(0,0,0,.25); }
+
 /* Habillage football */
 .grille.cartes { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .case-carte { padding: 0; display: grid; }
@@ -491,6 +505,80 @@ details[open] { display: grid; gap: 8px; }
     return () => melange(B).concat(tirer(B, 2)).map(([c, b, m]) => q(c, null, it(b), m.map(it), { disposition: "ligne", dire: c.replace("…", "") + " quoi ?" }));
   }
 
+  // ---------- CUISINE ----------
+  const PLATS = [["thiéboudienne", "🍛", "le "], ["yassa", "🍗", "le "], ["mafé", "🍲", "le "], ["thiakry", "🥣", "le "], ["bissap", "🌺", "le "], ["pastels", "🥟", "les "], ["beignets", "🍩", "les "], ["pain", "🥖", "le "]];
+  function ingredients() {
+    const I = [
+      ["Pour le thiéboudienne, il faut du…", ["🐟", "poisson"], [["🍫", "chocolat"], ["🍦", "glace"]]],
+      ["Pour le thiéboudienne, il faut aussi du…", ["🍚", "riz"], [["🍬", "bonbon"], ["🍪", "biscuit"]]],
+      ["Pour le yassa, on coupe beaucoup d'…", ["🧅", "oignons"], [["🍓", "fraises"], ["🍫", "chocolat"]]],
+      ["Pour le yassa, on presse du…", ["🍋", "citron"], [["🧀", "fromage"], ["🍩", "beignet"]]],
+      ["Le mafé est fait avec de la pâte d'…", ["🥜", "arachide"], [["🍎", "pomme"], ["🍇", "raisin"]]],
+      ["Pour le thiakry, on met du…", ["🥛", "lait caillé"], [["🧅", "oignon"], ["🌶️", "piment"]]],
+      ["Le bissap est fait avec des…", ["🌺", "fleurs d'hibiscus"], [["🐟", "poissons"], ["🥔", "pommes de terre"]]],
+      ["Pour faire les beignets, il faut de la…", ["🌾", "farine"], [["🐟", "poisson"], ["🧂", "sel seulement"]]],
+    ];
+    const it = ([e, t]) => ({ k: "image", e, t, dire: t });
+    return () => melange(I).map(([c, b, m]) => q(c, null, it(b), m.map(it), { disposition: "trois", dire: c.replace("…", "") + " quoi ?" }));
+  }
+  function recette() {
+    const R = [["🍅", "tomates"], ["🧅", "oignons"], ["🥕", "carottes"], ["🐟", "poissons"], ["🍋", "citrons"]];
+    return () => fois(8, () => {
+      const n = 1 + Math.floor(Math.random() * 5), [e, nom] = hasard(R);
+      const autres = tirer([1, 2, 3, 4, 5].filter(x => x !== n), 2);
+      return q("Mets " + n + " " + nom + " dans la marmite", { k: "phrase", t: "🍲 " + n + " " + nom }, tas(n, e), autres.map(x => tas(x, e)), { dire: "La recette dit : " + NOMBRES[n] + " " + nom + ". Touche le bon groupe.", disposition: "trois" });
+    });
+  }
+  function etapes() {
+    const E = [
+      ["Avant de cuisiner, d'abord je…", ["🧼", "me lave les mains"], [["🍽️", "mange"], ["🛏️", "vais au lit"]]],
+      ["À la fin du repas, je…", ["🧽", "fais la vaisselle"], [["🛒", "vais au marché"], ["🔪", "coupe les légumes"]]],
+      ["Avant de cuire le riz, je…", ["🛒", "l'achète au marché"], [["🍽️", "le mange"], ["🗑️", "le jette"]]],
+      ["Quand le plat est prêt, on…", ["🍽️", "mange ensemble"], [["🛒", "va au marché"], ["🌱", "plante le riz"]]],
+      ["Le matin, on prend…", ["🥖", "le petit-déjeuner"], [["🍛", "le dîner"], ["🌙", "le goûter de la nuit"]]],
+      ["À midi, au Sénégal, on mange souvent…", ["🍛", "le thiéboudienne"], [["🥣", "les céréales"], ["🎂", "un gâteau"]]],
+      ["La marmite est chaude, je…", ["🧤", "fais attention"], [["✋🏾", "la touche"], ["🏃🏾", "cours autour"]]],
+      ["Pour servir le bissap bien frais, je le mets…", ["🧊", "au frais"], [["🔥", "sur le feu"], ["☀️", "au soleil"]]],
+    ];
+    const it = ([e, t]) => ({ k: "image", e, t, dire: t });
+    return () => melange(E).map(([c, b, m]) => q(c, null, it(b), m.map(it), { disposition: "ligne", dire: c.replace("…", "") + " quoi ?" }));
+  }
+  const VETEMENTS = [["robe", "👗", "la "], ["boubou", "🥻", "le "], ["chapeau", "👒", "le "], ["foulard", "🧣", "le "], ["sandales", "🩴", "les "], ["baskets", "👟", "les "], ["sac", "👜", "le "], ["lunettes", "🕶️", "les "], ["pantalon", "👖", "le "]];
+  function habits() {
+    const M = [
+      ["Il fait très chaud, je mets…", ["🩴", "des sandales"], [["🧥", "un gros manteau"], ["🧤", "des gants"]]],
+      ["Pour la Tabaski, je mets mon beau…", ["🥻", "boubou"], [["🩱", "maillot de bain"], ["🥾", "bottes"]]],
+      ["Il y a beaucoup de soleil, je protège mes yeux avec…", ["🕶️", "des lunettes"], [["🧦", "des chaussettes"], ["🧣", "un foulard"]]],
+      ["Pour aller à la plage, je prends…", ["🩱", "mon maillot"], [["🧥", "mon manteau"], ["🎒", "mon cartable"]]],
+      ["Pour aller à l'école, je prends…", ["🎒", "mon cartable"], [["👜", "le sac de maman"], ["🩱", "mon maillot"]]],
+      ["Il pleut, je prends…", ["☂️", "un parapluie"], [["🕶️", "des lunettes"], ["🩴", "des sandales"]]],
+    ];
+    const it = ([e, t]) => ({ k: "image", e, t, dire: t });
+    return () => melange(M).concat(imagier(VETEMENTS)().slice(0, 2)).map(x => Array.isArray(x) ? q(x[0], null, it(x[1]), x[2].map(it), { disposition: "ligne", dire: x[0].replace("…", "") + " quoi ?" }) : x);
+  }
+
+  // ---------- DOCTEURE ----------
+  const TROUSSE = [["stéthoscope", "🩺", "le "], ["pansement", "🩹", "le "], ["thermomètre", "🌡️", "le "], ["seringue", "💉", "la "], ["médicament", "💊", "le "], ["masque", "😷", "le "], ["blouse", "🥼", "la "]];
+  function quiSoigne() {
+    const D = [
+      ["Qui soigne les dents ?", ["🦷", "le dentiste"]], ["Qui soigne les bébés et les enfants ?", ["👶🏾", "la pédiatre"]], ["Qui soigne les yeux ?", ["👁️", "l'ophtalmologue"]],
+      ["Qui répare les os cassés ?", ["🦴", "l'orthopédiste"]], ["Qui opère à l'hôpital ?", ["🏥", "la chirurgienne"]], ["Qui soigne les animaux ?", ["🐶", "le vétérinaire"]],
+      ["Qui aide les mamans à avoir leur bébé ?", ["🤰🏾", "la sage-femme"]], ["Qui écoute ton cœur avec un stéthoscope ?", ["🩺", "la docteure"]],
+    ];
+    const it = ([e, t]) => ({ k: "image", e, t, dire: t });
+    return () => melange(D).map(([c, b]) => q(c, null, it(b), tirer(D.filter(x => x[1] !== b), 2).map(x => it(x[1])), { disposition: "trois" }));
+  }
+  function bobos() {
+    return () => fois(8, i => {
+      if (i % 2) {
+        const S = [["Le bébé a chaud et de la fièvre. Je prends…", "🌡️", "le thermomètre", ["🩹", "🦷"]], ["Mon ami s'est coupé le doigt. Je mets…", "🩹", "un pansement", ["🌡️", "💉"]], ["Pour écouter le cœur, j'utilise…", "🩺", "le stéthoscope", ["🩹", "💊"]], ["Avant de soigner, la docteure se lave…", "🧼", "les mains", ["🦶", "🍽️"]]][i % 4 === 1 ? 0 : i % 4 === 3 ? 1 : Math.floor(Math.random() * 4)];
+        return q(S[0], null, { k: "image", e: S[1], dire: S[2] }, S[3].map(e => ({ k: "image", e })), { disposition: "trois", dire: S[0].replace("…", "") + " quoi ?" });
+      }
+      const n = 1 + Math.floor(Math.random() * 5);
+      return q("Le nounours a " + n + " bobo" + (n > 1 ? "s" : "") + ". Combien de pansements ?", { k: "tas", items: ["🧸"].concat(fois(n, () => "🔴")) }, chiffre(n), tirer([1, 2, 3, 4, 5].filter(x => x !== n), 2).map(chiffre), { dire: "Compte les bobos du nounours. Combien de pansements faut-il ?" });
+    });
+  }
+
   window.CONTENU = {
     id: "gs",
     titreAppli: "Mon école GS",
@@ -500,6 +588,9 @@ details[open] { display: grid; gap: 8px; }
     avatar: "🦋",
     feminin: true,
     coin: true,
+    habillage: {
+      boutique: [["🎀", "Nœud", 20], ["🕶️", "Lunettes", 30], ["👒", "Chapeau de paille", 30], ["🌸", "Fleur", 30], ["🧣", "Foulard", 40], ["👜", "Sac", 50], ["💍", "Bague", 60], ["👗", "Robe de fête", 80], ["👑", "Couronne", 120]],
+    },
     lettresATracer: ["A", "E", "I", "O", "U", "M", "L", "P", "B", "T"],
     comptines: [
       { titre: "Un, deux, trois, nous irons au bois", e: "🍒", lignes: [["Un, deux, trois,", "1️⃣"], ["nous irons au bois,", "🌳"], ["quatre, cinq, six,", "4️⃣"], ["cueillir des cerises,", "🍒"], ["sept, huit, neuf,", "7️⃣"], ["dans mon panier neuf,", "🧺"], ["dix, onze, douze,", "🔟"], ["elles seront toutes rouges !", "🔴"]] },
@@ -534,11 +625,23 @@ details[open] { display: grid; gap: 8px; }
         { id: "gs-p1-c5", palier: "p1", icone: "🐘", titre: "Grand et petit", objectif: "Comparer des tailles", questions: grandPetit() },
         { id: "gs-p1-c6", palier: "p1", icone: "🔴", titre: "Les suites", objectif: "Continuer un rythme", questions: suites() },
       ] },
+      { id: "cuisine", titre: "La cuisine", icone: "🍲", couleur: "#ffd1b3", lecons: [
+        { id: "gs-p1-k1", palier: "p1", icone: "🍛", titre: "Les plats de chez nous", objectif: "Nommer les plats sénégalais (vocabulaire)", questions: imagier(PLATS) },
+        { id: "gs-p1-k2", palier: "p1", icone: "🧅", titre: "Les ingrédients", objectif: "Vocabulaire des aliments", questions: ingredients() },
+        { id: "gs-p1-k3", palier: "p1", icone: "🍅", titre: "Je compte pour la recette", objectif: "Associer un nombre et une quantité", questions: recette() },
+        { id: "gs-p1-k4", palier: "p1", icone: "⏱️", titre: "Avant, après", objectif: "Ordonner les moments (se repérer dans le temps)", questions: etapes() },
+      ] },
+      { id: "docteure", titre: "Docteure Binta", icone: "🩺", couleur: "#ffd6e7", lecons: [
+        { id: "gs-p1-m1", palier: "p1", icone: "🩺", titre: "La trousse de la docteure", objectif: "Vocabulaire du soin", questions: imagier(TROUSSE) },
+        { id: "gs-p1-m2", palier: "p1", icone: "🦷", titre: "Qui soigne quoi ?", objectif: "Les métiers de la santé", questions: quiSoigne() },
+        { id: "gs-p1-m3", palier: "p1", icone: "🩹", titre: "Soigner le nounours", objectif: "Compter jusqu'à 5, gestes de soin", questions: bobos() },
+      ] },
       { id: "decouvrir", titre: "Découvrir", icone: "🌍", couleur: "#bcdcf5", lecons: [
         { id: "gs-p1-d1", palier: "p1", icone: "🧍🏾", titre: "Mon corps", objectif: "Nommer les parties du corps", questions: imagier(CORPS) },
         { id: "gs-p1-d2", palier: "p1", icone: "🐄", titre: "Qui fait ce bruit ?", objectif: "Reconnaître les animaux familiers", questions: cris() },
         { id: "gs-p1-d3", palier: "p1", icone: "🧩", titre: "L'intrus", objectif: "Classer par familles", questions: intrus() },
         { id: "gs-p1-d4", palier: "p1", icone: "🧼", titre: "Je suis propre", objectif: "Connaître les gestes d'hygiène", questions: propre() },
+        { id: "gs-p1-d5", palier: "p1", icone: "👗", titre: "Je m'habille", objectif: "Vocabulaire des vêtements, selon le temps", questions: habits() },
       ] },
     ],
   };
@@ -561,6 +664,7 @@ details[open] { display: grid; gap: 8px; }
     ["Louga", "savane", "🦅", "un aigle"], ["Saint-Louis", "fleuve", "🦢", "un pélican"], ["Podor", "fleuve", "🐊", "un crocodile"], ["Matam", "fleuve", "🦛", "un hippopotame"],
     ["Bakel", "fleuve", "🦒", "une girafe"], ["Tambacounda", "savane", "🐒", "un singe"], ["Kédougou", "foret", "🐘", "un éléphant"], ["Kolda", "foret", "🐆", "un léopard"],
     ["Sédhiou", "foret", "🦓", "un zèbre"], ["Ziguinchor", "foret", "🦔", "un hérisson"], ["Cap Skirring", "mer", "🐙", "une pieuvre"],
+    ["Delta du Saloum", "fleuve", "🦆", "un canard"], ["Bandia", "savane", "🦏", "un rhinocéros"], ["Kayar", "mer", "🦈", "un requin"],
   ];
   let BOSS = { nom: "Niokolo-Koba", zone: "Le parc du Niokolo-Koba", e: "🦁", animal: "le lion", titre: "Le défi du Lion", rival: "Le Lion", aide: "Bats le lion à la course de pirogues !", bloque: "Termine toutes les étapes pour affronter le lion !" };
   let DECORS = { mer: ["Au bord de la mer", "var(--mer)"], savane: ["Dans la savane", "var(--savane)"], fleuve: ["Le long du fleuve", "var(--fleuve)"], foret: ["Dans la forêt", "var(--foret)"] };
@@ -605,6 +709,7 @@ details[open] { display: grid; gap: 8px; }
     const court = exemple.choix.every(c => ["lettre", "chiffre", "image", "tas", "html"].includes(c.k) || (c.k === "mots" && String(c.t).length <= 9));
     if (!court || i % 3 === 2) return H.match && i % 2 === 0 ? "match" : H.lutte && i % 2 === 0 ? "lutte" : "pirogue";
     const tas = exemple.choix.some(c => c.k === "tas" || c.k === "html");
+    if (H.taupes && !tas && i % 3 === 1) return "taupes";
     return tas || i % 2 ? "ballons" : "peche";
   }
 
@@ -815,7 +920,8 @@ details[open] { display: grid; gap: 8px; }
     questions = melange(questions);
     if (d === 1) questions = questions.map(alleger);
     const partie = { n, questions, k: 0, justes: 0, premier: true, d, vit: d === 1 ? 0.75 : d === 3 ? 1.25 : 1 };
-    ({ peche: jeuPeche, ballons: jeuBallons, pirogue: jeuPirogue, match: jeuMatch, lutte: jeuLutte })[n.jeu](partie);
+    setTimeout(() => mascotte("debut", true), 900);
+    ({ peche: jeuPeche, ballons: jeuBallons, pirogue: jeuPirogue, match: jeuMatch, lutte: jeuLutte, taupes: jeuTaupes })[n.jeu](partie);
   }
 
   function enTete(p, q) {
@@ -831,7 +937,16 @@ details[open] { display: grid; gap: 8px; }
     document.getElementById("quitter").onclick = carte;
     if (C.voixAuto !== false) ecoute();
   }
+  // Mascotte farceuse (si l'appli en a une) : une bulle de temps en temps, jamais à chaque fois.
+  function mascotte(type, force) {
+    const M = C.mascotte; if (!M || !M[type] || (!force && Math.random() > 0.35)) return;
+    document.querySelectorAll(".mascotte").forEach(x => x.remove());
+    const d = document.createElement("div"); d.className = "mascotte";
+    d.innerHTML = '<span class="m-e">' + M.e + '</span><span class="m-b">' + esc(M[type][Math.floor(Math.random() * M[type].length)].replace("{prenom}", prenom())) + "</span>";
+    document.body.appendChild(d); setTimeout(() => d.remove(), 2600);
+  }
   function reussite(p, suite) {
+    mascotte("bon");
     if (p.premier) { p.justes++; if (p.qc && p.qc._rattrapage) effacerErreur(p.qc); }
     son("bon");
     const mot = MOTS_BRAVO[Math.floor(Math.random() * MOTS_BRAVO.length)];
@@ -840,6 +955,7 @@ details[open] { display: grid; gap: 8px; }
     setTimeout(() => (p.k < p.questions.length ? suite() : (p.fin || fin)(p)), 1000);
   }
   function rate(p, choix) {
+    mascotte("faux");
     if (p.premier && p.qc) noterErreur(p, p.qc);
     p.premier = false;
     son("faux");
@@ -1045,7 +1161,8 @@ details[open] { display: grid; gap: 8px; }
     const questions = [];
     C.mondes.forEach(m => {
       const lecons = NIVEAUX.filter(x => x.monde === m);
-      for (let k = 0; k < 4; k++) { const l = lecons[(k + Math.floor(Math.random() * lecons.length)) % lecons.length]; const q = melange(l.questions())[0]; questions.push(Object.assign({ _monde: m.titre, _lecon: l.id }, q)); }
+      const parMatiere = Math.max(2, Math.min(4, Math.floor(12 / C.mondes.length)));
+      for (let k = 0; k < parMatiere; k++) { const l = lecons[(k + Math.floor(Math.random() * lecons.length)) % lecons.length]; const q = melange(l.questions())[0]; questions.push(Object.assign({ _monde: m.titre, _lecon: l.id }, q)); }
     });
     const p = { n, questions: melange(questions), k: 0, justes: 0, premier: true, d: 2, resultats: [] };
     p.fin = finComposition;
@@ -1203,6 +1320,39 @@ details[open] { display: grid; gap: 8px; }
     document.getElementById("retour").onclick = cartes;
     $ecran.querySelectorAll(".poste").forEach(b => b.onclick = () => { son("pop"); equipe({ id: b.dataset.id, poste: b.dataset.poste }); setTimeout(() => $ecran.scrollTop = 9999, 50); });
     $ecran.querySelectorAll("[data-choix]").forEach(b => b.onclick = () => { E.equipe[choisir.id] = b.dataset.choix; sauver(); son("piece"); dire(b.dataset.choix + " entre sur le terrain !"); equipe(); });
+  }
+
+  // ----- Taupes : les réponses sortent des trous, il faut taper vite la bonne -----
+  function jeuTaupes(p) {
+    function poser() {
+      arreter();
+      const q = p.questions[p.k];
+      $ecran.innerHTML = '<div class="jeu">' + enTete(p, q) + '<div class="terrier" id="terrier">' + Array.from({ length: 6 }, (_, t) => '<div class="trou" data-t="' + t + '"></div>').join("") + "</div></div>";
+      brancher(p, q);
+      const trous = [...$ecran.querySelectorAll(".trou")];
+      let fini = false, timers = [];
+      const duree = 1900 / (VITESSE * (p.vit || 1));
+      function sortir() {
+        if (fini) return;
+        trous.forEach(t => t.innerHTML = "");
+        const places = melange(trous.map((t, k) => k)).slice(0, q.choix.length);
+        melange(q.choix.map((c, i) => i)).forEach((ci, k) => {
+          const b = document.createElement("button"); b.className = "taupe r"; b.dataset.i = ci; b.innerHTML = rendu(q.choix[ci]);
+          b.onclick = () => taper(b, ci);
+          trous[places[k]].appendChild(b);
+          requestAnimationFrame(() => b.classList.add("dehors"));
+        });
+        timers.push(setTimeout(() => { trous.forEach(t => t.querySelectorAll(".taupe").forEach(x => x.classList.remove("dehors"))); timers.push(setTimeout(sortir, 350)); }, duree));
+      }
+      function taper(b, ci) {
+        if (fini || b.disabled) return;
+        if (ci === q.bonne) { fini = true; timers.forEach(clearTimeout); b.classList.add("tape"); son("pop"); reussite(p, poser); }
+        else { b.classList.add("faux"); b.disabled = true; rate(p, q.choix[ci]); }
+      }
+      arreter = () => { fini = true; timers.forEach(clearTimeout); };
+      sortir();
+    }
+    poser();
   }
 
   // ----- Lutte sénégalaise (CI) : chaque bonne réponse pousse l'adversaire hors de l'arène -----

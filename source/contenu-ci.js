@@ -189,11 +189,18 @@
       { apres: "ci-p1-l6", e: "🏍️", texte: "Mimi a mal. Mamie a la moto. Moi, j'ai le ballon !" },
       { apres: "ci-p1-l7", e: "🦙🤼🏾", texte: "Ma mamie a un lama. Le lama mime le lutteur. Ali rit !" },
     ],
+    mascotte: {
+      e: "🐒", nom: "Malice",
+      debut: ["Hé {prenom}, parie que tu n'y arrives pas !", "Hi hi, celle-là est trop dure pour toi !", "Je te regarde, champion…", "Prêt ? Moi je suis plus rapide que toi !"],
+      bon: ["Quoi ?! Tu m'as eu !", "Pfff… pas mal, pas mal.", "Ok, tu es plus fort que moi.", "Hé ! C'est de la triche, tu es trop fort !", "Bon d'accord… bravo."],
+      faux: ["Hi hi hi ! Raté !", "Je t'ai eu ! Essaie encore.", "Oups ! Allez, tu peux le faire.", "Même moi j'ai failli me tromper !"],
+    },
     habillage: {
-      lutte: true,
+      lutte: true, taupes: true,
       jeux: {
         ballons: { nom: "Les jongles", e: "⚽", aide: "Touche le bon ballon pour ne pas le laisser tomber !" },
         pirogue: { nom: "La course de voitures", e: "🏎️", aide: "Réponds vite pour gagner la course !" },
+        taupes: { nom: "Les taupes farceuses", e: "🕳️", aide: "Tape vite la bonne réponse avant qu'elle se cache !" },
         lutte: { nom: "La lutte", e: "🤼🏾", aide: "Chaque bonne réponse pousse ton adversaire. Fais-le tomber : bàkk !" },
       },
       ciel: "tribune", mobiles: { peche: "poisson", ballons: "balle" }, prises: { peche: "🐟", ballons: "⚽" },

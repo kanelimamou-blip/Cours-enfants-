@@ -151,6 +151,80 @@
     return () => melange(B).concat(tirer(B, 2)).map(([c, b, m]) => q(c, null, it(b), m.map(it), { disposition: "ligne", dire: c.replace("…", "") + " quoi ?" }));
   }
 
+  // ---------- CUISINE ----------
+  const PLATS = [["thiéboudienne", "🍛", "le "], ["yassa", "🍗", "le "], ["mafé", "🍲", "le "], ["thiakry", "🥣", "le "], ["bissap", "🌺", "le "], ["pastels", "🥟", "les "], ["beignets", "🍩", "les "], ["pain", "🥖", "le "]];
+  function ingredients() {
+    const I = [
+      ["Pour le thiéboudienne, il faut du…", ["🐟", "poisson"], [["🍫", "chocolat"], ["🍦", "glace"]]],
+      ["Pour le thiéboudienne, il faut aussi du…", ["🍚", "riz"], [["🍬", "bonbon"], ["🍪", "biscuit"]]],
+      ["Pour le yassa, on coupe beaucoup d'…", ["🧅", "oignons"], [["🍓", "fraises"], ["🍫", "chocolat"]]],
+      ["Pour le yassa, on presse du…", ["🍋", "citron"], [["🧀", "fromage"], ["🍩", "beignet"]]],
+      ["Le mafé est fait avec de la pâte d'…", ["🥜", "arachide"], [["🍎", "pomme"], ["🍇", "raisin"]]],
+      ["Pour le thiakry, on met du…", ["🥛", "lait caillé"], [["🧅", "oignon"], ["🌶️", "piment"]]],
+      ["Le bissap est fait avec des…", ["🌺", "fleurs d'hibiscus"], [["🐟", "poissons"], ["🥔", "pommes de terre"]]],
+      ["Pour faire les beignets, il faut de la…", ["🌾", "farine"], [["🐟", "poisson"], ["🧂", "sel seulement"]]],
+    ];
+    const it = ([e, t]) => ({ k: "image", e, t, dire: t });
+    return () => melange(I).map(([c, b, m]) => q(c, null, it(b), m.map(it), { disposition: "trois", dire: c.replace("…", "") + " quoi ?" }));
+  }
+  function recette() {
+    const R = [["🍅", "tomates"], ["🧅", "oignons"], ["🥕", "carottes"], ["🐟", "poissons"], ["🍋", "citrons"]];
+    return () => fois(8, () => {
+      const n = 1 + Math.floor(Math.random() * 5), [e, nom] = hasard(R);
+      const autres = tirer([1, 2, 3, 4, 5].filter(x => x !== n), 2);
+      return q("Mets " + n + " " + nom + " dans la marmite", { k: "phrase", t: "🍲 " + n + " " + nom }, tas(n, e), autres.map(x => tas(x, e)), { dire: "La recette dit : " + NOMBRES[n] + " " + nom + ". Touche le bon groupe.", disposition: "trois" });
+    });
+  }
+  function etapes() {
+    const E = [
+      ["Avant de cuisiner, d'abord je…", ["🧼", "me lave les mains"], [["🍽️", "mange"], ["🛏️", "vais au lit"]]],
+      ["À la fin du repas, je…", ["🧽", "fais la vaisselle"], [["🛒", "vais au marché"], ["🔪", "coupe les légumes"]]],
+      ["Avant de cuire le riz, je…", ["🛒", "l'achète au marché"], [["🍽️", "le mange"], ["🗑️", "le jette"]]],
+      ["Quand le plat est prêt, on…", ["🍽️", "mange ensemble"], [["🛒", "va au marché"], ["🌱", "plante le riz"]]],
+      ["Le matin, on prend…", ["🥖", "le petit-déjeuner"], [["🍛", "le dîner"], ["🌙", "le goûter de la nuit"]]],
+      ["À midi, au Sénégal, on mange souvent…", ["🍛", "le thiéboudienne"], [["🥣", "les céréales"], ["🎂", "un gâteau"]]],
+      ["La marmite est chaude, je…", ["🧤", "fais attention"], [["✋🏾", "la touche"], ["🏃🏾", "cours autour"]]],
+      ["Pour servir le bissap bien frais, je le mets…", ["🧊", "au frais"], [["🔥", "sur le feu"], ["☀️", "au soleil"]]],
+    ];
+    const it = ([e, t]) => ({ k: "image", e, t, dire: t });
+    return () => melange(E).map(([c, b, m]) => q(c, null, it(b), m.map(it), { disposition: "ligne", dire: c.replace("…", "") + " quoi ?" }));
+  }
+  const VETEMENTS = [["robe", "👗", "la "], ["boubou", "🥻", "le "], ["chapeau", "👒", "le "], ["foulard", "🧣", "le "], ["sandales", "🩴", "les "], ["baskets", "👟", "les "], ["sac", "👜", "le "], ["lunettes", "🕶️", "les "], ["pantalon", "👖", "le "]];
+  function habits() {
+    const M = [
+      ["Il fait très chaud, je mets…", ["🩴", "des sandales"], [["🧥", "un gros manteau"], ["🧤", "des gants"]]],
+      ["Pour la Tabaski, je mets mon beau…", ["🥻", "boubou"], [["🩱", "maillot de bain"], ["🥾", "bottes"]]],
+      ["Il y a beaucoup de soleil, je protège mes yeux avec…", ["🕶️", "des lunettes"], [["🧦", "des chaussettes"], ["🧣", "un foulard"]]],
+      ["Pour aller à la plage, je prends…", ["🩱", "mon maillot"], [["🧥", "mon manteau"], ["🎒", "mon cartable"]]],
+      ["Pour aller à l'école, je prends…", ["🎒", "mon cartable"], [["👜", "le sac de maman"], ["🩱", "mon maillot"]]],
+      ["Il pleut, je prends…", ["☂️", "un parapluie"], [["🕶️", "des lunettes"], ["🩴", "des sandales"]]],
+    ];
+    const it = ([e, t]) => ({ k: "image", e, t, dire: t });
+    return () => melange(M).concat(imagier(VETEMENTS)().slice(0, 2)).map(x => Array.isArray(x) ? q(x[0], null, it(x[1]), x[2].map(it), { disposition: "ligne", dire: x[0].replace("…", "") + " quoi ?" }) : x);
+  }
+
+  // ---------- DOCTEURE ----------
+  const TROUSSE = [["stéthoscope", "🩺", "le "], ["pansement", "🩹", "le "], ["thermomètre", "🌡️", "le "], ["seringue", "💉", "la "], ["médicament", "💊", "le "], ["masque", "😷", "le "], ["blouse", "🥼", "la "]];
+  function quiSoigne() {
+    const D = [
+      ["Qui soigne les dents ?", ["🦷", "le dentiste"]], ["Qui soigne les bébés et les enfants ?", ["👶🏾", "la pédiatre"]], ["Qui soigne les yeux ?", ["👁️", "l'ophtalmologue"]],
+      ["Qui répare les os cassés ?", ["🦴", "l'orthopédiste"]], ["Qui opère à l'hôpital ?", ["🏥", "la chirurgienne"]], ["Qui soigne les animaux ?", ["🐶", "le vétérinaire"]],
+      ["Qui aide les mamans à avoir leur bébé ?", ["🤰🏾", "la sage-femme"]], ["Qui écoute ton cœur avec un stéthoscope ?", ["🩺", "la docteure"]],
+    ];
+    const it = ([e, t]) => ({ k: "image", e, t, dire: t });
+    return () => melange(D).map(([c, b]) => q(c, null, it(b), tirer(D.filter(x => x[1] !== b), 2).map(x => it(x[1])), { disposition: "trois" }));
+  }
+  function bobos() {
+    return () => fois(8, i => {
+      if (i % 2) {
+        const S = [["Le bébé a chaud et de la fièvre. Je prends…", "🌡️", "le thermomètre", ["🩹", "🦷"]], ["Mon ami s'est coupé le doigt. Je mets…", "🩹", "un pansement", ["🌡️", "💉"]], ["Pour écouter le cœur, j'utilise…", "🩺", "le stéthoscope", ["🩹", "💊"]], ["Avant de soigner, la docteure se lave…", "🧼", "les mains", ["🦶", "🍽️"]]][i % 4 === 1 ? 0 : i % 4 === 3 ? 1 : Math.floor(Math.random() * 4)];
+        return q(S[0], null, { k: "image", e: S[1], dire: S[2] }, S[3].map(e => ({ k: "image", e })), { disposition: "trois", dire: S[0].replace("…", "") + " quoi ?" });
+      }
+      const n = 1 + Math.floor(Math.random() * 5);
+      return q("Le nounours a " + n + " bobo" + (n > 1 ? "s" : "") + ". Combien de pansements ?", { k: "tas", items: ["🧸"].concat(fois(n, () => "🔴")) }, chiffre(n), tirer([1, 2, 3, 4, 5].filter(x => x !== n), 2).map(chiffre), { dire: "Compte les bobos du nounours. Combien de pansements faut-il ?" });
+    });
+  }
+
   window.CONTENU = {
     id: "gs",
     titreAppli: "Mon école GS",
@@ -160,6 +234,9 @@
     avatar: "🦋",
     feminin: true,
     coin: true,
+    habillage: {
+      boutique: [["🎀", "Nœud", 20], ["🕶️", "Lunettes", 30], ["👒", "Chapeau de paille", 30], ["🌸", "Fleur", 30], ["🧣", "Foulard", 40], ["👜", "Sac", 50], ["💍", "Bague", 60], ["👗", "Robe de fête", 80], ["👑", "Couronne", 120]],
+    },
     lettresATracer: ["A", "E", "I", "O", "U", "M", "L", "P", "B", "T"],
     comptines: [
       { titre: "Un, deux, trois, nous irons au bois", e: "🍒", lignes: [["Un, deux, trois,", "1️⃣"], ["nous irons au bois,", "🌳"], ["quatre, cinq, six,", "4️⃣"], ["cueillir des cerises,", "🍒"], ["sept, huit, neuf,", "7️⃣"], ["dans mon panier neuf,", "🧺"], ["dix, onze, douze,", "🔟"], ["elles seront toutes rouges !", "🔴"]] },
@@ -194,11 +271,23 @@
         { id: "gs-p1-c5", palier: "p1", icone: "🐘", titre: "Grand et petit", objectif: "Comparer des tailles", questions: grandPetit() },
         { id: "gs-p1-c6", palier: "p1", icone: "🔴", titre: "Les suites", objectif: "Continuer un rythme", questions: suites() },
       ] },
+      { id: "cuisine", titre: "La cuisine", icone: "🍲", couleur: "#ffd1b3", lecons: [
+        { id: "gs-p1-k1", palier: "p1", icone: "🍛", titre: "Les plats de chez nous", objectif: "Nommer les plats sénégalais (vocabulaire)", questions: imagier(PLATS) },
+        { id: "gs-p1-k2", palier: "p1", icone: "🧅", titre: "Les ingrédients", objectif: "Vocabulaire des aliments", questions: ingredients() },
+        { id: "gs-p1-k3", palier: "p1", icone: "🍅", titre: "Je compte pour la recette", objectif: "Associer un nombre et une quantité", questions: recette() },
+        { id: "gs-p1-k4", palier: "p1", icone: "⏱️", titre: "Avant, après", objectif: "Ordonner les moments (se repérer dans le temps)", questions: etapes() },
+      ] },
+      { id: "docteure", titre: "Docteure Binta", icone: "🩺", couleur: "#ffd6e7", lecons: [
+        { id: "gs-p1-m1", palier: "p1", icone: "🩺", titre: "La trousse de la docteure", objectif: "Vocabulaire du soin", questions: imagier(TROUSSE) },
+        { id: "gs-p1-m2", palier: "p1", icone: "🦷", titre: "Qui soigne quoi ?", objectif: "Les métiers de la santé", questions: quiSoigne() },
+        { id: "gs-p1-m3", palier: "p1", icone: "🩹", titre: "Soigner le nounours", objectif: "Compter jusqu'à 5, gestes de soin", questions: bobos() },
+      ] },
       { id: "decouvrir", titre: "Découvrir", icone: "🌍", couleur: "#bcdcf5", lecons: [
         { id: "gs-p1-d1", palier: "p1", icone: "🧍🏾", titre: "Mon corps", objectif: "Nommer les parties du corps", questions: imagier(CORPS) },
         { id: "gs-p1-d2", palier: "p1", icone: "🐄", titre: "Qui fait ce bruit ?", objectif: "Reconnaître les animaux familiers", questions: cris() },
         { id: "gs-p1-d3", palier: "p1", icone: "🧩", titre: "L'intrus", objectif: "Classer par familles", questions: intrus() },
         { id: "gs-p1-d4", palier: "p1", icone: "🧼", titre: "Je suis propre", objectif: "Connaître les gestes d'hygiène", questions: propre() },
+        { id: "gs-p1-d5", palier: "p1", icone: "👗", titre: "Je m'habille", objectif: "Vocabulaire des vêtements, selon le temps", questions: habits() },
       ] },
     ],
   };
