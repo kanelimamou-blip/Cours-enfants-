@@ -12,7 +12,7 @@ version = datetime.datetime.now(datetime.timezone.utc).strftime("%Y%m%d%H%M")
 def page_appli(ident, a):
     contenu = (SRC / f"contenu-{ident}.js").read_text(encoding="utf-8")
     corps = (modele.replace("__TITRE__", a["nom"]).replace("__COULEUR_CLAIRE__", a["clair"])
-             .replace("__COULEUR__", a["couleur"]).replace("__CONTENU__", contenu))
+             .replace("__COULEUR__", a["couleur"]).replace("__CONTENU__", contenu + "\n" + (SRC / "lecons-plus.js").read_text(encoding="utf-8")))
     tete, reste = corps.split('<div class="app">', 1)
     return f"""<!doctype html>
 <html lang="fr">

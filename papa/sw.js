@@ -1,5 +1,5 @@
 // Garde l'appli disponible hors ligne. Changer VERSION à chaque mise à jour.
-const VERSION = "papa-202610300339";
+const VERSION = "papa-202610300428";
 const FICHIERS = ["./", "./index.html", "./manifest.webmanifest", "./icone-192.png", "./icone-512.png", "../voix/voix.js", "../sync/config.js", "../sync/sync.js", "../commun/contenus.js"];
 
 self.addEventListener("install", e => {

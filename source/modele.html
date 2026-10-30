@@ -329,6 +329,28 @@ details[open] { display: grid; gap: 8px; }
 .course.route { background: linear-gradient(#6b6b6b, #555); }
 .course.route .couloir { border-bottom-color: #f5c518; }
 .course.pelouse { background: repeating-linear-gradient(90deg, #4caf50 0 30px, #45a049 30px 60px); }
+/* Vague 3 : bibliothèque, fiches, contes, chansons, lecture à voix haute */
+.lien { background: none; color: var(--theme); font-weight: 800; font-size: 17px; text-decoration: underline; margin: 4px auto; display: block; }
+.fiche { max-height: 86vh; overflow-y: auto; text-align: left; }
+.fiche h2 { text-align: center; }
+.exemple { background: var(--sable); border-radius: 14px; padding: 8px 10px; margin: 8px 0; display: grid; gap: 4px; }
+.exemple small { font-weight: 700; color: var(--doux); font-size: 14px; }
+.ex-scene { transform: scale(.8); transform-origin: left; }
+.ex-rep { font-weight: 800; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.ex-rep .emoji { font-size: 30px; } .ex-rep .lettre, .ex-rep .chiffre { font-size: 28px; }
+.paroles { display: grid; gap: 6px; margin: 10px 0; text-align: center; }
+.paroles span { font-family: var(--lecture); font-weight: 800; font-size: 20px; background: var(--sable); border-radius: 12px; padding: 4px 10px; }
+.paroles.grand span { font-size: 28px; background: var(--carte); padding: 10px; box-shadow: 0 3px 0 var(--trait); transition: transform .2s, background .2s; }
+.paroles span.chante { background: var(--mangue); transform: scale(1.06); }
+.page-conte { background: var(--carte); border-radius: 26px; padding: 22px; box-shadow: 0 5px 0 var(--trait); text-align: center; }
+.pc-e { font-size: 90px; line-height: 1.1; }
+.page-conte p { font-family: var(--lecture); font-size: 22px; line-height: 1.5; margin: 10px 0 0; text-align: left; }
+.micro { display: block; margin: 14px auto; width: 120px; height: 120px; border-radius: 50%; font-size: 60px; background: var(--theme); box-shadow: 0 6px 0 rgba(0,0,0,.2); }
+.micro.ecoute { animation: battre .8s infinite; background: var(--rouge); }
+.micro:disabled { opacity: .35; }
+.a-lire { font-family: var(--lecture); font-size: 34px; }
+.cfa { display: inline-grid; place-items: center; width: 54px; height: 54px; margin: 3px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #fff6c8, #d9b23a 70%); border: 3px solid #a8841c; font-weight: 800; font-size: 16px; color: #4a3a0a; font-family: var(--titre); }
+.cfa.billet { width: 96px; height: 52px; border-radius: 8px; background: linear-gradient(135deg, #8fd3a8, #3c9e6a); border-color: #2a6e4a; color: #fff; font-size: 18px; }
 /* Vague 2 : jeux */
 .sous-titre { font-size: 22px; margin: 18px 0 8px; }
 .salle { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 10px; }
@@ -553,9 +575,14 @@ __CONTENU__
     voix = v.find(v => /fr[-_]FR/i.test(v.lang) && /google|natural|amélie|audrey|thomas/i.test(v.name)) || v.find(v => /fr[-_]FR/i.test(v.lang)) || v[0] || null;
   }
   if (parole) { choisirVoix(); parole.onvoiceschanged = choisirVoix; }
-  function dire(texte) {
+  function dire(texte, langue) {
     if (!parole || !texte) return;
-    try { parole.cancel(); const u = new SpeechSynthesisUtterance(texte); u.lang = "fr-FR"; u.rate = 0.85; u.pitch = 1.05; if (voix) u.voice = voix; parole.speak(u); } catch (e) {}
+    try {
+      parole.cancel(); const u = new SpeechSynthesisUtterance(texte); u.lang = langue || "fr-FR"; u.rate = 0.85; u.pitch = 1.05;
+      if (!langue && voix) u.voice = voix;
+      if (langue) { const v = parole.getVoices().find(x => x.lang.replace("_", "-").startsWith(langue)) || parole.getVoices().find(x => x.lang.startsWith(langue.slice(0, 2))); if (v) u.voice = v; }
+      parole.speak(u);
+    } catch (e) {}
   }
   // Voix de papa : fichiers enregistrés (voix/voix.js), sinon la voix du téléphone.
   const VOIX = Object.assign({}, window.VOIX_PAPA || {});
@@ -635,7 +662,7 @@ __CONTENU__
       (C.coin ? '<button class="pastille" id="btnCoin" aria-label="Mon coin">' + (E.animal ? ANIMAUX_COMPAGNONS[E.animal.type][0] : "🏡") + "</button>" : "") +
       (E.famille && window.FIREBASE_CONFIG ? '<button class="pastille" id="btnHonneur" aria-label="Tableau d\'honneur">🏆</button>' : "") +
       (C.livre ? '<button class="pastille" id="btnLivre" aria-label="Mon livre de lecture">📖</button>' : "") +
-      '<button class="pastille" id="btnDefis" aria-label="Défis">🎯</button><button class="pastille" id="btnSac" aria-label="Mon sac">🎒</button></div>';
+      '<button class="pastille" id="btnBiblio" aria-label="Ma bibliothèque">📚</button><button class="pastille" id="btnDefis" aria-label="Défis">🎯</button><button class="pastille" id="btnSac" aria-label="Mon sac">🎒</button></div>';
     const quotidien = [];
     if (E.qdj !== aujourdhui()) quotidien.push('<button class="qdj" id="btnQdj"><span class="coffre-mini">🎁</span><span><b>Question du jour</b><small>Ouvre le coffre !</small></span></button>');
     if (matinOuvert()) quotidien.push('<button class="qdj matin" id="btnMatin"><span class="coffre-mini">☀️</span><span><b>Révision du matin</b><small>5 questions avant l\'école</small></span></button>');
@@ -684,6 +711,7 @@ __CONTENU__
     const bm = document.getElementById("btnMatin"); if (bm) bm.onclick = revisionMatin;
     const bw = document.getElementById("btnMot"); if (bw) bw.onclick = motDuJour;
     document.getElementById("btnDefis").onclick = defis;
+    document.getElementById("btnBiblio").onclick = bibliotheque;
     document.getElementById("btnSac").onclick = sac;
     const acc = E.bons.filter(b => b.statut === "accorde" && !b.vu);
     if (acc.length) { acc.forEach(b => b.vu = true); sauver(); setTimeout(() => { bravo("🎟️ Récompense acceptée !"); parler("bon_ok", "Ta récompense est acceptée : " + acc[0].nom + " !"); }, 400); }
@@ -691,18 +719,20 @@ __CONTENU__
   }
 
   function presenter(n) {
-    let j = JEUX[n.jeu];
+    let j = n.voixHaute ? { e: "🎙️", nom: n.titre, aide: C.id === "gs" ? "Dis le nom de chaque image à voix haute !" : "Lis à voix haute, le téléphone t'écoute !" } : JEUX[n.jeu];
     const v = document.createElement("div"); v.className = "voile";
     if (n.jeu === "composition") j = { e: "📝", nom: "La composition", aide: "" };
     v.innerHTML = '<div class="fenetre" role="dialog" aria-label="' + esc(n.lieu) + '"><div class="grosse-icone">' + (n.boss ? "📝" : j.e) + "</div>" +
       "<h2>" + esc(n.boss ? n.titre : j.nom + " " + (H.a || "à") + " " + n.lieu) + "</h2><p>" + esc(n.boss ? "Une révision de tout le palier, comme en classe. Une seule réponse par question, puis ton bulletin !" : j.aide) + "</p>" +
       '<p style="font-size:15px">' + esc(n.titre) + "</p>" + (etoilesDe(n) ? etoilesHTML(etoilesDe(n)) : "") +
-      '<div class="boutons"><button class="bouton second" id="fermer">Retour</button><button class="bouton" id="jouer">Jouer !</button></div></div>';
+      (n.boss || n.voixHaute ? "" : '<button class="lien" id="voirFiche">📄 La fiche de la leçon</button>') +
+      '<div class="boutons"><button class="bouton second" id="fermer">Retour</button><button class="bouton" id="jouer">' + (n.conte ? "📖 Écouter le conte" : n.chanson ? "🎵 La chanson" : "Jouer !") + "</button></div></div>";
     document.body.appendChild(v);
     if (n.boss) parler("compo", "C'est l'heure de la composition. Concentre-toi bien !"); else dire(j.nom + " " + (H.a || "à") + " " + n.lieu + ". " + j.aide);
     v.onclick = e => { if (e.target === v) v.remove(); };
     v.querySelector("#fermer").onclick = () => v.remove();
-    v.querySelector("#jouer").onclick = () => { v.remove(); jouer(n); };
+    v.querySelector("#jouer").onclick = () => { v.remove(); n.conte ? conte(n, () => jouer(n)) : n.chanson ? chanson(n, () => jouer(n)) : jouer(n); };
+    const vf = v.querySelector("#voirFiche"); if (vf) vf.onclick = () => fiche(n);
   }
 
   // ----- Les mini-jeux -----
@@ -729,6 +759,7 @@ __CONTENU__
   function jouer(n) {
     changer();
     if (n.jeu === "composition") return composition(n);
+    if (n.voixHaute) return voixHaute(n);
     $ecran.className = "ecran sans-marge";
     const d = difficulte(n);
     let questions = n.questions().slice(0, d === 3 ? 10 : 8).map(q => Object.assign({ _lecon: n.id }, q));
@@ -748,9 +779,9 @@ __CONTENU__
       (q.scene ? '<div class="scene">' + rendu(q.scene) + "</div>" : "") + "</div>";
   }
   function brancher(p, q) {
-    const ecoute = () => dire(q.dire || q.consigne);
+    const ecoute = () => dire(q.dire || q.consigne, q.lang);
     document.getElementById("ecouter").onclick = ecoute;
-    document.getElementById("quitter").onclick = carte;
+    document.getElementById("quitter").onclick = p.n.retour || carte;
     if (C.voixAuto !== false) ecoute();
   }
   // Mascotte farceuse (si l'appli en a une) : une bulle de temps en temps, jamais à chaque fois.
@@ -1044,7 +1075,7 @@ __CONTENU__
     E.pieces += gain;
     if (C.coin) ["manger", "laver", "jouer"].forEach(k => E.jetons[k] = (E.jetons[k] || 0) + 1);
     serieDuJour();
-    const nouveau = !E.album.includes(n.animal);
+    const nouveau = !!n.animal && !E.album.includes(n.animal);
     if (nouveau) E.album.push(n.animal);
     sauver();
     son("gagne");
@@ -1057,7 +1088,7 @@ __CONTENU__
     parler("etoiles" + etoiles, titres[etoiles - 1] + " Tu gagnes " + gain + " pièces.");
     if (nouveau) setTimeout(() => parler("album", H.album.nouveau + n.nomAnimal + " !"), 2600);
     document.getElementById("encore").onclick = () => jouer(n);
-    document.getElementById("suite").onclick = carte;
+    document.getElementById("suite").onclick = n.retour || carte;
     verifierBadges();
   }
 
@@ -1656,6 +1687,7 @@ __CONTENU__
       '<div class="bons">' +
       '<button class="bon-ligne" data-d="calcul"><b>⚡</b><span><strong>Calcul mental</strong><br><small>Un maximum de calculs en 1 minute</small></span><span class="prix">🏆 ' + (E.records.calcul || 0) + "</span></button>" +
       '<button class="bon-ligne" data-d="bataille"><b>⏱️</b><span><strong>Contre la montre</strong><br><small>Les questions de tes étapes, en 1 minute</small></span><span class="prix">🏆 ' + (E.records.bataille || 0) + "</span></button>" +
+      (C.id === "ce2" ? '<button class="bon-ligne" data-d="tables"><b>✖️</b><span><strong>Les tables en chrono</strong><br><small>Un maximum de multiplications en 1 minute</small></span><span class="prix">🏆 ' + (E.records.tables || 0) + "</span></button>" : "") +
       '<button class="bon-ligne" data-d="duel"><b>🤝</b><span><strong>Duel en famille</strong><br><small>À deux sur le même téléphone, chacun avec les questions de sa classe</small></span><span class="prix">▶</span></button>' +
       "</div><h2 class=\"sous-titre\">La salle de jeux</h2>" +
       '<button class="bon-ligne village-ligne" data-d="village"><b>' + (VILLAGE.items[0][0]) + "</b><span><strong>" + esc(VILLAGE.titre) + "</strong><br><small>Chaque étape réussie te donne un élément à construire</small></span><span class=\"prix\">" + (debloques() - Object.keys(E.village).length > 0 ? "🆕 " + (debloques() - Object.keys(E.village).length) : Object.keys(E.village).length + "/" + VILLAGE.items.length) + "</span></button>" +
@@ -1666,6 +1698,7 @@ __CONTENU__
     $ecran.querySelectorAll("[data-d]").forEach(b => b.onclick = () => ({
       calcul: () => jeuChrono({ cle: "calcul", titre: "Calcul mental", e: "⚡", generer: calculMental }),
       bataille: () => jeuChrono({ cle: "bataille", titre: "Contre la montre", e: "⏱️", generer: () => questionsRevision(1)[0] }),
+      tables: () => jeuChrono({ cle: "tables", titre: "Les tables en chrono", e: "✖️", generer: tableChrono }),
       duel: duel, village: () => village(), memory, puzzle: () => puzzle(Object.keys(E.village).length), assembler: () => assembler(), frapper: () => frapper(), simon, logique, sudoku,
     })[b.dataset.d]());
   }
@@ -2230,6 +2263,138 @@ __CONTENU__
       E.village[t] = choix; sauver(); son("piece"); dire("Tu as construit " + VILLAGE.items[choix][1] + " !");
       village();
     });
+  }
+
+  // ----- La bibliothèque : leçons en plus (Sénégal, langues, contes, maths…) -----
+  const SUIVANTE = { gs: ["ci", "Le CI"], ci: ["ce2", "Le CE2"] }[C.id];
+  const BIBLIO = (window.LECONS_PLUS ? window.LECONS_PLUS(C.id) : []).map(m => Object.assign({}, m, { lecons: m.lecons.map(preparerLecon) }));
+  function preparerLecon(l, i) {
+    const n = Object.assign({ lieu: "la bibliothèque", decor: "savane", animal: null, retour: bibliotheque, e: l.icone }, l);
+    if (!n.voixHaute) n.jeu = n.jeu || choisirJeu(n, i + 1);
+    return n;
+  }
+  let PLUS_LOIN = null;
+  function bibliotheque() {
+    changer();
+    $ecran.className = "ecran";
+    const ligne = n => '<button class="bon-ligne" data-l="' + esc(n.id) + '"><b>' + esc(n.icone) + "</b><span><strong>" + esc(n.titre) + "</strong><br><small>" + esc(n.objectif || "") + '</small></span><span class="prix">' + (etoilesDe(n) ? etoilesHTML(etoilesDe(n)) : "▶") + "</span></button>";
+    const mondes = BIBLIO.concat(PLUS_LOIN ? [PLUS_LOIN] : []);
+    $ecran.innerHTML = '<div class="titre-page"><button class="rond" id="retour" aria-label="Retour">←</button><h1>Ma bibliothèque</h1></div><p class="aide">Des leçons en plus, à faire quand tu veux.</p>' +
+      mondes.map(m => '<h2 class="sous-titre">' + m.icone + " " + esc(m.titre) + '</h2><div class="bons">' + m.lecons.map(ligne).join("") + "</div>").join("") +
+      (SUIVANTE && !PLUS_LOIN ? '<h2 class="sous-titre">🚀 Pour aller plus loin</h2><button class="bon-ligne" id="plusLoin"><b>🚀</b><span><strong>' + SUIVANTE[1] + "</strong><br><small>Découvre les leçons de la classe du dessus</small></span><span class=\"prix\">▶</span></button>" : "");
+    lire("Ma bibliothèque. Choisis une leçon.");
+    document.getElementById("retour").onclick = carte;
+    const toutes = mondes.flatMap(m => m.lecons);
+    $ecran.querySelectorAll("[data-l]").forEach(b => b.onclick = () => presenter(toutes.find(n => n.id === b.dataset.l)));
+    const pl = document.getElementById("plusLoin");
+    if (pl) pl.onclick = () => chargerContenus().then(T => {
+      const c = T && T[SUIVANTE[0]]; if (!c) return;
+      PLUS_LOIN = { titre: "Pour aller plus loin : " + SUIVANTE[1], icone: "🚀", lecons: c.mondes.flatMap(m => m.lecons).map((l, i) => preparerLecon(Object.assign({}, l, { objectif: l.objectif || "" }), i)) };
+      bibliotheque();
+    }).catch(() => dire("Il faut internet la première fois."));
+  }
+  // Fiche-résumé : l'objectif, la chanson s'il y en a une, et des exemples avec la bonne réponse.
+  function fiche(n) {
+    const v = document.createElement("div"); v.className = "voile";
+    const ex = n.voixHaute ? [] : melange(n.questions()).slice(0, 4);
+    v.innerHTML = '<div class="fenetre fiche" role="dialog" aria-label="Fiche"><h2>📄 ' + esc(n.titre) + "</h2><p><b>À retenir :</b> " + esc(n.objectif || "") + "</p>" +
+      (n.chanson ? '<div class="paroles">' + n.chanson.lignes.map(l => "<span>" + esc(l) + "</span>").join("") + "</div>" : "") +
+      ex.map(q => '<div class="exemple"><small>' + esc(q.consigne) + "</small>" + (q.scene ? '<div class="ex-scene">' + rendu(q.scene) + "</div>" : "") + '<div class="ex-rep">✅ ' + rendu(q.choix[q.bonne]) + "</div></div>").join("") +
+      '<div class="boutons"><button class="bouton" id="okFiche">J\'ai compris</button></div></div>';
+    document.body.appendChild(v);
+    dire("La fiche. " + (n.objectif || "") + (n.chanson ? ". " + n.chanson.lignes.join(". ") : ""));
+    v.onclick = e => { if (e.target === v) v.remove(); };
+    v.querySelector("#okFiche").onclick = () => v.remove();
+  }
+  // La chanson de conjugaison : chaque ligne s'allume au rythme du tambour.
+  function chanson(n, suite) {
+    changer();
+    $ecran.className = "ecran";
+    const L = n.chanson.lignes;
+    $ecran.innerHTML = enTeteActivite(n.chanson.titre) + '<div class="paroles grand">' + L.map((l, i) => '<span data-p="' + i + '">' + esc(l) + "</span>").join("") + "</div>" +
+      '<div class="boutons"><button class="bouton second" id="rechanter">🎵 Encore</button><button class="bouton" id="apres">Aux questions !</button></div>';
+    let timers = [];
+    arreter = () => timers.forEach(clearTimeout);
+    function chanter() {
+      arreter(); timers = [];
+      L.forEach((l, i) => timers.push(setTimeout(() => {
+        $ecran.querySelectorAll("[data-p]").forEach(x => x.classList.toggle("chante", +x.dataset.p === i));
+        ton(262 + (i % 3) * 66, 0.25); timers.push(setTimeout(() => ton(196, 0.2), 300)); dire(l);
+      }, 600 + i * 1700)));
+      timers.push(setTimeout(() => $ecran.querySelectorAll("[data-p]").forEach(x => x.classList.remove("chante")), 600 + L.length * 1700));
+    }
+    document.getElementById("retour").onclick = () => (n.retour || carte)();
+    document.getElementById("rechanter").onclick = chanter;
+    document.getElementById("apres").onclick = suite;
+    chanter();
+  }
+  // Le conte : des pages lues à voix haute, puis les questions.
+  function conte(n, suite) {
+    let k = 0;
+    function page() {
+      changer();
+      $ecran.className = "ecran";
+      const [e, t] = n.conte.pages[k], dernier = k === n.conte.pages.length - 1;
+      $ecran.innerHTML = enTeteActivite(n.conte.titre, (k + 1) + "/" + n.conte.pages.length) + '<div class="page-conte"><div class="pc-e">' + e + '</div><p>' + esc(t) + "</p></div>" +
+        '<div class="boutons"><button class="bouton second" id="avant"' + (k ? "" : " disabled") + '>←</button><button class="bouton second" id="relire">🔊</button><button class="bouton" id="apres">' + (dernier ? "Les questions !" : "→") + "</button></div>";
+      dire(t);
+      document.getElementById("retour").onclick = () => (n.retour || carte)();
+      document.getElementById("relire").onclick = () => dire(t);
+      document.getElementById("avant").onclick = () => { k--; page(); };
+      document.getElementById("apres").onclick = () => { if (dernier) suite(); else { k++; page(); } };
+    }
+    page();
+  }
+  // Lecture à voix haute : le téléphone écoute (reconnaissance vocale, en ligne), sinon un adulte valide.
+  const Reco = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const normal = s => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9 ]/g, " ").split(/\s+/).filter(Boolean);
+  function voixHaute(n) {
+    const items = melange(n.voixHaute).slice(0, 6);
+    let k = 0, justes = 0;
+    function suivant() {
+      if (k >= items.length) {
+        const p = { n, questions: items, k: items.length, justes, premier: true, debut: Date.now() };
+        return fin(p);
+      }
+      changer();
+      $ecran.className = "ecran";
+      const [e, t] = items[k];
+      let essais = 0, ecoute = null;
+      $ecran.innerHTML = enTeteActivite(n.titre, (k + 1) + "/" + items.length) +
+        '<div class="mot-jour">' + (e ? '<span class="mj-e">' + e + "</span>" : "") + (C.id === "gs" ? "" : '<span class="mj-mot a-lire">' + esc(t) + "</span>") + "</div>" +
+        '<p class="aide" id="etatV">' + (C.id === "gs" ? "Dis le nom de l'image à voix haute." : "Lis à voix haute.") + "</p>" +
+        '<button class="micro" id="micro" aria-label="Parler">🎙️</button>' +
+        '<div class="boutons">' + (C.id === "gs" ? '<button class="bouton second" id="aideV">🔊 Aide</button>' : "") + '<button class="bouton second" id="adulte">👨🏾 Un adulte a écouté : c\'est bon</button></div>';
+      lire(C.id === "gs" ? "Qu'est-ce que c'est ? Dis-le à voix haute." : "Lis à voix haute.");
+      arreter = () => { try { ecoute && ecoute.abort(); } catch (x) {} };
+      document.getElementById("retour").onclick = () => (n.retour || carte)();
+      const aide = document.getElementById("aideV"); if (aide) aide.onclick = () => dire(t);
+      const reussi = () => { son("bon"); bravo(MOTS_BRAVO[Math.floor(Math.random() * MOTS_BRAVO.length)]); if (!essais) justes++; k++; setTimeout(suivant, 1200); };
+      document.getElementById("adulte").onclick = reussi;
+      const etat = document.getElementById("etatV"), micro = document.getElementById("micro");
+      if (!Reco) { micro.disabled = true; etat.textContent = "Ce téléphone ne sait pas écouter. Lis à un adulte, puis il touche le bouton."; return; }
+      micro.onclick = () => {
+        try { if (parole) parole.cancel(); ecoute = new Reco(); } catch (x) { return; }
+        ecoute.lang = "fr-FR"; ecoute.interimResults = false; ecoute.maxAlternatives = 5;
+        micro.classList.add("ecoute"); etat.textContent = "Je t'écoute…";
+        ecoute.onresult = ev => {
+          const cible = normal(t), dits = [...ev.results[0]].map(a => normal(a.transcript));
+          const score = Math.max(...dits.map(d => cible.filter(w => d.includes(w)).length / cible.length));
+          if (score >= 0.7) { etat.textContent = "« " + ev.results[0][0].transcript + " »"; reussi(); }
+          else { essais++; son("faux"); etat.textContent = "J'ai entendu : « " + ev.results[0][0].transcript + " ». Essaie encore !"; if (essais >= 2) dire(t); }
+        };
+        ecoute.onerror = ev => { etat.textContent = ev.error === "not-allowed" ? "Le micro n'est pas autorisé. Un adulte peut valider." : ev.error === "network" ? "Il faut internet pour que j'écoute. Un adulte peut valider." : "Je n'ai rien entendu. Touche le micro et parle fort !"; };
+        ecoute.onend = () => micro.classList.remove("ecoute");
+        try { ecoute.start(); } catch (x) {}
+      };
+    }
+    suivant();
+  }
+  // Tables de multiplication contre la montre (CE2)
+  function tableChrono() {
+    const a = 2 + Math.floor(Math.random() * 8), b = 1 + Math.floor(Math.random() * 10), ch = n => ({ k: "chiffre", t: String(n), dire: String(n) });
+    const faux = [...new Set([a * b + a, a * b - a, a * b + 1, a * b - 1, (a + 1) * b].filter(x => x > 0 && x !== a * b))].slice(0, 3);
+    return { consigne: a + " × " + b + " = ?", scene: null, choix: [ch(a * b)].concat(faux.map(ch)), bonne: 0, dire: a + " fois " + b };
   }
 
   // ----- Espace parent -----
