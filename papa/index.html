@@ -121,7 +121,7 @@ ul { margin: 4px 0 0; padding-left: 20px; } li { margin: 2px 0; }
     const med = ["🥇", "🥈", "🥉"];
     $.innerHTML = '<div class="haut"><h1>👨🏾 Mes enfants</h1><button class="rond" id="reglages" aria-label="Réglages">⚙️</button></div>' +
       (message ? '<p class="message">' + esc(message) + "</p>" : "") +
-      (base ? "" : '<p class="doux">Connexion en cours… (il faut internet)</p>') +
+      (base ? "" : '<p class="doux">Connexion en cours… (il faut internet). L\'appli réessaie toute seule.</p>') +
       (liste.length ? liste.map(e => {
         const n = attente(e).length;
         return '<button class="bloc enfant" data-id="' + e.id + '" style="--theme-clair:' + esc(e.couleur || "#dbe4f7") + '22"><span class="avatar" style="background:' + esc(e.couleur || "#dbe4f7") + '33">' + esc(e.avatar) + '</span><span><strong>' + esc(e.prenom) + "</strong>" +
@@ -198,7 +198,7 @@ ul { margin: 4px 0 0; padding-left: 20px; } li { margin: 2px 0; }
     if (!P.famille || !window.Synchro) return;
     base = await window.Synchro.demarrer();
     afficher();
-    if (!base) return;
+    if (!base) { setTimeout(connecter, 15000); return; }  // réessaie tout seul (internet coupé, Firebase pas prêt)
     arreter.forEach(f => f());
     arreter = [
       base.collection("familles/" + P.famille + "/enfants").onSnapshot(q => { enfants = {}; q.docs.forEach(d => enfants[d.id] = Object.assign({ id: d.id }, d.data())); afficher(); }, () => {}),
