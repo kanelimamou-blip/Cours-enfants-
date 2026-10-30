@@ -590,6 +590,10 @@ body.lisible { --lecture: "Lexend", "Andika", system-ui, sans-serif; letter-spac
 .quotidien .qdj b { font-size: 15px; }
 .quotidien .qdj small { display: none; }
 .quotidien .coffre-mini { font-size: 30px; }
+.scene .emoji { font-size: clamp(64px, 12vh, 120px); line-height: 1.1; display: block; }
+.scene .legende { font-size: 18px; display: block; }
+.mobile .tas { font-size: 17px; max-width: 84px; gap: 0; }
+.taupe .tas { font-size: 16px; }
 </style>
 
 
@@ -1698,7 +1702,7 @@ window.PALIERS_PLUS = function (classe) {
     L("p3", "compter", "c1", "🧱", "Dizaines et unités", "Les nombres jusqu'à 30", dizaines(10, 30));
     L("p3", "compter", "c2", "➖", "J'enlève", "Soustractions jusqu'à 10", calculs("-", 10, 5));
     L("p3", "compter", "c3", "🔢", "La suite des nombres", "Compter jusqu'à 30, de 2 en 2", suites(30, [1, 2]));
-    L("p3", "compter", "c4", "🧩", "Petits problèmes", "Additions et soustractions en histoires", problemesCI(15));
+    L("p3", "compter", "c4", "🧩", "Petits problèmes", "Additions et soustractions en histoires", problemesCI(12));
     L("p3", "decouvrir", "d1", "🍽️", "Bien manger", "L'alimentation équilibrée", alimentation);
     L("p3", "decouvrir", "d2", "💧", "L'eau", "L'eau propre et ses états", eau);
     // Palier 4
@@ -1706,10 +1710,10 @@ window.PALIERS_PLUS = function (classe) {
     L("p4", "lire", "l2", "oi", "Le son oi", "Lire et entendre oi", entendre("oi", SONS));
     L("p4", "lire", "l3", "📝", "Je lis des mots", "Lire des mots avec ch, oi", lireMots(MOTS_P4));
     L("p4", "lire", "l4", "📖", "Je lis des phrases", "Comprendre une phrase simple", lirePhrase);
-    L("p4", "compter", "c1", "💯", "Les nombres jusqu'à 99", "Dizaines et unités", dizaines(20, 99));
-    L("p4", "compter", "c2", "➕", "Additions jusqu'à 20", "Calculer des additions", calculs("+", 12, 8));
-    L("p4", "compter", "c3", "⚖️", "Comparer jusqu'à 99", "Utiliser < , > et =", comparer(99));
-    L("p4", "compter", "c4", "🧩", "Problèmes", "Résoudre des problèmes jusqu'à 20", problemesCI(20));
+    L("p4", "compter", "c1", "💯", "Les nombres jusqu'à 60", "Dizaines et unités", dizaines(20, 59));
+    L("p4", "compter", "c2", "➕", "Additions jusqu'à 15", "Calculer des additions", calculs("+", 9, 6));
+    L("p4", "compter", "c3", "⚖️", "Comparer jusqu'à 50", "Utiliser < , > et =", comparer(50));
+    L("p4", "compter", "c4", "🧩", "Problèmes", "Résoudre des problèmes jusqu'à 15", problemesCI(15));
     L("p4", "decouvrir", "d1", "👷🏾", "Les métiers", "Qui fait quoi ?", metiers);
     L("p4", "decouvrir", "d2", "🚌", "Les transports", "Se déplacer sur terre, sur l'eau, dans le ciel", transports);
   }
@@ -1983,6 +1987,55 @@ window.SENEGAL_PLUS = function (classe) {
     L("p4", "senegal", "d14", "🎉", "Les fêtes", "Tabaski, Korité, 4 avril", imagier(FETES));
     L("p4", "compter", "d15", "➖", "J'en mange un", "Enlever avec des images", calcul("-", 5, 2, ["🥭", "🍩", "🍌"]));
     L("p4", "senegal", "d16", "🌟", "Le grand quiz du Sénégal", "Les symboles et la culture", quizImg(SENEGAL_SIMPLE));
+
+    // ----- Encore plus pour Bineta : cuisine, mode, docteurs, lettres et syllabes -----
+    const DOCTEURS = [["la dentiste", "🦷", "Elle soigne les dents."], ["le pédiatre", "👶🏾", "Il soigne les bébés et les enfants."], ["l'ophtalmologue", "👁️", "Elle soigne les yeux."], ["le cardiologue", "🫀", "Il soigne le cœur."], ["l'orthopédiste", "🦴", "Il soigne les os."], ["la chirurgienne", "😷", "Elle opère à l'hôpital."], ["l'ORL", "👂🏾", "Il soigne les oreilles et le nez."], ["la sage-femme", "🤰🏾", "Elle aide les bébés à naître."]];
+    const docteurQui = () => fois(N, () => { const [b, ...f] = tirer(DOCTEURS, 3); return q(b[2] + " Qui est-ce ?", null, img(b[1], b[0]), f.map(x => img(x[1], x[0])), { dire: b[2] + " Touche l'image qui va avec " + b[0] + "." }); });
+    const RECETTES_I = [["le yassa", "🍗", [["l'oignon", "🧅"], ["le citron", "🍋"], ["le poulet", "🍗"]]], ["le thiéboudienne", "🍛", [["le riz", "🍚"], ["le poisson", "🐟"], ["la carotte", "🥕"]]], ["le mafé", "🥜", [["l'arachide", "🥜"], ["la viande", "🍖"], ["la tomate", "🍅"]]], ["le thiakry", "🥣", [["le lait caillé", "🥛"], ["le sucre", "🍬"]]], ["le bissap", "🌺", [["la fleur d'hibiscus", "🌺"], ["l'eau", "💧"], ["le sucre", "🍬"]]], ["les beignets", "🍩", [["la farine", "🌾"], ["l'œuf", "🥚"], ["le sucre", "🍬"]]]];
+    const PAS_CUISINE = [["la glace", "🧊"], ["le savon", "🧼"], ["la chaussure", "👟"], ["le crayon", "✏️"], ["le ballon", "⚽"], ["la voiture", "🚗"]];
+    const ingredients = () => fois(N, () => { const [plat, e, ing] = hasard(RECETTES_I), b = hasard(ing), f = tirer(PAS_CUISINE, 2); return q("Que met-on dans " + plat + " ?", { k: "image", e }, img(b[1], b[0]), f.map(x => img(x[1], x[0])), { dire: "Pour faire " + plat + ", que met-on ?" }); });
+    const MODE = [["la robe", "👗"], ["le boubou", "👘"], ["les chaussures à talons", "👠"], ["le sac à main", "👜"], ["le collier", "📿"], ["la bague", "💍"], ["les lunettes de soleil", "🕶️"], ["le chapeau", "👒"], ["le rouge à lèvres", "💄"], ["le foulard", "🧕🏾"]];
+    const METEO_MODE = [["Il fait très chaud. Je mets…", ["les lunettes de soleil", "🕶️"], [["le manteau", "🧥"], ["les gants", "🧤"]], "☀️"], ["Il pleut. Je prends…", ["le parapluie", "☂️"], [["les lunettes de soleil", "🕶️"], ["le maillot de bain", "👙"]], "🌧️"], ["Je vais à la plage. Je mets…", ["le maillot de bain", "👙"], [["le manteau", "🧥"], ["le boubou de fête", "👘"]], "🏖️"], ["C'est la Tabaski. Je mets…", ["le beau boubou", "👘"], [["le pyjama", "🛌"], ["le maillot de bain", "👙"]], "🐑"], ["Je vais dormir. Je mets…", ["le pyjama", "🛌"], [["les chaussures à talons", "👠"], ["le chapeau", "👒"]], "🌙"], ["Je vais à l'école. Je prends…", ["le cartable", "🎒"], [["le parapluie", "☂️"], ["la bague", "💍"]], "🏫"]];
+    const MOTS_GS = [["mangue", "🥭", "M"], ["maman", "👩🏾", "M"], ["mouton", "🐑", "M"], ["lion", "🦁", "L"], ["lune", "🌙", "L"], ["lait", "🥛", "L"], ["poisson", "🐟", "P"], ["pain", "🥖", "P"], ["pirogue", "🛶", "P"], ["banane", "🍌", "B"], ["baobab", "🌳", "B"], ["boubou", "👘", "B"], ["riz", "🍚", "R"], ["robe", "👗", "R"], ["tomate", "🍅", "T"], ["tortue", "🐢", "T"], ["sac", "👜", "S"], ["soleil", "☀️", "S"]];
+    const SONS_GS = { M: "mmm", L: "lll", P: "p", B: "b", R: "rrr", T: "t", S: "sss" };
+    const premiereLettre = () => fois(N, () => { const b = hasard(MOTS_GS), f = tirer([...new Set(MOTS_GS.map(x => x[2]))].filter(x => x !== b[2]), 2); return q("Par quelle lettre commence " + b[0] + " ?", { k: "image", e: b[1] }, { k: "lettre", t: b[2], dire: b[2] }, f.map(x => ({ k: "lettre", t: x, dire: x })), { dire: b[0] + ". " + b[0] + " commence par le son " + SONS_GS[b[2]] + ". Quelle lettre ?" }); });
+    const SYLL = [["riz", "🍚", 1], ["pain", "🥖", 1], ["lait", "🥛", 1], ["sac", "👜", 1], ["lion", "🦁", 1], ["ma-man", "👩🏾", 2], ["pa-pa", "👨🏾", 2], ["mou-ton", "🐑", 2], ["to-mate", "🍅", 2], ["ba-nane", "🍌", 3], ["pi-rogue", "🛶", 2], ["ba-o-bab", "🌳", 3], ["to-ma-te", "🍅", 3], ["chau-ssure", "👟", 2], ["é-lé-phant", "🐘", 3], ["ca-ra-mel", "🍬", 3]];
+    const syllabesGS = () => fois(N, () => { const b = hasard(SYLL.filter((x, i, t) => t.findIndex(y => y[1] === x[1]) === i)), n = b[2]; return q("Tape dans tes mains : combien de morceaux ?", { k: "image", e: b[1] }, tas(n, "👏🏾"), [1, 2, 3].filter(x => x !== n).map(x => tas(x, "👏🏾")), { dire: b[0].replace(/-/g, " … ") + ". Tape dans tes mains. Combien de morceaux ?" }); });
+    const formesNous = quizImg([["La roue de la charrette est…", ["ronde", "⚪"], [["carrée", "🟥"], ["en triangle", "🔺"]], "🛞"], ["Le toit de la case est en…", ["triangle", "🔺"], [["rond", "⚪"], ["carré", "🟥"]], "🛖"], ["La fenêtre est…", ["carrée", "🟥"], [["ronde", "⚪"], ["en triangle", "🔺"]], "🪟"], ["La lune pleine est…", ["ronde", "⚪"], [["carrée", "🟥"], ["en triangle", "🔺"]], "🌕"], ["Le ballon est…", ["rond", "⚪"], [["carré", "🟥"], ["en triangle", "🔺"]], "⚽"], ["Le morceau de pastèque ressemble à un…", ["triangle", "🔺"], [["carré", "🟥"], ["rond", "⚪"]], "🍉"]]);
+    const POSITIONS = [["dans", "📦", "🐱"], ["sur", "🪑", "🐱"], ["sous", "🪑", "🐱"]];
+    const position2 = () => fois(N, () => {
+      const [b, ...f] = tirer(POSITIONS, 3);
+      const dessin = ([pos, o, a]) => ({ k: "html", html: '<span style="position:relative;display:inline-block;font-size:60px;line-height:1">' + o + '<span style="position:absolute;left:50%;transform:translateX(-50%);font-size:30px;' + (pos === "sur" ? "top:-26px" : pos === "sous" ? "bottom:2px" : "top:22px") + '">' + a + "</span></span>", dire: pos });
+      return q("Le chat est " + b[0] + " ?", null, dessin(b), f.map(dessin), { dire: "Touche l'image où le chat est " + b[0] + "." });
+    });
+    // Palier 1
+    L("p1", "docteure", "e1", "👶🏾", "Les docteurs des enfants", "Découvrir les métiers de la santé", docteurQui);
+    L("p1", "cuisine", "e2", "🧅", "Que met-on dans le plat ?", "Les ingrédients des plats", ingredients);
+    L("p1", "parler", "e3", "👏🏾", "Je tape les syllabes", "Compter les syllabes d'un mot", syllabesGS);
+    L("p1", "senegal", "e4", "👗", "La mode de Binta", "Le vocabulaire des habits et bijoux", imagier(MODE));
+    L("p1", "compter", "e5", "🔺", "Les formes autour de moi", "Rond, carré, triangle", formesNous);
+    L("p1", "parler", "e6", "M", "La première lettre", "Trouver la lettre du début d'un mot", premiereLettre);
+    // Palier 2
+    L("p2", "docteure", "e7", "🦷", "Quel docteur ?", "Les docteurs et ce qu'ils soignent", docteurQui);
+    L("p2", "cuisine", "e8", "🍛", "La recette du thiéboudienne", "Les ingrédients des plats", ingredients);
+    L("p2", "senegal", "e9", "☂️", "Je m'habille selon le temps", "Choisir ses habits", quizImg(METEO_MODE));
+    L("p2", "compter", "e10", "📦", "Dans, sur, sous", "Se repérer dans l'espace", position2);
+    L("p2", "parler", "e11", "👏🏾", "Encore les syllabes", "Compter les syllabes d'un mot", syllabesGS);
+    L("p2", "parler", "e12", "L", "Par quelle lettre ?", "Trouver la lettre du début d'un mot", premiereLettre);
+    // Palier 3
+    L("p3", "docteure", "e13", "🫀", "Les docteurs du corps", "Cœur, os, yeux, oreilles", docteurQui);
+    L("p3", "senegal", "e14", "💄", "Le défilé de mode", "Le vocabulaire de la mode", imagier(MODE));
+    L("p3", "cuisine", "e15", "🥜", "Le mafé et le yassa", "Les ingrédients des plats", ingredients);
+    L("p3", "compter", "e16", "🛞", "Les formes du village", "Rond, carré, triangle", formesNous);
+    L("p3", "parler", "e17", "P", "La lettre du début", "Trouver la lettre du début d'un mot", premiereLettre);
+    L("p3", "compter", "e18", "🐱", "Où est le chat ?", "Se repérer dans l'espace", position2);
+    // Palier 4
+    L("p4", "docteure", "e19", "😷", "Docteure Binta à l'hôpital", "Les métiers de la santé", docteurQui);
+    L("p4", "parler", "e20", "👏🏾", "Le roi des syllabes", "Compter les syllabes d'un mot", syllabesGS);
+    L("p4", "cuisine", "e21", "🍩", "Les bonnes recettes", "Les ingrédients des plats", ingredients);
+    L("p4", "senegal", "e22", "👒", "Habillée pour chaque jour", "Choisir ses habits", quizImg(METEO_MODE));
+    L("p4", "parler", "e23", "B", "Toutes les premières lettres", "Trouver la lettre du début d'un mot", premiereLettre);
+    L("p4", "compter", "e24", "➕", "Encore des additions", "Petites additions avec des images", calcul("+", 4, 4, ["🥭", "🍩", "🐟"]));
   }
 
   // ================================= CI =================================
@@ -2022,32 +2075,32 @@ window.SENEGAL_PLUS = function (classe) {
     L("p2", "compter", "b7", "🧺", "Histoires du marché", "Petits problèmes", histoires(MARCHE_CFA));
     L("p2", "lire", "b8", "🔍", "Encore l'intrus", "Classer des mots et des images", intrus(GROUPES));
     L("p2", "senegal", "b9", "👘", "Les habits", "Boubou, pagne, babouches…", quelNom(HABITS));
-    L("p2", "compter", "b10", "🔟", "Je compte jusqu'à 12", "Dénombrer jusqu'à 12", compter(6, 12));
+    L("p2", "compter", "b10", "🔟", "Je compte jusqu'à 10", "Dénombrer jusqu'à 10", compter(4, 10));
     L("p2", "decouvrir", "b11", "🌳", "La nature", "Baobab, fleuve, mer…", quelNom(NATURE));
     L("p2", "senegal", "b12", "🎉", "Les fêtes", "Tabaski, Korité, 4 avril", quelNom(FETES));
     // Palier 3
     L("p3", "lire", "c1", "📝", "Je lis des mots plus longs", "Lire des mots avec ou, on, ch, oi", lireMots(MOTS_C));
-    L("p3", "compter", "c2", "➕", "Additions jusqu'à 15", "Calculer des additions", calcul("+", 9, 6));
+    L("p3", "compter", "c2", "➕", "Additions jusqu'à 10", "Calculer des additions", calcul("+", 6, 4));
     L("p3", "senegal", "c3", "🏝️", "Quiz du Sénégal", "Villes, fleuves, fêtes", quiz(SENEGAL_CI));
     L("p3", "compter", "c4", "🧺", "Problèmes du marché", "Additions et soustractions en histoires", histoires(MARCHE_CFA));
     L("p3", "decouvrir", "c5", "🧼", "Rester en bonne santé", "Hygiène et santé", quiz(SANTE));
     L("p3", "compter", "c6", "⏭️", "Avant, après jusqu'à 20", "La suite des nombres", avantApres(20));
     L("p3", "lire", "c7", "📝", "Mots du marché", "Lire des mots illustrés", lireMots(MOTS_B.concat(MOTS_C)));
     L("p3", "senegal", "c8", "🦁", "Les animaux du Sénégal", "Nommer les animaux", quelNom(ANIMAUX));
-    L("p3", "compter", "c9", "➖", "Soustractions jusqu'à 15", "Calculer des soustractions", calcul("-", 15, 6));
+    L("p3", "compter", "c9", "➖", "Soustractions jusqu'à 10", "Calculer des soustractions", calcul("-", 10, 4));
     L("p3", "senegal", "c10", "🍛", "La cuisine sénégalaise", "Les plats et les fruits", quelNom(PLATS.concat(FRUITS)));
     L("p3", "compter", "c11", "🐑", "Le plus, le moins", "Comparer des quantités", () => lePlus(9)().slice(0, 3).concat(lePlus(9, true)().slice(0, 3)));
     L("p3", "decouvrir", "c12", "🚌", "En route", "Les transports", quelNom(TRANSPORTS));
     // Palier 4
     L("p4", "lire", "d1", "📝", "Je lis tous les mots", "Lire des mots illustrés", lireMots(MOTS_A.concat(MOTS_B, MOTS_C)));
-    L("p4", "compter", "d2", "➕", "Additions jusqu'à 20", "Calculer des additions", calcul("+", 12, 8));
+    L("p4", "compter", "d2", "➕", "Additions jusqu'à 15", "Calculer des additions", calcul("+", 8, 6));
     L("p4", "senegal", "d3", "🇸🇳", "Le grand quiz du Sénégal", "Villes, fleuves, fêtes", quiz(SENEGAL_CI));
     L("p4", "compter", "d4", "🧺", "Grands problèmes du marché", "Additions et soustractions en histoires", histoires(MARCHE_CFA));
     L("p4", "decouvrir", "d5", "👷🏾", "Les métiers de chez nous", "Qui utilise quoi ?", associer(METIERS, b => "Qu'utilise " + b[0] + " ?"));
-    L("p4", "compter", "d6", "➖", "Soustractions jusqu'à 20", "Calculer des soustractions", calcul("-", 20, 8));
+    L("p4", "compter", "d6", "➖", "Soustractions jusqu'à 12", "Calculer des soustractions", calcul("-", 12, 5));
     L("p4", "lire", "d7", "🔍", "Le super intrus", "Classer des mots et des images", intrus(GROUPES));
     L("p4", "senegal", "d8", "🥁", "Musique et fêtes", "Instruments et fêtes", quelNom(MUSIQUE.concat(FETES)));
-    L("p4", "compter", "d9", "🔢", "Avant, après jusqu'à 50", "La suite des nombres", avantApres(50));
+    L("p4", "compter", "d9", "🔢", "Avant, après jusqu'à 20", "La suite des nombres", avantApres(20));
     L("p4", "decouvrir", "d10", "🌳", "Animaux et nature", "Nommer animaux et paysages", quelNom(ANIMAUX.concat(NATURE)));
     L("p4", "compter", "d11", "✌🏾", "Les doubles", "Calculer les doubles", () => fois(N, () => { const n = r(1, 10); return q("Le double de " + n + " ?", { k: "html", html: '<span class="tas">' + fois(n, () => "<i>🥭</i>").join("") + "<i>➕</i>" + fois(n, () => "<i>🥭</i>").join("") + "</span>" }, ch(2 * n), proches(2 * n, 0, 22).map(ch), { dire: "Le double de " + NOMBRES[n] + ", ça fait combien ?" }); }));
     L("p4", "senegal", "d12", "🏙️", "Les villes du Sénégal", "Dakar, Saint-Louis, Ziguinchor…", quiz(SENEGAL_CI));
@@ -2439,6 +2492,11 @@ window.SENEGAL_PLUS = function (classe) {
   // Difficulté de 1 (guidé) à 3 (défi), propre à chaque étape, ajustée après chaque partie.
   const difficulte = n => E.diff[n.id] || (C.id === "ce2" ? 2 : 1);
   // Jamais plus de trois réponses à l'écran : moins à lire, des boutons plus grands.
+  function deuxChoix(q) {
+    if (!q.choix || q.choix.length <= 2) return q;
+    const faux = q.choix.map((c, i) => i).filter(i => i !== q.bonne), garde = [q.bonne, faux[Math.floor(Math.random() * faux.length)]].sort((a, b) => a - b);
+    return Object.assign({}, q, { choix: garde.map(i => q.choix[i]), bonne: garde.indexOf(q.bonne), disposition: q.disposition === "ligne" ? "ligne" : "" });
+  }
   function troisMax(q) {
     if (!q.choix || q.choix.length <= 3) return q;
     const garde = [q.bonne].concat(melange(q.choix.map((c, i) => i).filter(i => i !== q.bonne)).slice(0, 2)).sort((a, b) => a - b);
@@ -2466,6 +2524,8 @@ window.SENEGAL_PLUS = function (classe) {
     E.erreurs.filter(x => x.id === n.id).slice(0, 2).forEach((x, i) => { questions[questions.length - 1 - i] = Object.assign({}, x.q, { _rattrapage: x.cle, _lecon: n.id }); });
     questions = melange(questions);
     questions = questions.map(troisMax);
+    // Soubeyrou en mode guidé : deux réponses seulement, jusqu'à ce qu'il réussisse bien l'étape.
+    if (C.id === "ci" && d === 1) questions = questions.map(deuxChoix);
     const partie = { n, questions, k: 0, justes: 0, premier: true, d, vit: d === 1 ? 0.75 : d === 3 ? 1.25 : 1, debut: Date.now() };
     setTimeout(() => mascotte("debut", true), 900);
     ({ peche: jeuPeche, ballons: jeuBallons, pirogue: jeuPirogue, match: jeuMatch, lutte: jeuLutte, taupes: jeuTaupes, oie: jeuOie, labyrinthe: jeuLabyrinthe })[n.jeu](partie);
@@ -2479,7 +2539,9 @@ window.SENEGAL_PLUS = function (classe) {
       (q.scene ? '<div class="scene">' + rendu(q.scene) + "</div>" : "") + "</div>";
   }
   function brancher(p, q) {
-    const ecoute = () => dire(q.dire || q.consigne, q.lang);
+    // En CI, hors lecture, l'appli lit aussi les réponses écrites : Soubeyrou n'a pas à tout déchiffrer.
+    const lireChoix = C.id === "ci" && p.n.monde && p.n.monde.id !== "lire" && q.choix.every(c => c && (c.k === "mots" || c.k === "phrase"));
+    const ecoute = () => dire((q.dire || q.consigne) + (lireChoix ? " " + q.choix.map(c => c.dire || c.t).join(", ou ") + " ?" : ""), q.lang);
     document.getElementById("ecouter").onclick = ecoute;
     document.getElementById("quitter").onclick = p.n.retour || carte;
     if (C.voixAuto !== false) ecoute();

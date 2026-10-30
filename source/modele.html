@@ -579,6 +579,10 @@ body.lisible { --lecture: "Lexend", "Andika", system-ui, sans-serif; letter-spac
 .quotidien .qdj b { font-size: 15px; }
 .quotidien .qdj small { display: none; }
 .quotidien .coffre-mini { font-size: 30px; }
+.scene .emoji { font-size: clamp(64px, 12vh, 120px); line-height: 1.1; display: block; }
+.scene .legende { font-size: 18px; display: block; }
+.mobile .tas { font-size: 17px; max-width: 84px; gap: 0; }
+.taupe .tas { font-size: 16px; }
 </style>
 
 <div class="app"><main class="ecran" id="ecran"></main></div>
@@ -886,6 +890,11 @@ __CONTENU__
   // Difficulté de 1 (guidé) à 3 (défi), propre à chaque étape, ajustée après chaque partie.
   const difficulte = n => E.diff[n.id] || (C.id === "ce2" ? 2 : 1);
   // Jamais plus de trois réponses à l'écran : moins à lire, des boutons plus grands.
+  function deuxChoix(q) {
+    if (!q.choix || q.choix.length <= 2) return q;
+    const faux = q.choix.map((c, i) => i).filter(i => i !== q.bonne), garde = [q.bonne, faux[Math.floor(Math.random() * faux.length)]].sort((a, b) => a - b);
+    return Object.assign({}, q, { choix: garde.map(i => q.choix[i]), bonne: garde.indexOf(q.bonne), disposition: q.disposition === "ligne" ? "ligne" : "" });
+  }
   function troisMax(q) {
     if (!q.choix || q.choix.length <= 3) return q;
     const garde = [q.bonne].concat(melange(q.choix.map((c, i) => i).filter(i => i !== q.bonne)).slice(0, 2)).sort((a, b) => a - b);
@@ -913,6 +922,8 @@ __CONTENU__
     E.erreurs.filter(x => x.id === n.id).slice(0, 2).forEach((x, i) => { questions[questions.length - 1 - i] = Object.assign({}, x.q, { _rattrapage: x.cle, _lecon: n.id }); });
     questions = melange(questions);
     questions = questions.map(troisMax);
+    // Soubeyrou en mode guidé : deux réponses seulement, jusqu'à ce qu'il réussisse bien l'étape.
+    if (C.id === "ci" && d === 1) questions = questions.map(deuxChoix);
     const partie = { n, questions, k: 0, justes: 0, premier: true, d, vit: d === 1 ? 0.75 : d === 3 ? 1.25 : 1, debut: Date.now() };
     setTimeout(() => mascotte("debut", true), 900);
     ({ peche: jeuPeche, ballons: jeuBallons, pirogue: jeuPirogue, match: jeuMatch, lutte: jeuLutte, taupes: jeuTaupes, oie: jeuOie, labyrinthe: jeuLabyrinthe })[n.jeu](partie);
@@ -926,7 +937,9 @@ __CONTENU__
       (q.scene ? '<div class="scene">' + rendu(q.scene) + "</div>" : "") + "</div>";
   }
   function brancher(p, q) {
-    const ecoute = () => dire(q.dire || q.consigne, q.lang);
+    // En CI, hors lecture, l'appli lit aussi les réponses écrites : Soubeyrou n'a pas à tout déchiffrer.
+    const lireChoix = C.id === "ci" && p.n.monde && p.n.monde.id !== "lire" && q.choix.every(c => c && (c.k === "mots" || c.k === "phrase"));
+    const ecoute = () => dire((q.dire || q.consigne) + (lireChoix ? " " + q.choix.map(c => c.dire || c.t).join(", ou ") + " ?" : ""), q.lang);
     document.getElementById("ecouter").onclick = ecoute;
     document.getElementById("quitter").onclick = p.n.retour || carte;
     if (C.voixAuto !== false) ecoute();

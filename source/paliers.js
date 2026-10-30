@@ -200,7 +200,7 @@ window.PALIERS_PLUS = function (classe) {
     L("p3", "compter", "c1", "🧱", "Dizaines et unités", "Les nombres jusqu'à 30", dizaines(10, 30));
     L("p3", "compter", "c2", "➖", "J'enlève", "Soustractions jusqu'à 10", calculs("-", 10, 5));
     L("p3", "compter", "c3", "🔢", "La suite des nombres", "Compter jusqu'à 30, de 2 en 2", suites(30, [1, 2]));
-    L("p3", "compter", "c4", "🧩", "Petits problèmes", "Additions et soustractions en histoires", problemesCI(15));
+    L("p3", "compter", "c4", "🧩", "Petits problèmes", "Additions et soustractions en histoires", problemesCI(12));
     L("p3", "decouvrir", "d1", "🍽️", "Bien manger", "L'alimentation équilibrée", alimentation);
     L("p3", "decouvrir", "d2", "💧", "L'eau", "L'eau propre et ses états", eau);
     // Palier 4
@@ -208,10 +208,10 @@ window.PALIERS_PLUS = function (classe) {
     L("p4", "lire", "l2", "oi", "Le son oi", "Lire et entendre oi", entendre("oi", SONS));
     L("p4", "lire", "l3", "📝", "Je lis des mots", "Lire des mots avec ch, oi", lireMots(MOTS_P4));
     L("p4", "lire", "l4", "📖", "Je lis des phrases", "Comprendre une phrase simple", lirePhrase);
-    L("p4", "compter", "c1", "💯", "Les nombres jusqu'à 99", "Dizaines et unités", dizaines(20, 99));
-    L("p4", "compter", "c2", "➕", "Additions jusqu'à 20", "Calculer des additions", calculs("+", 12, 8));
-    L("p4", "compter", "c3", "⚖️", "Comparer jusqu'à 99", "Utiliser < , > et =", comparer(99));
-    L("p4", "compter", "c4", "🧩", "Problèmes", "Résoudre des problèmes jusqu'à 20", problemesCI(20));
+    L("p4", "compter", "c1", "💯", "Les nombres jusqu'à 60", "Dizaines et unités", dizaines(20, 59));
+    L("p4", "compter", "c2", "➕", "Additions jusqu'à 15", "Calculer des additions", calculs("+", 9, 6));
+    L("p4", "compter", "c3", "⚖️", "Comparer jusqu'à 50", "Utiliser < , > et =", comparer(50));
+    L("p4", "compter", "c4", "🧩", "Problèmes", "Résoudre des problèmes jusqu'à 15", problemesCI(15));
     L("p4", "decouvrir", "d1", "👷🏾", "Les métiers", "Qui fait quoi ?", metiers);
     L("p4", "decouvrir", "d2", "🚌", "Les transports", "Se déplacer sur terre, sur l'eau, dans le ciel", transports);
   }
