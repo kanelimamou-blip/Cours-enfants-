@@ -329,6 +329,14 @@ details[open] { display: grid; gap: 8px; }
 .course.route { background: linear-gradient(#6b6b6b, #555); }
 .course.route .couloir { border-bottom-color: #f5c518; }
 .course.pelouse { background: repeating-linear-gradient(90deg, #4caf50 0 30px, #45a049 30px 60px); }
+/* Vague 5 : paliers */
+.palier-btn { display: flex; gap: 6px; align-items: center; width: 100%; background: var(--carte); border-radius: 14px; padding: 8px 12px; font-size: 15px; box-shadow: 0 3px 0 var(--trait); color: var(--encre); }
+.palier-btn span { margin-left: auto; color: var(--theme); font-weight: 800; }
+.bon-ligne.choisi-p { outline: 3px solid var(--theme); }
+.bon-ligne:disabled { opacity: .5; }
+.blocs { display: inline-flex; flex-wrap: wrap; gap: 6px; align-items: flex-end; justify-content: center; max-width: 300px; }
+.blocs .dizaine { width: 12px; height: 70px; border-radius: 3px; background: repeating-linear-gradient(#2f6fd1 0 6px, #5b93e6 6px 7px); }
+.blocs .unite { width: 12px; height: 12px; border-radius: 3px; background: #e0533d; }
 /* Vague 4 : rien que pour toi */
 .client { display: flex; gap: 10px; align-items: center; }
 .cl-e { font-size: 70px; line-height: 1; }
@@ -544,21 +552,32 @@ __CONTENU__
     H = Object.assign({}, H, h);
   }
 
-  // Les niveaux : on alterne les mondes (Lire, Compter, Découvrir…) le long du voyage.
-  const NIVEAUX = [];
-  (function () {
-    const files = C.mondes.map(m => m.lecons.map(l => Object.assign({ monde: m }, l)));
-    let tour = 0;
-    while (files.some(f => f.length)) { files.forEach(f => { if (f.length) NIVEAUX.push(f.shift()); }); tour++; }
-    NIVEAUX.forEach((n, i) => {
-      const lieu = LIEUX[i % LIEUX.length];
-      n.lieu = lieu[0]; n.decor = lieu[1]; n.animal = lieu[2]; n.nomAnimal = lieu[3]; n.index = i;
-      if (H.cartes && H.cartes[i]) { n.carte = H.cartes[i]; n.animal = n.carte.nom; n.nomAnimal = "la carte de " + n.carte.nom; }
+  // Les paliers 2, 3 et 4 (source/paliers.js) s'ajoutent aux mondes du palier 1.
+  if (window.PALIERS_PLUS && !C.palierPlus) {
+    C.palierPlus = true;
+    const P = window.PALIERS_PLUS(C.id);
+    C.paliers = C.paliers.concat(P.paliers);
+    P.lecons.forEach(l => { const m = C.mondes.find(x => x.id === l.monde); if (m) { const copie = Object.assign({}, l); delete copie.monde; m.lecons.push(copie); } });
+  }
+  const PALIERS = C.paliers;
+  // Les niveaux : on alterne les mondes (Lire, Compter, Découvrir…) le long du voyage, palier par palier.
+  const TOUS_NIVEAUX = [];
+  PALIERS.forEach(pa => {
+    const files = C.mondes.map(m => m.lecons.filter(l => (l.palier || "p1") === pa.id).map(l => Object.assign({ monde: m }, l)));
+    const liste = [];
+    while (files.some(f => f.length)) files.forEach(f => { if (f.length) liste.push(f.shift()); });
+    liste.forEach((n, i) => {
+      const g = TOUS_NIVEAUX.length, lieu = LIEUX[g % LIEUX.length];
+      n.lieu = lieu[0]; n.decor = lieu[1]; n.animal = lieu[2]; n.nomAnimal = lieu[3]; n.index = i; n.palier = pa.id;
+      if (H.cartes && H.cartes[g]) { n.carte = H.cartes[g]; n.animal = n.carte.nom; n.nomAnimal = "la carte de " + n.carte.nom; }
       n.jeu = n.jeu || choisirJeu(n, i);
+      TOUS_NIVEAUX.push(n);
     });
-  })();
-  const NIVEAU_BOSS = { id: C.id + "-boss", titre: "Composition du " + (C.paliers[0].titre || "palier").toLowerCase(), lieu: BOSS.nom, decor: "boss", animal: BOSS.e, nomAnimal: BOSS.animal, jeu: "composition", boss: true, icone: BOSS.e, objectif: "Révision de tout le palier",
-    questions: () => melange(NIVEAUX.flatMap(n => n.questions().slice(0, 2))).slice(0, 10) };
+  });
+  const BOSSES = PALIERS.map((pa, k) => ({ id: C.id + "-boss" + (k ? "-" + pa.id : ""), titre: "Composition du " + (pa.titre || "palier").toLowerCase(), lieu: BOSS.nom, decor: "boss", animal: BOSS.e, nomAnimal: BOSS.animal, jeu: "composition", boss: true, icone: BOSS.e, objectif: "Révision de tout le palier", palier: pa.id, titrePalier: pa.titre,
+    questions: () => melange(TOUS_NIVEAUX.filter(n => n.palier === pa.id).flatMap(n => n.questions().slice(0, 2))).slice(0, 10) }));
+  let NIVEAUX = TOUS_NIVEAUX.filter(n => n.palier === PALIERS[0].id), NIVEAU_BOSS = BOSSES[0];
+  const ALBUM_TOTAL = () => new Set(TOUS_NIVEAUX.map(n => n.animal).concat([BOSS.e])).size;
 
   function choisirJeu(n, i) {
     if (i % 7 === 3) return "labyrinthe";
@@ -577,6 +596,11 @@ __CONTENU__
   let E = defaut();
   try { const brut = localStorage.getItem(CLE); if (brut) E = Object.assign(defaut(), JSON.parse(brut)); } catch (e) {}
   E.stats = Object.assign(defaut().stats, E.stats); E.reglages = Object.assign(defaut().reglages, E.reglages);
+  const palierOuvert = k => E.toutOuvert || k === 0 || etoilesDe(BOSSES[k - 1]) > 0;
+  function choisirPalier(id) {
+    const k = Math.max(0, PALIERS.findIndex(pa => pa.id === id));
+    E.palier = PALIERS[k].id; NIVEAUX = TOUS_NIVEAUX.filter(n => n.palier === E.palier); NIVEAU_BOSS = BOSSES[k];
+  }
   let envoiPrevu = 0;
   function sauver() { try { localStorage.setItem(CLE, JSON.stringify(E)); } catch (e) {} clearTimeout(envoiPrevu); envoiPrevu = setTimeout(envoyer, 2500); }
   const prenom = () => E.prenom || C.prenom;
@@ -683,6 +707,8 @@ __CONTENU__
     appliquerAffichage();
     if (verifierAnniversaire()) return;
     verifierTransfert();
+    if (NIVEAU_BOSS.palier !== (E.palier || PALIERS[0].id)) { const k = PALIERS.findIndex(pa => pa.id === E.palier); choisirPalier(k > 0 && palierOuvert(k) ? E.palier : PALIERS[0].id); }
+    if (E.palierNouveau) { const t = E.palierNouveau; E.palierNouveau = ""; sauver(); setTimeout(() => { bravo("🎉 " + t + " ouvert !"); dire("Bravo ! Le " + t.toLowerCase() + " est ouvert. Une nouvelle carte t'attend !"); }, 600); }
     $ecran.className = "ecran sans-marge";
     const actuel = NIVEAUX.findIndex((n, i) => ouvert(i) && etoilesDe(n) === 0);
     const largeur = Math.min(560, window.innerWidth);
@@ -700,7 +726,9 @@ __CONTENU__
     if (E.qdj !== aujourdhui()) quotidien.push('<button class="qdj" id="btnQdj"><span class="coffre-mini">🎁</span><span><b>Question du jour</b><small>Ouvre le coffre !</small></span></button>');
     if (matinOuvert()) quotidien.push('<button class="qdj matin" id="btnMatin"><span class="coffre-mini">☀️</span><span><b>Révision du matin</b><small>5 questions avant l\'école</small></span></button>');
     if (MOTS_JOUR.length && E.motJour !== aujourdhui()) quotidien.push('<button class="qdj mot" id="btnMot"><span class="coffre-mini">💬</span><span><b>Le mot du jour</b><small>' + esc(motDuJourAuj()[0]) + "</small></span></button>");
-    html += (quotidien.length ? '<div class="quotidien">' + quotidien.join("") + "</div>" : "") + "</div>";
+    const paC = PALIERS.find(x => x.id === NIVEAU_BOSS.palier);
+    html += (quotidien.length ? '<div class="quotidien">' + quotidien.join("") + "</div>" : "") +
+      (PALIERS.length > 1 ? '<button class="palier-btn" id="btnPalier" aria-label="Changer de palier">📘 <b>' + esc(paC.titre) + "</b> · " + esc(paC.periode || "") + " <span>Changer ▾</span></button>" : "") + "</div>";
     html += '<div class="voyage" id="voyage"><svg class="route" id="route" aria-hidden="true"></svg>';
     let decor = "";
     NIVEAUX.forEach((n, i) => {
@@ -745,6 +773,7 @@ __CONTENU__
     const bw = document.getElementById("btnMot"); if (bw) bw.onclick = motDuJour;
     document.getElementById("btnDefis").onclick = defis;
     document.getElementById("btnBiblio").onclick = bibliotheque;
+    const bp = document.getElementById("btnPalier"); if (bp) bp.onclick = choixPalier;
     document.getElementById("btnSac").onclick = sac;
     const acc = E.bons.filter(b => b.statut === "accorde" && !b.vu);
     if (acc.length) { acc.forEach(b => b.vu = true); sauver(); setTimeout(() => { bravo("🎟️ Récompense acceptée !"); parler("bon_ok", "Ta récompense est acceptée : " + acc[0].nom + " !"); }, 400); }
@@ -834,7 +863,8 @@ __CONTENU__
     const mot = MOTS_BRAVO[Math.floor(Math.random() * MOTS_BRAVO.length)];
     bravo(mot); parler(C.habillage && Math.random() < 0.3 ? "but" : "bravo", mot);
     p.k++; p.premier = true;
-    setTimeout(() => (p.k < p.questions.length ? suite() : (p.fin || fin)(p)), 1000);
+    const ecranJeu = $ecran.firstElementChild; // si l'enfant a quitté entre-temps, on ne relance pas le jeu
+    setTimeout(() => { if ($ecran.firstElementChild === ecranJeu) (p.k < p.questions.length ? suite() : (p.fin || fin)(p)); }, 1000);
   }
   function rate(p, choix) {
     mascotte("faux");
@@ -993,7 +1023,8 @@ __CONTENU__
           son(bonne ? "bon" : "faux");
           p.resultats.push({ monde: q._monde, bonne });
           p.k++;
-          setTimeout(() => (p.k < p.questions.length ? poser() : p.fin(p)), bonne ? 700 : 1500);
+          const ecranJeu = $ecran.firstElementChild;
+          setTimeout(() => { if ($ecran.firstElementChild === ecranJeu) (p.k < p.questions.length ? poser() : p.fin(p)); }, bonne ? 700 : 1500);
         } else if (i === q.bonne) { b.classList.add("bon"); $ecran.querySelectorAll(".reponse").forEach(x => x.disabled = true); reussite(p, poser); }
         else { b.classList.add("faux"); b.disabled = true; rate(p, q.choix[i]); }
       });
@@ -1007,8 +1038,8 @@ __CONTENU__
     let q;
     if (E.erreurs.length) { const x = E.erreurs[Math.floor(Math.random() * E.erreurs.length)]; q = Object.assign({}, x.q, { _rattrapage: x.cle, _lecon: x.id }); }
     else {
-      const faits = NIVEAUX.filter(n => etoilesDe(n) > 0);
-      const n = (faits.length ? faits : NIVEAUX.slice(0, 1))[Math.floor(Math.random() * Math.max(1, faits.length))];
+      const faits = TOUS_NIVEAUX.filter(n => etoilesDe(n) > 0);
+      const n = (faits.length ? faits : TOUS_NIVEAUX.slice(0, 1))[Math.floor(Math.random() * Math.max(1, faits.length))];
       q = Object.assign({ _lecon: n.id }, n.questions()[0]);
     }
     const p = { n: { id: "qdj", jeu: "qdj" }, questions: [q], k: 0, justes: 0, premier: true, d: 2 };
@@ -1043,7 +1074,8 @@ __CONTENU__
     $ecran.className = "ecran sans-marge";
     const questions = [];
     C.mondes.forEach(m => {
-      const lecons = NIVEAUX.filter(x => x.monde === m);
+      const lecons = TOUS_NIVEAUX.filter(x => x.monde === m && x.palier === n.palier);
+      if (!lecons.length) return;
       const parMatiere = Math.max(2, Math.min(4, Math.floor(12 / C.mondes.length)));
       for (let k = 0; k < parMatiere; k++) { const l = lecons[(k + Math.floor(Math.random() * lecons.length)) % lecons.length]; const q = melange(l.questions())[0]; questions.push(Object.assign({ _monde: m.titre, _lecon: l.id }, q)); }
     });
@@ -1055,14 +1087,16 @@ __CONTENU__
   const APPRECIATION = note => note >= 9 ? "Excellent" : note >= 8 ? "Très bien" : note >= 7 ? "Bien" : note >= 6 ? "Assez bien" : note >= 5 ? "Passable" : "Peut mieux faire";
   const MENTION = moy => moy >= 8 ? "Félicitations" : moy >= 7 ? "Tableau d'honneur" : moy >= 5 ? "Encouragements" : "Doit fournir plus d'efforts";
   function finComposition(p) {
-    const notes = C.mondes.map(m => { const r = p.resultats.filter(x => x.monde === m.titre); const ok = r.filter(x => x.bonne).length; return { matiere: m.titre, icone: m.icone, note: Math.round((10 * ok) / Math.max(1, r.length) * 2) / 2 }; });
+    const notes = C.mondes.filter(m => p.resultats.some(x => x.monde === m.titre)).map(m => { const r = p.resultats.filter(x => x.monde === m.titre); const ok = r.filter(x => x.bonne).length; return { matiere: m.titre, icone: m.icone, note: Math.round((10 * ok) / Math.max(1, r.length) * 2) / 2 }; });
     const moyenne = Math.round((notes.reduce((s, x) => s + x.note, 0) / notes.length) * 10) / 10;
-    const b = { palier: C.paliers[0].titre, date: new Date().toISOString(), notes, moyenne, mention: MENTION(moyenne) };
+    const b = { palier: p.n.titrePalier || PALIERS[0].titre, date: new Date().toISOString(), notes, moyenne, mention: MENTION(moyenne) };
     E.bulletins.unshift(b); E.bulletins = E.bulletins.slice(0, 12);
     const n = p.n, etoiles = moyenne >= 8 ? 3 : moyenne >= 6 ? 2 : 1, avant = E.progres[n.id] || { etoiles: 0, fois: 0 };
     E.progres[n.id] = { etoiles: Math.max(avant.etoiles, etoiles), fois: (avant.fois || 0) + 1, dernier: moyenne + "/10", date: b.date };
     E.journal.unshift({ id: n.id, score: moyenne + "/10", ratio: moyenne / 10, date: b.date });
     E.pieces += etoiles * 20; serieDuJour();
+    const kP = PALIERS.findIndex(pa => pa.id === n.palier), suivant = PALIERS[kP + 1];
+    if (suivant && E.palier === n.palier) { choisirPalier(suivant.id); E.palierNouveau = suivant.titre; }
     const ballonOr = C.id === "ce2" && moyenne >= 6;
     if (ballonOr) { E.ballonsOr.push({ palier: b.palier, moyenne, date: b.date }); E.pieces += 50; }
     if (!E.album.includes(n.animal)) E.album.push(n.animal);
@@ -1197,7 +1231,7 @@ __CONTENU__
     if (H.cartes) return cartes();
     changer();
     $ecran.className = "ecran";
-    const tous = NIVEAUX.map(n => [n.animal, n.nomAnimal, n.lieu]).concat([[BOSS.e, BOSS.animal, BOSS.nom]]);
+    const tous = TOUS_NIVEAUX.map(n => [n.animal, n.nomAnimal, n.lieu]).concat([[BOSS.e, BOSS.animal, BOSS.nom]]).filter((x, i, a) => a.findIndex(y => y[0] === x[0]) === i);
     $ecran.innerHTML = '<div class="titre-page"><button class="rond" id="retour" aria-label="Retour">←</button><h1>' + esc(H.album.titre) + '</h1></div>' +
       '<p class="aide">' + esc(H.album.aide) + " " + E.album.length + " sur " + tous.length + " trouvés.</p>" +
       '<div class="grille">' + tous.map(([e, nom, lieu]) => { const a = E.album.includes(e); return '<button class="objet' + (a ? "" : " cache") + '" data-nom="' + esc(a ? nom : "") + '"><b>' + e + "</b><span>" + esc(a ? nom.replace(/^(un |une |le |la |l')/, "") : "?") + '</span><span class="note">' + esc(lieu) + "</span></button>"; }).join("") + "</div>";
@@ -1208,7 +1242,7 @@ __CONTENU__
   function cartes() {
     changer();
     $ecran.className = "ecran";
-    const liste = NIVEAUX.filter(n => n.carte);
+    const liste = TOUS_NIVEAUX.filter(n => n.carte);
     const nb = liste.filter(n => E.album.includes(n.carte.nom)).length;
     $ecran.innerHTML = '<div class="titre-page"><button class="rond" id="retour" aria-label="Retour">←</button><h1>Mes cartes</h1><span style="flex:1"></span><button class="pastille" id="btnEquipe">🏟️ Mon équipe</button></div>' +
       '<p class="aide">Chaque étape réussie te donne la carte d\'un joueur. ' + nb + " sur " + liste.length + " cartes.</p>" +
@@ -1221,7 +1255,7 @@ __CONTENU__
   function equipe(choisir) {
     changer();
     $ecran.className = "ecran";
-    const possedees = NIVEAUX.filter(n => n.carte && E.album.includes(n.carte.nom)).map(n => n.carte);
+    const possedees = TOUS_NIVEAUX.filter(n => n.carte && E.album.includes(n.carte.nom)).map(n => n.carte);
     const placees = Object.values(E.equipe);
     const notes = SCHEMA.map(([, id]) => possedees.find(c => c.nom === E.equipe[id])).filter(Boolean).map(c => c.note);
     const moy = notes.length ? Math.round(notes.reduce((a, b) => a + b, 0) / notes.length) : 0;
@@ -1331,7 +1365,8 @@ __CONTENU__
           if (p.premier) p.justes++;
           if (p.qc && p.qc._rattrapage && p.premier) effacerErreur(p.qc);
           son("bon"); p.k++; p.premier = true;
-          setTimeout(() => (p.k < p.questions.length ? poser() : finMatch()), 1200);
+          const ecranJeu = $ecran.firstElementChild;
+          setTimeout(() => { if ($ecran.firstElementChild === ecranJeu) (p.k < p.questions.length ? poser() : finMatch()); }, 1200);
         } else {
           b.classList.add("faux"); b.disabled = true;
           if (p.premier) { pos--; if (pos < 0) { p.butsAdv++; pos = 1; comm = adv + " contre-attaque… et marque. Allez, on se reprend !"; } else comm = "Ballon perdu ! Il faut presser tout de suite."; }
@@ -1515,7 +1550,7 @@ __CONTENU__
     const mots = pg.texte.split(" ");
     $ecran.innerHTML = '<div class="titre-page"><button class="rond" id="retour" aria-label="Retour">←</button><h1>Mon livre</h1><span style="flex:1"></span><span class="pastille">Page ' + (i + 1) + "/" + pages.length + "</span></div>" +
       '<div class="page-livre' + (ok ? "" : " fermee") + '">' + (ok ? '<div class="illustration">' + pg.e + '</div><p class="texte-livre">' + mots.map((m, j) => '<button class="mot" data-j="' + j + '">' + esc(m) + "</button>").join(" ") + "</p>" :
-        '<div class="illustration">🔒</div><p class="aide">Réussis l\'étape « ' + esc((NIVEAUX.find(n => n.id === pg.apres) || {}).titre || "") + " » pour ouvrir cette page.</p>") + "</div>" +
+        '<div class="illustration">🔒</div><p class="aide">Réussis l\'étape « ' + esc((TOUS_NIVEAUX.find(n => n.id === pg.apres) || {}).titre || "") + " » pour ouvrir cette page.</p>") + "</div>" +
       '<div class="boutons"><button class="bouton second" id="prec"' + (i ? "" : " disabled") + '>‹</button>' + (ok ? '<button class="bouton" id="lire">🔊 Lis avec moi</button>' : "") + '<button class="bouton second" id="suiv"' + (i < pages.length - 1 ? "" : " disabled") + ">›</button></div>" +
       (ok ? '<p class="aide">Touche un mot pour l\'entendre. Essaie d\'abord de le lire tout seul !</p>' : "");
     document.getElementById("retour").onclick = carte;
@@ -1552,8 +1587,8 @@ __CONTENU__
     ["felicitations", "🎓", "Félicitations", "Avoir 8/10 ou plus à une composition", () => E.bulletins.some(b => b.moyenne >= 8)],
     ["coffres", "🎁", "Chasseur de coffres", "Ouvrir 7 coffres de la question du jour", () => E.stats.coffres >= 7],
     ["correcteur", "🩹", "Je corrige mes erreurs", "Réussir 10 questions ratées avant", () => E.stats.corrigees >= 10],
-    ["album1", "📒", "Album à moitié", "Remplir la moitié de l'album", () => E.album.length >= Math.ceil((NIVEAUX.length + 1) / 2)],
-    ["album2", "🏆", "Album complet", "Remplir tout l'album", () => E.album.length >= NIVEAUX.length + 1],
+    ["album1", "📒", "Album à moitié", "Remplir la moitié de l'album", () => E.album.length >= Math.ceil(ALBUM_TOTAL() / 2)],
+    ["album2", "🏆", "Album complet", "Remplir tout l'album", () => E.album.length >= ALBUM_TOTAL()],
     ["matieres", "🌈", "Touche-à-tout", "Une étoile dans chaque matière", () => C.mondes.every(m => NIVEAUX.some(n => n.monde === m && etoilesDe(n) > 0))],
     ["calcul10", "⚡", "Calcul éclair", "10 bonnes réponses au calcul mental", () => (E.records.calcul || 0) >= 10],
     ["calcul25", "🧠", "Cerveau rapide", "25 bonnes réponses au calcul mental", () => (E.records.calcul || 0) >= 25],
@@ -1618,8 +1653,8 @@ __CONTENU__
   function questionsRevision(nb) {
     const pris = new Set(), liste = [];
     melange(E.erreurs).slice(0, Math.ceil(nb / 2)).forEach(x => { liste.push(Object.assign({}, x.q, { _rattrapage: x.cle, _lecon: x.id })); pris.add(x.cle); });
-    const faits = NIVEAUX.filter(n => etoilesDe(n) > 0);
-    const source = faits.length ? faits : NIVEAUX.slice(0, 2);
+    const faits = TOUS_NIVEAUX.filter(n => etoilesDe(n) > 0);
+    const source = faits.length ? faits : TOUS_NIVEAUX.slice(0, 2);
     let essais = 0;
     while (liste.length < nb && essais++ < 40) {
       const n = source[Math.floor(Math.random() * source.length)];
@@ -1669,7 +1704,7 @@ __CONTENU__
       ["badges", "🏅", "Mes badges", E.badges.length + "/" + BADGES.length],
       ["dico", "📚", "Mon dictionnaire", nbDico() + " mot" + (nbDico() > 1 ? "s" : "")],
       ["records", "🏆", "Mes records", ""],
-      ["album", H.cartes ? "🃏" : "📒", H.cartes ? "Mes cartes" : H.album.titre, E.album.length + "/" + (NIVEAUX.length + 1)],
+      ["album", H.cartes ? "🃏" : "📒", H.cartes ? "Mes cartes" : H.album.titre, E.album.length + "/" + ALBUM_TOTAL()],
     ];
     if (E.bulletins.length) cases.push(["bulletins", "📜", "Mes bulletins", E.bulletins.length + ""]);
     $ecran.innerHTML = '<div class="titre-page"><button class="rond" id="retour" aria-label="Retour">←</button><h1>Mon sac</h1></div>' +
@@ -1711,7 +1746,7 @@ __CONTENU__
   function recordsEcran() {
     changer();
     $ecran.className = "ecran";
-    const lignes = NIVEAUX.filter(n => E.records[n.id]).map(n => { const r = E.records[n.id]; return "<tr><td>" + esc(n.lieu) + '<br><span class="note">' + esc(n.titre) + "</span></td><td>" + r.j + "/" + r.t + (r.s ? '<br><span class="note">' + r.s + " s</span>" : "") + "</td></tr>"; });
+    const lignes = TOUS_NIVEAUX.filter(n => E.records[n.id]).map(n => { const r = E.records[n.id]; return "<tr><td>" + esc(n.lieu) + '<br><span class="note">' + esc(n.titre) + "</span></td><td>" + r.j + "/" + r.t + (r.s ? '<br><span class="note">' + r.s + " s</span>" : "") + "</td></tr>"; });
     $ecran.innerHTML = '<div class="titre-page"><button class="rond" id="retour" aria-label="Retour">←</button><h1>Mes records</h1></div>' +
       '<div class="stat bloc"><div><b>' + (E.records.calcul || 0) + '</b><span>⚡ calcul mental</span></div><div><b>' + (E.records.bataille || 0) + '</b><span>⏱️ contre la montre</span></div><div><b>' + E.stats.duels + "</b><span>🤝 duels gagnés</span></div></div>" +
       '<h2 class="sous-titre">Mes meilleures parties</h2><div class="bloc"><table>' + (lignes.join("") || '<tr><td class="note">Joue une étape pour faire ton premier record.</td><td></td></tr>') + "</table></div>";
@@ -1785,8 +1820,8 @@ __CONTENU__
       $ecran.querySelectorAll(".reponse").forEach(b => b.onclick = () => {
         if (bloque || fini) return; bloque = true;
         const i = +b.dataset.i;
-        if (i === q.bonne) { b.classList.add("bon"); score++; son("bon"); setTimeout(poser, 250); }
-        else { b.classList.add("faux"); $ecran.querySelector('.reponse[data-i="' + q.bonne + '"]').classList.add("bon"); son("faux"); setTimeout(poser, 900); }
+        if (i === q.bonne) { b.classList.add("bon"); score++; son("bon"); setTimeout(() => !fini && poser(), 250); }
+        else { b.classList.add("faux"); $ecran.querySelector('.reponse[data-i="' + q.bonne + '"]').classList.add("bon"); son("faux"); setTimeout(() => !fini && poser(), 900); }
       });
     }
     function boucle(t) {
@@ -2285,7 +2320,7 @@ __CONTENU__
     ["🌽", "un champ de maïs"], ["🐄", "une vache"], ["🐑", "un mouton"], ["🥭", "un manguier"], ["🛶", "une pirogue"], ["⛪", "une église"], ["🏥", "une case de santé"], ["⚽", "un terrain de foot"], ["🚰", "une fontaine"], ["💡", "un lampadaire"],
     ["🚌", "un car rapide"], ["🐎", "une charrette"], ["🌻", "un jardin de fleurs"], ["🏪", "une boutique"], ["🥁", "un tam-tam"], ["🐔", "des poules"], ["🐕", "un chien"], ["🦜", "un perroquet"], ["🤼🏾", "une arène de lutte"], ["🛣️", "une route"],
   ] };
-  const debloques = () => Math.min(VILLAGE.items.length, NIVEAUX.concat([NIVEAU_BOSS]).filter(n => etoilesDe(n) > 0).length + E.bulletins.length);
+  const debloques = () => Math.min(VILLAGE.items.length, TOUS_NIVEAUX.concat(BOSSES).filter(n => etoilesDe(n) > 0).length + E.bulletins.length);
   function village(choix) {
     changer();
     $ecran.className = "ecran";
@@ -2305,6 +2340,20 @@ __CONTENU__
       E.village[t] = choix; sauver(); son("piece"); dire("Tu as construit " + VILLAGE.items[choix][1] + " !");
       village();
     });
+  }
+
+  // ----- Le choix du palier -----
+  function choixPalier() {
+    const v = document.createElement("div"); v.className = "voile";
+    v.innerHTML = '<div class="fenetre" role="dialog" aria-label="Les paliers"><h2>Mes paliers</h2><div class="bons">' + PALIERS.map((pa, k) => {
+      const l = TOUS_NIVEAUX.filter(n => n.palier === pa.id), faits = l.filter(n => etoilesDe(n) > 0).length, ok = palierOuvert(k);
+      return '<button class="bon-ligne' + (pa.id === NIVEAU_BOSS.palier ? " choisi-p" : "") + '" data-p="' + k + '"' + (ok ? "" : " disabled") + "><b>" + (ok ? (etoilesDe(BOSSES[k]) ? "🏅" : ["1️⃣", "2️⃣", "3️⃣", "4️⃣"][k] || "📘") : "🔒") + "</b><span><strong>" + esc(pa.titre) + "</strong><br><small>" + esc(pa.periode || "") + " · " + faits + "/" + l.length + " étapes</small></span>" + '<span class="prix">' + (ok ? "▶" : "") + "</span></button>";
+    }).join("") + '</div><p class="aide">Réussis la composition d\'un palier pour ouvrir le suivant.</p><div class="boutons"><button class="bouton second" id="fermerP">Fermer</button></div></div>';
+    document.body.appendChild(v);
+    lire("Choisis ton palier.");
+    v.onclick = e => { if (e.target === v) v.remove(); };
+    v.querySelector("#fermerP").onclick = () => v.remove();
+    v.querySelectorAll("[data-p]").forEach(b => b.onclick = () => { const k = +b.dataset.p; if (!palierOuvert(k)) return; choisirPalier(PALIERS[k].id); sauver(); v.remove(); son("pop"); carte(); });
   }
 
   // ----- La bibliothèque : leçons en plus (Sénégal, langues, contes, maths…) -----
@@ -2694,7 +2743,7 @@ __CONTENU__
   function parent(message) {
     changer();
     $ecran.className = "ecran";
-    const tous = NIVEAUX.concat([NIVEAU_BOSS]);
+    const tous = TOUS_NIVEAUX.concat(BOSSES);
     const faits = tous.filter(n => etoilesDe(n) > 0).length;
     const jours = Object.keys(E.jours).sort().reverse().slice(0, 7);
     const minutes = s => Math.round((s || 0) / 60);
@@ -2708,8 +2757,8 @@ __CONTENU__
       (E.bulletins.length ? "<h2>Bulletins</h2><div class=\"bloc\"><table>" + E.bulletins.map((b, i) => '<tr><td><button class="lien" data-bul="' + i + '">Composition · ' + esc(b.palier) + "</button><br><span class=\"note\">" + new Date(b.date).toLocaleDateString("fr-FR") + " · " + esc(b.mention) + "</span></td><td>" + String(b.moyenne).replace(".", ",") + "/10</td></tr>").join("") + "</table></div>" : "") +
       '<h2>Vue d\'ensemble</h2><div class="bloc"><div class="stat"><div><b>' + faits + "/" + tous.length + '</b><span>étapes réussies</span></div><div><b>' + totalEtoiles() + '</b><span>étoiles</span></div><div><b>' + minutes(E.jours[aujourdhui()]) + " min</b><span>aujourd'hui</span></div></div></div>" +
       "<h2>Progrès par matière</h2>" +
-      C.mondes.map(m => '<div class="bloc"><strong>' + m.icone + " " + esc(m.titre) + "</strong><table>" + NIVEAUX.filter(n => n.monde === m).map(ligne).join("") + "</table></div>").join("") +
-      '<div class="bloc"><strong>' + BOSS.e + " Révision finale</strong><table>" + ligne(NIVEAU_BOSS) + "</table></div>" +
+      C.mondes.map(m => '<div class="bloc"><strong>' + m.icone + " " + esc(m.titre) + "</strong><table>" + TOUS_NIVEAUX.filter(n => n.monde === m).map(ligne).join("") + "</table></div>").join("") +
+      '<div class="bloc"><strong>' + BOSS.e + " Révision finale</strong><table>" + BOSSES.map(ligne).join("") + "</table></div>" +
       "<h2>Dernières parties</h2><div class=\"bloc\"><table>" + (E.journal.length ? E.journal.slice(0, 12).map(j => "<tr><td>" + esc(nomNiveau(j.id)) + '<br><span class="note">' + dateCourte(j.date) + "</span></td><td>" + j.score + "</td></tr>").join("") : '<tr><td class="note">Aucune partie pour l\'instant.</td><td></td></tr>') + "</table></div>" +
       "<h2>Temps passé dans l'appli</h2><div class=\"bloc\"><table>" + (jours.length ? jours.map(j => "<tr><td>" + new Date(j + "T12:00").toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long" }) + "</td><td>" + minutes(E.jours[j]) + " min</td></tr>").join("") : '<tr><td class="note">Pas encore de temps enregistré.</td><td></td></tr>') + "</table>" +
       '<p class="note">Pour limiter le temps d\'écran depuis ton téléphone, utilise Google Family Link.</p></div>' +
@@ -2766,7 +2815,7 @@ __CONTENU__
     const min = Object.entries(E.jours).filter(([j]) => new Date(j + "T12:00").getTime() >= ilya7).reduce((s, [, v]) => s + v, 0) / 60;
     const parLecon = {};
     parties.forEach(j => { if (j.ratio == null) return; (parLecon[j.id] = parLecon[j.id] || []).push(j.ratio); });
-    const tous = NIVEAUX.concat([NIVEAU_BOSS]);
+    const tous = TOUS_NIVEAUX.concat(BOSSES);
     const nom = id => { const n = tous.find(x => x.id === id); return n ? n.titre : null; };
     const moy = a => a.reduce((s, x) => s + x, 0) / a.length;
     const acquis = Object.keys(parLecon).filter(id => moy(parLecon[id]) >= 0.85).map(nom).filter(Boolean);
@@ -2813,13 +2862,13 @@ __CONTENU__
   }
   function envoyer() {
     if (!base || !E.famille) return;
-    const tous = NIVEAUX.concat([NIVEAU_BOSS]);
+    const tous = TOUS_NIVEAUX.concat(BOSSES);
     const nomDe = id => { const n = tous.find(x => x.id === id); return n ? n.titre : id; };
     const etat = {
       prenom: prenom(), classe: C.classe, titre: C.titreAppli, avatar: C.avatar, couleur: getComputedStyle(document.documentElement).getPropertyValue("--theme").trim(),
       maj: Date.now(), pieces: E.pieces, serie: serieActive(), etoiles: totalEtoiles(), faites: tous.filter(n => etoilesDe(n) > 0).length, total: tous.length,
       semaine: donneesSemaine(), toutOuvert: E.toutOuvert, code: E.code === "1234" ? "1234" : "modifié",
-      matieres: C.mondes.map(m => ({ titre: m.titre, icone: m.icone, lecons: NIVEAUX.filter(n => n.monde === m).map(n => ({ titre: n.titre, objectif: n.objectif || "", etoiles: etoilesDe(n), dernier: (E.progres[n.id] || {}).dernier || "" })) })),
+      matieres: C.mondes.map(m => ({ titre: m.titre, icone: m.icone, lecons: TOUS_NIVEAUX.filter(n => n.monde === m).map(n => ({ titre: n.titre, objectif: n.objectif || "", etoiles: etoilesDe(n), dernier: (E.progres[n.id] || {}).dernier || "" })) })),
       journal: E.journal.slice(0, 25).map(j => ({ titre: nomDe(j.id), score: j.score, date: j.date })),
       jours: E.jours, bulletins: E.bulletins.slice(0, 6), bons: E.bons.slice(0, 15), catalogue: catalogue(),
     };
