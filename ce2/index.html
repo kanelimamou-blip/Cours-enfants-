@@ -350,6 +350,8 @@ details[open] { display: grid; gap: 8px; }
 <div class="app"><main class="ecran" id="ecran"></main></div>
 
 <script src="../voix/voix.js"></script>
+<script src="../sync/config.js"></script>
+<script src="../sync/sync.js"></script>
 <script>
 /* ---------- Contenu propre à l'enfant ---------- */
 /* Contenu de l'appli CE2. Programme sénégalais (CEB, étape 2), palier 1 : début d'année. */
@@ -826,10 +828,11 @@ details[open] { display: grid; gap: 8px; }
   }
 
   // ----- Mémoire du téléphone -----
-  const defaut = () => ({ prenom: "", code: "1234", toutOuvert: false, progres: {}, journal: [], jours: {}, pieces: 0, achats: [], porte: "", album: [], serie: { jour: "", n: 0 }, erreurs: [], diff: {}, qdj: "", bulletins: [], bons: [], catalogue: null, bonjour: "", equipe: {}, animal: null, jetons: { manger: 2, laver: 2, jouer: 2 }, coloriages: {}, lettresTracees: [] });
+  const defaut = () => ({ prenom: "", code: "1234", toutOuvert: false, progres: {}, journal: [], jours: {}, pieces: 0, achats: [], porte: "", album: [], serie: { jour: "", n: 0 }, erreurs: [], diff: {}, qdj: "", bulletins: [], bons: [], catalogue: null, bonjour: "", equipe: {}, animal: null, jetons: { manger: 2, laver: 2, jouer: 2 }, coloriages: {}, lettresTracees: [], famille: "", recus: [] });
   let E = defaut();
   try { const brut = localStorage.getItem(CLE); if (brut) E = Object.assign(defaut(), JSON.parse(brut)); } catch (e) {}
-  function sauver() { try { localStorage.setItem(CLE, JSON.stringify(E)); } catch (e) {} }
+  let envoiPrevu = 0;
+  function sauver() { try { localStorage.setItem(CLE, JSON.stringify(E)); } catch (e) {} clearTimeout(envoiPrevu); envoiPrevu = setTimeout(envoyer, 2500); }
   const prenom = () => E.prenom || C.prenom;
   const aujourdhui = () => { const d = new Date(); return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); };
   setInterval(() => {
@@ -936,6 +939,7 @@ details[open] { display: grid; gap: 8px; }
       '<div class="barre compteurs"><span class="pastille" title="Jours de suite">🔥 ' + serieActive() + '</span><span class="pastille" title="Pièces">🪙 ' + E.pieces + '</span><span class="pastille" title="Étoiles">⭐ ' + totalEtoiles() + '</span>' +
       (H.cartes ? '<button class="pastille" id="btnEquipe" aria-label="Mon équipe">🏟️</button>' : "") +
       (C.coin ? '<button class="pastille" id="btnCoin" aria-label="Mon coin">' + (E.animal ? ANIMAUX_COMPAGNONS[E.animal.type][0] : "🏡") + "</button>" : "") +
+      (E.famille && window.FIREBASE_CONFIG ? '<button class="pastille" id="btnHonneur" aria-label="Tableau d\'honneur">🏆</button>' : "") +
       (C.livre ? '<button class="pastille" id="btnLivre" aria-label="Mon livre de lecture">📖</button>' : "") +
       (E.bulletins.length ? '<button class="pastille" id="btnBulletin" aria-label="Mes bulletins">📜</button>' : "") +
       '<span class="espace"></span><button class="pastille" id="btnAlbum">' + (H.cartes ? "🃏 " : "📒 ") + E.album.length + '/' + (NIVEAUX.length + 1) + '</button></div></div>';
@@ -979,6 +983,7 @@ details[open] { display: grid; gap: 8px; }
     const be = document.getElementById("btnEquipe"); if (be) be.onclick = () => equipe();
     const bc = document.getElementById("btnCoin"); if (bc) bc.onclick = () => coin();
     const bl = document.getElementById("btnLivre"); if (bl) bl.onclick = () => livre(0);
+    const bh = document.getElementById("btnHonneur"); if (bh) bh.onclick = () => base ? honneur() : dire("Il faut internet pour voir le tableau d'honneur.");
     const bq = document.getElementById("btnQdj"); if (bq) bq.onclick = questionDuJour;
     const bb = document.getElementById("btnBulletin"); if (bb) bb.onclick = () => bulletin(E.bulletins[0], true);
     const acc = E.bons.filter(b => b.statut === "accorde" && !b.vu);
@@ -1771,6 +1776,8 @@ details[open] { display: grid; gap: 8px; }
       "<h2>Dernières parties</h2><div class=\"bloc\"><table>" + (E.journal.length ? E.journal.slice(0, 12).map(j => "<tr><td>" + esc(nomNiveau(j.id)) + '<br><span class="note">' + dateCourte(j.date) + "</span></td><td>" + j.score + "</td></tr>").join("") : '<tr><td class="note">Aucune partie pour l\'instant.</td><td></td></tr>') + "</table></div>" +
       "<h2>Temps passé dans l'appli</h2><div class=\"bloc\"><table>" + (jours.length ? jours.map(j => "<tr><td>" + new Date(j + "T12:00").toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long" }) + "</td><td>" + minutes(E.jours[j]) + " min</td></tr>").join("") : '<tr><td class="note">Pas encore de temps enregistré.</td><td></td></tr>') + "</table>" +
       '<p class="note">Pour limiter le temps d\'écran depuis ton téléphone, utilise Google Family Link.</p></div>' +
+      (window.FIREBASE_CONFIG ? '<h2>Téléphone de papa</h2><div class="bloc">' + (E.famille ? '<p class="note">✅ Relié à la famille <strong>' + esc(E.famille) + "</strong>" + (base ? "" : " (en attente de connexion)") + '.</p><button class="petit-bouton neutre" id="delier">Délier</button>' :
+        '<div class="rangee"><label for="champFamille">Code famille affiché dans l\'appli Papa</label><input type="text" id="champFamille" placeholder="XXXX-XXXX-XXXX" autocapitalize="characters" style="width:170px"><button class="petit-bouton" id="okFamille">Relier</button></div>') + "</div>" : "") +
       '<h2>Réglages</h2><div class="bloc">' +
       '<div class="rangee"><label for="champPrenom">Prénom affiché</label><input type="text" id="champPrenom" value="' + esc(prenom()) + '" maxlength="20"><button class="petit-bouton" id="okPrenom">Enregistrer</button></div>' +
       '<div class="rangee"><label for="champCode">Nouveau code parent (4 chiffres)</label><input type="password" id="champCode" inputmode="numeric" maxlength="4" placeholder="••••"><button class="petit-bouton" id="okCode">Changer</button></div>' +
@@ -1791,6 +1798,9 @@ details[open] { display: grid; gap: 8px; }
     const ajout = document.getElementById("okBon");
     if (ajout) ajout.onclick = () => { const nom = document.getElementById("champBon").value.trim(), prix = parseInt(document.getElementById("champPrix").value, 10); if (!nom || !(prix > 0)) return parent("Indique un nom et un prix en pièces."); E.catalogue = catalogue().concat([["🎁", nom, prix]]); sauver(); parent("Récompense ajoutée : " + nom); };
     $ecran.querySelectorAll("[data-bul]").forEach(b => b.onclick = () => bulletin(E.bulletins[+b.dataset.bul], true));
+    const of = document.getElementById("okFamille");
+    if (of) of.onclick = () => { const c = window.Synchro.normaliser(document.getElementById("champFamille").value); if (!window.Synchro.valide(c)) return parent("Le code doit ressembler à ABCD-EFGH-JKLM."); E.famille = c; sauver(); demarrerSync(); parent("Téléphone relié ! Papa verra les progrès de " + prenom() + "."); };
+    const dl = document.getElementById("delier"); if (dl) dl.onclick = () => { E.famille = ""; sauver(); parent("Téléphone délié."); };
     document.getElementById("okPrenom").onclick = () => { const v = document.getElementById("champPrenom").value.trim(); if (v) { E.prenom = v; sauver(); parent("Prénom enregistré."); } };
     document.getElementById("okCode").onclick = () => { const v = document.getElementById("champCode").value.trim(); if (/^\d{4}$/.test(v)) { E.code = v; sauver(); parent("Nouveau code enregistré. Retiens-le bien."); } else parent("Le code doit faire exactement 4 chiffres."); };
     document.getElementById("okOuvert").onclick = () => { E.toutOuvert = !E.toutOuvert; sauver(); parent(E.toutOuvert ? "Toutes les étapes sont ouvertes." : "Les étapes s'ouvrent à nouveau dans l'ordre."); };
@@ -1800,7 +1810,7 @@ details[open] { display: grid; gap: 8px; }
     document.getElementById("oui").onclick = () => { const garde = { prenom: E.prenom, code: E.code }; E = Object.assign(defaut(), garde); sauver(); parent("Progrès effacés."); };
   }
 
-  function resumeSemaine() {
+  function donneesSemaine() {
     const ilya7 = Date.now() - 7 * 864e5;
     const parties = E.journal.filter(j => new Date(j.date).getTime() >= ilya7);
     const min = Object.entries(E.jours).filter(([j]) => new Date(j + "T12:00").getTime() >= ilya7).reduce((s, [, v]) => s + v, 0) / 60;
@@ -1813,8 +1823,14 @@ details[open] { display: grid; gap: 8px; }
     const coince = Object.keys(parLecon).filter(id => moy(parLecon[id]) < 0.65).map(nom).filter(Boolean);
     const compte = {}; E.erreurs.forEach(x => compte[x.id] = (compte[x.id] || 0) + 1);
     const reprendre = Object.entries(compte).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([id, k]) => { const n = tous.find(x => x.id === id); return n ? esc(n.titre) + (n.objectif ? " (" + esc(n.objectif) + ")" : "") + " · " + k + " erreur" + (k > 1 ? "s" : "") + " à revoir" : null; }).filter(Boolean);
+    const joursJoues = Object.keys(E.jours).filter(j => new Date(j + "T12:00").getTime() >= ilya7).length;
+    const points = Math.round(parties.reduce((s, j) => s + (j.ratio || 0) * 10, 0) + joursJoues * 5);
+    return { parties: parties.length, min: Math.round(min), acquis, coince, reprendre, points, joursJoues };
+  }
+  function resumeSemaine() {
+    const { parties, min, acquis, coince, reprendre } = donneesSemaine();
     const liste = a => a.length ? a.map(x => "<li>" + x + "</li>").join("") : '<li class="note">Rien pour l\'instant</li>';
-    return "<h2>La semaine de " + esc(prenom()) + '</h2><div class="bloc"><div class="stat"><div><b>' + parties.length + "</b><span>parties</span></div><div><b>" + Math.round(min) + " min</b><span>de jeu</span></div><div><b>" + E.serie.n + "</b><span>jours de suite</span></div></div>" +
+    return "<h2>La semaine de " + esc(prenom()) + '</h2><div class="bloc"><div class="stat"><div><b>' + parties + "</b><span>parties</span></div><div><b>" + min + " min</b><span>de jeu</span></div><div><b>" + E.serie.n + "</b><span>jours de suite</span></div></div>" +
       '<div class="resume"><strong>✅ Acquis</strong><ul>' + liste(acquis.map(esc)) + "</ul><strong>⚠️ Ça coince</strong><ul>" + liste(coince.map(esc)) + "</ul><strong>📌 À reprendre avec " + esc(prenom()) + "</strong><ul>" + liste(reprendre) + "</ul></div></div>";
   }
   function bonsParent() {
@@ -1824,8 +1840,63 @@ details[open] { display: grid; gap: 8px; }
       '<div class="rangee"><input type="text" id="champBon" placeholder="Nouvelle récompense" style="flex:1;min-width:140px"><input type="text" id="champPrix" inputmode="numeric" placeholder="Prix" style="width:70px"><button class="petit-bouton" id="okBon">Ajouter</button></div></details></div>';
   }
 
+  // ----- Synchronisation avec l'appli Papa -----
+  let base = null;
+  async function demarrerSync() {
+    if (!E.famille || !window.Synchro) return;
+    base = await window.Synchro.demarrer();
+    if (!base) return;
+    base.doc("familles/" + E.famille + "/reglages/" + C.id).onSnapshot(d => appliquerReglages(d.data() || {}), () => {});
+    envoyer();
+  }
+  function envoyer() {
+    if (!base || !E.famille) return;
+    const tous = NIVEAUX.concat([NIVEAU_BOSS]);
+    const nomDe = id => { const n = tous.find(x => x.id === id); return n ? n.titre : id; };
+    const etat = {
+      prenom: prenom(), classe: C.classe, titre: C.titreAppli, avatar: C.avatar, couleur: getComputedStyle(document.documentElement).getPropertyValue("--theme").trim(),
+      maj: Date.now(), pieces: E.pieces, serie: serieActive(), etoiles: totalEtoiles(), faites: tous.filter(n => etoilesDe(n) > 0).length, total: tous.length,
+      semaine: donneesSemaine(), toutOuvert: E.toutOuvert, code: E.code === "1234" ? "1234" : "modifié",
+      matieres: C.mondes.map(m => ({ titre: m.titre, icone: m.icone, lecons: NIVEAUX.filter(n => n.monde === m).map(n => ({ titre: n.titre, objectif: n.objectif || "", etoiles: etoilesDe(n), dernier: (E.progres[n.id] || {}).dernier || "" })) })),
+      journal: E.journal.slice(0, 25).map(j => ({ titre: nomDe(j.id), score: j.score, date: j.date })),
+      jours: E.jours, bulletins: E.bulletins.slice(0, 6), bons: E.bons.slice(0, 15), catalogue: catalogue(),
+    };
+    base.doc("familles/" + E.famille + "/enfants/" + C.id).set(etat).catch(() => {});
+  }
+  function appliquerReglages(r) {
+    let change = false;
+    Object.entries(r.decisions || {}).forEach(([date, dec]) => {
+      const b = E.bons.find(x => x.date === date && x.statut === "attente");
+      if (!b) return;
+      if (dec === "accorde") { b.statut = "accorde"; b.vu = false; } else { b.statut = "refuse"; E.pieces += b.prix; }
+      change = true;
+    });
+    (r.cadeaux || []).forEach(c => { if (E.recus.includes(c.id)) return; E.recus.push(c.id); E.pieces += c.n; change = true; setTimeout(() => { bravo("🎁 +" + c.n + " pièces de papa !"); son("piece"); }, 600); });
+    if (typeof r.toutOuvert === "boolean" && r.toutOuvert !== E.toutOuvert) { E.toutOuvert = r.toutOuvert; change = true; }
+    if (r.prenom && r.prenom !== E.prenom) { E.prenom = r.prenom; change = true; }
+    if (Array.isArray(r.catalogue) && JSON.stringify(r.catalogue) !== JSON.stringify(E.catalogue)) { E.catalogue = r.catalogue; change = true; }
+    if (change) { sauver(); if (document.getElementById("voyage")) carte(); }
+  }
+  async function honneur() {
+    changer();
+    $ecran.className = "ecran";
+    $ecran.innerHTML = '<div class="titre-page"><button class="rond" id="retour" aria-label="Retour">←</button><h1>Tableau d\'honneur</h1></div><p class="aide">Chargement…</p>';
+    document.getElementById("retour").onclick = carte;
+    let enfants = [];
+    try { const q = await base.collection("familles/" + E.famille + "/enfants").get(); enfants = q.docs.map(d => d.data()); } catch (e) {}
+    if (!enfants.length) { $ecran.querySelector(".aide").textContent = "Pas de connexion pour l'instant. Réessaie avec internet."; return; }
+    enfants.sort((a, b) => (b.semaine ? b.semaine.points : 0) - (a.semaine ? a.semaine.points : 0));
+    const medailles = ["🥇", "🥈", "🥉"];
+    $ecran.innerHTML = '<div class="titre-page"><button class="rond" id="retour" aria-label="Retour">←</button><h1>Tableau d\'honneur</h1></div>' +
+      '<p class="aide">Les points de la semaine : 10 par partie parfaite et 5 par jour joué. Chacun joue à son niveau, donc c\'est juste !</p><div class="bons">' +
+      enfants.map((x, i) => '<div class="bon-ligne demande' + (x.prenom === prenom() ? " moi-h" : "") + '"><b>' + (medailles[i] || "⭐") + '</b><span><strong>' + esc(x.prenom) + "</strong> · " + esc(x.classe) + "<br><small>" + (x.semaine ? x.semaine.parties : 0) + " parties · 🔥 " + (x.serie || 0) + '</small></span><span class="prix">' + (x.semaine ? x.semaine.points : 0) + " pts</span></div>").join("") + "</div>";
+    document.getElementById("retour").onclick = carte;
+    dire(enfants[0].prenom + " est en tête cette semaine !");
+  }
+
   window.addEventListener("resize", () => { if (document.getElementById("voyage")) carte(); });
   carte();
+  demarrerSync();
 })();
 </script>
 

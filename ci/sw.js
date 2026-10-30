@@ -1,6 +1,6 @@
 // Garde l'appli disponible hors ligne. Changer VERSION à chaque mise à jour.
-const VERSION = "ci-202610300019";
-const FICHIERS = ["./", "./index.html", "./manifest.webmanifest", "./icone-192.png", "./icone-512.png", "../voix/voix.js"];
+const VERSION = "ci-202610300026";
+const FICHIERS = ["./", "./index.html", "./manifest.webmanifest", "./icone-192.png", "./icone-512.png", "../voix/voix.js", "../sync/config.js", "../sync/sync.js"];
 
 self.addEventListener("install", e => {
   e.waitUntil(caches.open(VERSION).then(c => c.addAll(FICHIERS)).then(() => self.skipWaiting()));

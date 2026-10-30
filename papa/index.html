@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icone-192.png">
+<link rel="apple-touch-icon" href="icone-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Papa">
+<meta name="theme-color" content="#1d3b78">
+<title>Papa · Cours enfants</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Baloo+2:wght@600;800&display=swap">
+<style>
+/* Appli du parent : un tableau de bord d'une colonne, une carte par enfant, le détail en dessous. */
+:root {
+  --sable: #f3f5fb; --carte: #fff; --encre: #1f2433; --doux: #626a80; --theme: #1d3b78; --theme-clair: #dbe4f7;
+  --vert: #2e9e5b; --rouge: #e0533d; --mangue: #ffb21e; --trait: #e1e6f2;
+  --titre: "Baloo 2", "Trebuchet MS", system-ui, sans-serif; --lecture: "Andika", "Segoe UI", system-ui, sans-serif;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; min-height: 100%; }
+body { background: var(--sable); color: var(--encre); font-family: var(--lecture); font-size: 17px; -webkit-tap-highlight-color: transparent; }
+main { max-width: 560px; margin: 0 auto; padding: max(16px, env(safe-area-inset-top, 0px)) 16px 40px; display: grid; gap: 14px; }
+h1, h2, h3 { font-family: var(--titre); margin: 0; line-height: 1.1; }
+h1 { font-size: 28px; } h2 { font-size: 21px; margin-top: 6px; } h3 { font-size: 18px; }
+p { margin: 0; } .doux { color: var(--doux); font-size: 15px; }
+button { font: inherit; color: inherit; border: 0; background: none; cursor: pointer; touch-action: manipulation; }
+.haut { display: flex; align-items: center; gap: 12px; }
+.haut h1 { flex: 1; }
+.rond { width: 44px; height: 44px; border-radius: 50%; background: var(--carte); box-shadow: 0 3px 0 var(--trait); font-size: 22px; flex: none; }
+.bloc { background: var(--carte); border-radius: 20px; padding: 16px; display: grid; gap: 12px; box-shadow: 0 4px 0 var(--trait); }
+.enfant { display: grid; grid-template-columns: 58px 1fr auto; gap: 12px; align-items: center; text-align: left; width: 100%; }
+.avatar { width: 58px; height: 58px; border-radius: 18px; display: grid; place-items: center; font-size: 32px; background: var(--theme-clair); }
+.enfant strong { font-family: var(--titre); font-size: 21px; display: block; }
+.alerte { background: var(--mangue); color: #3a2600; border-radius: 99px; padding: 3px 10px; font-size: 14px; font-weight: 700; white-space: nowrap; }
+.stat { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; text-align: center; }
+.stat b { font-family: var(--titre); font-size: 24px; display: block; }
+.stat span { font-size: 13px; color: var(--doux); }
+.barre { height: 10px; background: var(--trait); border-radius: 99px; overflow: hidden; }
+.barre i { display: block; height: 100%; background: var(--vert); }
+.bouton { font-weight: 700; border-radius: 14px; padding: 12px 16px; background: var(--theme); color: #fff; box-shadow: 0 3px 0 rgba(0,0,0,.2); }
+.bouton.neutre { background: var(--carte); color: var(--encre); box-shadow: 0 3px 0 var(--trait); border: 1px solid var(--trait); }
+.bouton.vert { background: var(--vert); } .bouton.rouge { background: var(--rouge); }
+.petit { padding: 8px 12px; font-size: 15px; }
+.rangee { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.ligne { display: flex; gap: 10px; align-items: center; justify-content: space-between; padding: 8px 0; border-top: 1px solid var(--trait); }
+.ligne:first-child { border-top: 0; }
+.ligne > span { flex: 1; min-width: 0; }
+.code { font-family: var(--titre); font-size: 30px; letter-spacing: 2px; text-align: center; background: var(--theme-clair); border-radius: 14px; padding: 10px; user-select: all; }
+input[type=text] { font: inherit; padding: 10px 12px; border-radius: 12px; border: 2px solid var(--trait); background: #fff; min-width: 0; }
+details summary { cursor: pointer; font-weight: 700; }
+ul { margin: 4px 0 0; padding-left: 20px; } li { margin: 2px 0; }
+.etoiles { color: var(--mangue); letter-spacing: 1px; white-space: nowrap; }
+.interrupteur { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.interrupteur input { width: 26px; height: 26px; accent-color: var(--theme); }
+.jours { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; align-items: end; height: 80px; }
+.jours div { background: var(--theme); border-radius: 6px 6px 2px 2px; min-height: 3px; }
+.jours-noms { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; font-size: 12px; color: var(--doux); }
+.message { background: var(--vert); color: #fff; border-radius: 14px; padding: 10px 14px; font-weight: 700; }
+[hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<main id="ecran"></main>
+<script src="../sync/config.js"></script>
+<script src="../sync/sync.js"></script>
+<script>
+(function () {
+  const CLE = "coursEnfants:papa";
+  const lire = () => { try { return JSON.parse(localStorage.getItem(CLE)) || {}; } catch (e) { return {}; } };
+  const P = Object.assign({ famille: "" }, lire());
+  const sauver = () => { try { localStorage.setItem(CLE, JSON.stringify(P)); } catch (e) {} };
+  const $ = document.getElementById("ecran");
+  const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const ORDRE = ["gs", "ci", "ce2"];
+  let base = null, enfants = {}, reglages = {}, vue = { ecran: "tableau" }, message = "", arreter = [];
+
+  const quand = t => {
+    if (!t) return "jamais";
+    const m = Math.round((Date.now() - t) / 60000);
+    if (m < 2) return "à l'instant"; if (m < 60) return "il y a " + m + " min";
+    const h = Math.round(m / 60); if (h < 24) return "il y a " + h + " h";
+    return "le " + new Date(t).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long" });
+  };
+  const etoiles = n => "★".repeat(n) + "☆".repeat(3 - n);
+  const attente = e => (e.bons || []).filter(b => b.statut === "attente" && !((reglages[e.id] || {}).decisions || {})[b.date]);
+
+  function afficher() {
+    if (!window.FIREBASE_CONFIG) return pasDeSynchro();
+    if (!P.famille) return accueil();
+    if (vue.ecran === "enfant" && enfants[vue.id]) return detail(enfants[vue.id]);
+    if (vue.ecran === "reglages") return parametres();
+    tableau();
+  }
+  function pasDeSynchro() {
+    $.innerHTML = '<h1>👨🏾 Papa</h1><div class="bloc"><p>La liaison avec les téléphones des enfants n\'est pas encore activée.</p><p class="doux">Elle sera disponible dès que le compte Firebase de la famille sera branché. Les applis des enfants marchent normalement en attendant.</p></div>';
+  }
+
+  // ----- Premier lancement : créer le code de la famille -----
+  function accueil() {
+    $.innerHTML = '<h1>👨🏾 Bienvenue Papa</h1><div class="bloc"><p>Cette appli te montre les progrès de tes enfants et te laisse valider leurs récompenses.</p>' +
+      '<p class="doux">Pour commencer, crée le code de ta famille. Tu le taperas ensuite une seule fois dans chaque appli des enfants.</p>' +
+      '<button class="bouton" id="creer">Créer le code de la famille</button></div>' +
+      '<div class="bloc"><h3>J\'ai déjà un code</h3><div class="rangee"><input type="text" id="champ" placeholder="XXXX-XXXX-XXXX" autocapitalize="characters" style="flex:1"><button class="bouton neutre" id="ok">Valider</button></div><p class="doux" id="err"></p></div>';
+    document.getElementById("creer").onclick = () => { P.famille = window.Synchro.nouveauCode(); sauver(); vue = { ecran: "reglages" }; message = "Code créé ! Tape-le maintenant dans chaque appli des enfants."; connecter(); };
+    document.getElementById("ok").onclick = () => {
+      const c = window.Synchro.normaliser(document.getElementById("champ").value);
+      if (!window.Synchro.valide(c)) { document.getElementById("err").textContent = "Le code doit ressembler à ABCD-EFGH-JKLM."; return; }
+      P.famille = c; sauver(); vue = { ecran: "tableau" }; connecter();
+    };
+  }
+
+  // ----- Tableau de bord -----
+  function tableau() {
+    const liste = Object.values(enfants).sort((a, b) => ORDRE.indexOf(a.id) - ORDRE.indexOf(b.id));
+    const classement = liste.slice().sort((a, b) => ((b.semaine || {}).points || 0) - ((a.semaine || {}).points || 0));
+    const med = ["🥇", "🥈", "🥉"];
+    $.innerHTML = '<div class="haut"><h1>👨🏾 Mes enfants</h1><button class="rond" id="reglages" aria-label="Réglages">⚙️</button></div>' +
+      (message ? '<p class="message">' + esc(message) + "</p>" : "") +
+      (base ? "" : '<p class="doux">Connexion en cours… (il faut internet)</p>') +
+      (liste.length ? liste.map(e => {
+        const n = attente(e).length;
+        return '<button class="bloc enfant" data-id="' + e.id + '" style="--theme-clair:' + esc(e.couleur || "#dbe4f7") + '22"><span class="avatar" style="background:' + esc(e.couleur || "#dbe4f7") + '33">' + esc(e.avatar) + '</span><span><strong>' + esc(e.prenom) + "</strong>" +
+          '<span class="doux">' + esc(e.classe) + " · vu " + quand(e.maj) + "</span><br><span class=\"doux\">⭐ " + (e.etoiles || 0) + " · 🔥 " + (e.serie || 0) + " j · " + ((e.semaine || {}).parties || 0) + " parties cette semaine</span></span>" +
+          (n ? '<span class="alerte">🎁 ' + n + "</span>" : '<span class="doux">›</span>') + "</button>";
+      }).join("") : (base ? '<div class="bloc"><p>Aucun enfant relié pour l\'instant.</p><p class="doux">Dans chaque appli des enfants : cadenas 🔒, code parent, puis « Téléphone de papa » et tape le code <strong>' + esc(P.famille) + "</strong>.</p></div>" : "")) +
+      (liste.length > 1 ? '<h2>🏆 Tableau d\'honneur de la semaine</h2><div class="bloc">' + classement.map((e, i) => '<div class="ligne"><span>' + (med[i] || "⭐") + " <strong>" + esc(e.prenom) + '</strong> <span class="doux">' + esc(e.classe) + "</span></span><strong>" + ((e.semaine || {}).points || 0) + " pts</strong></div>").join("") + '<p class="doux">10 points par partie parfaite et 5 par jour joué : chacun à son niveau.</p></div>' : "");
+    message = "";
+    $.querySelectorAll("[data-id]").forEach(b => b.onclick = () => { vue = { ecran: "enfant", id: b.dataset.id }; afficher(); scrollTo(0, 0); });
+    document.getElementById("reglages").onclick = () => { vue = { ecran: "reglages" }; afficher(); };
+  }
+
+  // ----- Détail d'un enfant -----
+  function detail(e) {
+    const s = e.semaine || {}, r = reglages[e.id] || {};
+    const liste = a => a && a.length ? "<ul>" + a.map(x => "<li>" + x + "</li>").join("") + "</ul>" : '<p class="doux">Rien pour l\'instant.</p>';
+    const jours = [...Array(7)].map((_, k) => { const d = new Date(Date.now() - (6 - k) * 864e5); const cle = d.toISOString().slice(0, 10); return { nom: d.toLocaleDateString("fr-FR", { weekday: "narrow" }), min: Math.round(((e.jours || {})[cle] || 0) / 60) }; });
+    const max = Math.max(10, ...jours.map(j => j.min));
+    const bons = attente(e);
+    $.innerHTML = '<div class="haut"><button class="rond" id="retour" aria-label="Retour">←</button><h1>' + esc(e.avatar) + " " + esc(e.prenom) + '</h1></div><p class="doux">' + esc(e.titre || e.classe) + " · mis à jour " + quand(e.maj) + "</p>" +
+      (message ? '<p class="message">' + esc(message) + "</p>" : "") +
+      '<div class="bloc"><div class="stat"><div><b>' + (s.parties || 0) + "</b><span>parties</span></div><div><b>" + (s.min || 0) + " min</b><span>de jeu</span></div><div><b>" + (e.serie || 0) + '</b><span>jours de suite</span></div></div>' +
+      '<div class="jours">' + jours.map(j => '<div style="height:' + Math.round(100 * j.min / max) + '%" title="' + j.min + ' min"></div>').join("") + '</div><div class="jours-noms">' + jours.map(j => "<span>" + j.nom + "</span>").join("") + "</div>" +
+      '<p class="doux">Niveaux réussis : ' + (e.faites || 0) + " sur " + (e.total || 0) + ' · 🪙 ' + (e.pieces || 0) + " pièces</p><div class=\"barre\"><i style=\"width:" + Math.round(100 * (e.faites || 0) / Math.max(1, e.total || 1)) + '%"></i></div></div>' +
+      "<h2>La semaine</h2><div class=\"bloc\"><div><strong>✅ Acquis</strong>" + liste((s.acquis || []).map(esc)) + "</div><div><strong>⚠️ Ça coince</strong>" + liste((s.coince || []).map(esc)) + "</div><div><strong>📌 À reprendre ensemble</strong>" + liste(s.reprendre) + "</div></div>" +
+      "<h2>Récompenses demandées</h2><div class=\"bloc\">" + (bons.length ? bons.map(b => '<div class="ligne"><span>' + esc(b.e) + " <strong>" + esc(b.nom) + '</strong><br><span class="doux">' + b.prix + " pièces · " + new Date(b.date).toLocaleDateString("fr-FR") + '</span></span><span class="rangee"><button class="bouton vert petit" data-bon="' + esc(b.date) + '" data-dec="accorde">Accepter</button><button class="bouton neutre petit" data-bon="' + esc(b.date) + '" data-dec="refuse">Refuser</button></span></div>').join("") : '<p class="doux">Aucune demande en attente.</p>') +
+      ((e.bons || []).some(b => b.statut !== "attente") ? "<details><summary>Déjà traitées</summary>" + e.bons.filter(b => b.statut !== "attente").map(b => '<div class="ligne"><span>' + esc(b.e) + " " + esc(b.nom) + "</span><span>" + (b.statut === "accorde" ? "✅" : "❌") + "</span></div>").join("") + "</details>" : "") + "</div>" +
+      '<h2>Envoyer des pièces</h2><div class="bloc"><p class="doux">Pour féliciter ' + esc(e.prenom) + ' : les pièces arrivent dans son appli avec un message de papa.</p><div class="rangee">' + [5, 10, 20, 50].map(n => '<button class="bouton neutre petit" data-cadeau="' + n + '">🎁 ' + n + "</button>").join("") + "</div></div>" +
+      "<h2>Compositions</h2><div class=\"bloc\">" + ((e.bulletins || []).length ? e.bulletins.map(b => "<details><summary>" + esc(b.palier) + " · " + b.moyenne + "/10 · " + esc(b.mention) + '</summary><p class="doux">' + new Date(b.date).toLocaleDateString("fr-FR") + "</p>" + (b.notes || []).map(x => '<div class="ligne"><span>' + esc(x.icone) + " " + esc(x.matiere) + "</span><strong>" + x.note + "/10</strong></div>").join("") + "</details>").join("") : '<p class="doux">Pas encore de composition.</p>') + "</div>" +
+      "<h2>Par matière</h2><div class=\"bloc\">" + (e.matieres || []).map(m => { const ok = m.lecons.filter(l => l.etoiles > 0).length; return "<details><summary>" + esc(m.icone) + " " + esc(m.titre) + " · " + ok + "/" + m.lecons.length + "</summary>" + m.lecons.map(l => '<div class="ligne"><span>' + esc(l.titre) + (l.objectif ? '<br><span class="doux">' + esc(l.objectif) + "</span>" : "") + '</span><span class="etoiles">' + etoiles(l.etoiles) + "</span></div>").join("") + "</details>"; }).join("") + "</div>" +
+      "<h2>Dernières parties</h2><div class=\"bloc\">" + ((e.journal || []).length ? e.journal.slice(0, 12).map(j => '<div class="ligne"><span>' + esc(j.titre) + '<br><span class="doux">' + new Date(j.date).toLocaleString("fr-FR", { weekday: "short", hour: "2-digit", minute: "2-digit" }) + "</span></span><strong>" + esc(j.score) + "</strong></div>").join("") : '<p class="doux">Pas encore de partie.</p>') + "</div>" +
+      '<h2>Réglages de ' + esc(e.prenom) + '</h2><div class="bloc"><label class="interrupteur"><span>Ouvrir tous les niveaux<br><span class="doux">Sinon, chaque niveau s\'ouvre quand le précédent est réussi.</span></span><input type="checkbox" id="ouvert"' + ((typeof r.toutOuvert === "boolean" ? r.toutOuvert : e.toutOuvert) ? " checked" : "") + "></label>" +
+      (e.code === "1234" ? '<p class="doux">🔒 Le code parent de cette appli est encore 1234. Tu peux le changer dans l\'appli de ' + esc(e.prenom) + ".</p>" : "") + "</div>";
+    message = "";
+    document.getElementById("retour").onclick = () => { vue = { ecran: "tableau" }; afficher(); };
+    $.querySelectorAll("[data-bon]").forEach(b => b.onclick = () => {
+      ecrire(e.id, { decisions: { [b.dataset.bon]: b.dataset.dec } });
+      message = b.dataset.dec === "accorde" ? "Récompense acceptée. " + e.prenom + " sera prévenu(e) dans son appli." : "Récompense refusée : les pièces sont rendues.";
+      (reglages[e.id] = reglages[e.id] || {}).decisions = Object.assign({}, (reglages[e.id] || {}).decisions, { [b.dataset.bon]: b.dataset.dec });
+      afficher();
+    });
+    $.querySelectorAll("[data-cadeau]").forEach(b => b.onclick = () => {
+      const n = +b.dataset.cadeau, cadeaux = ((reglages[e.id] || {}).cadeaux || []).concat([{ id: Date.now().toString(36), n }]);
+      (reglages[e.id] = reglages[e.id] || {}).cadeaux = cadeaux;
+      ecrire(e.id, { cadeaux: cadeaux.slice(-30) });
+      message = n + " pièces envoyées à " + e.prenom + " !"; afficher();
+    });
+    document.getElementById("ouvert").onchange = ev => { (reglages[e.id] = reglages[e.id] || {}).toutOuvert = ev.target.checked; ecrire(e.id, { toutOuvert: ev.target.checked }); };
+  }
+
+  // ----- Réglages de l'appli Papa -----
+  function parametres() {
+    $.innerHTML = '<div class="haut"><button class="rond" id="retour" aria-label="Retour">←</button><h1>Réglages</h1></div>' +
+      (message ? '<p class="message">' + esc(message) + "</p>" : "") +
+      '<div class="bloc"><h3>Code de la famille</h3><p class="code">' + esc(P.famille) + '</p><p class="doux">Dans chaque appli des enfants : touche le cadenas 🔒, tape le code parent (1234 au départ), descends jusqu\'à « Téléphone de papa », tape ce code et touche « Relier ».</p>' +
+      '<button class="bouton neutre" id="partager">📤 Envoyer le code</button></div>' +
+      '<div class="bloc"><h3>Changer de famille</h3><p class="doux">Seulement si tu veux repartir de zéro ou utiliser un autre code.</p><button class="bouton neutre" id="oublier">Utiliser un autre code</button></div>';
+    message = "";
+    document.getElementById("retour").onclick = () => { vue = { ecran: "tableau" }; afficher(); };
+    document.getElementById("partager").onclick = () => {
+      const t = "Code famille pour les applis des enfants : " + P.famille;
+      if (navigator.share) navigator.share({ text: t }).catch(() => {}); else if (navigator.clipboard) navigator.clipboard.writeText(t).then(() => { message = "Code copié."; parametres(); });
+    };
+    document.getElementById("oublier").onclick = () => { P.famille = ""; sauver(); enfants = {}; reglages = {}; arreter.forEach(f => f()); arreter = []; afficher(); };
+  }
+
+  function ecrire(id, champs) {
+    if (!base) { message = "Pas de connexion : réessaie avec internet."; return; }
+    base.doc("familles/" + P.famille + "/reglages/" + id).set(champs, { merge: true }).catch(() => {});
+  }
+
+  async function connecter() {
+    afficher();
+    if (!P.famille || !window.Synchro) return;
+    base = await window.Synchro.demarrer();
+    afficher();
+    if (!base) return;
+    arreter.forEach(f => f());
+    arreter = [
+      base.collection("familles/" + P.famille + "/enfants").onSnapshot(q => { enfants = {}; q.docs.forEach(d => enfants[d.id] = Object.assign({ id: d.id }, d.data())); afficher(); }, () => {}),
+      base.collection("familles/" + P.famille + "/reglages").onSnapshot(q => { reglages = {}; q.docs.forEach(d => reglages[d.id] = d.data()); afficher(); }, () => {}),
+    ];
+  }
+
+  connecter();
+})();
+</script>
+<script>if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js");</script>
+</body>
+</html>
