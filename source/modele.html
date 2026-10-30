@@ -502,6 +502,83 @@ body.t1 .scene .texte, body.t1 .r .legende, body.t1 .aide { font-size: 19px; } b
 body.t1 .texte-livre { font-size: 34px; } body.t2 .texte-livre { font-size: 38px; }
 body.lisible { --lecture: "Lexend", "Andika", system-ui, sans-serif; letter-spacing: .02em; word-spacing: .08em; }
 @media (prefers-reduced-motion: reduce) { .noeud.actuel .bulle, .resultat .grandes-etoiles span, .nouvel-animal b { animation: none !important; } }
+
+/* Grande mise à jour : tout l'écran en vertical, images et boutons plus grands */
+.etape { height: 136px; }
+.noeud .bulle { width: 86px; height: 86px; font-size: 44px; }
+.noeud.boss .bulle { width: 100px; height: 100px; font-size: 54px; }
+.noeud .lieu { font-size: 16px; }
+.jeu:has(> .jeu-haut + .choix:last-child) > .jeu-haut { flex: 1; grid-template-rows: auto auto 1fr; }
+.jeu-haut .scene { min-height: 90px; }
+.scene .gros { font-size: clamp(48px, 9vh, 96px); }
+.scene .lettre { font-size: clamp(72px, 14vh, 150px); }
+.scene .chiffre { font-size: clamp(64px, 12vh, 130px); }
+.scene .mots { font-size: clamp(34px, 6vh, 56px); }
+.scene .phrase { font-size: clamp(24px, 3.6vh, 34px); }
+.scene .tas { font-size: clamp(38px, 7vh, 64px); max-width: 100%; }
+.scene .texte { font-size: clamp(18px, 2.6vh, 23px); }
+.consigne p { font-size: clamp(21px, 2.8vh, 26px); }
+.reponse { min-height: clamp(84px, 13vh, 140px); border-radius: 22px; }
+.r .lettre { font-size: clamp(46px, 7.5vh, 76px); }
+.r .chiffre { font-size: clamp(44px, 7vh, 72px); }
+.r .mots { font-size: clamp(28px, 4.4vh, 42px); }
+.r .phrase { font-size: clamp(20px, 2.9vh, 27px); }
+.r .emoji { font-size: clamp(44px, 8vh, 80px); }
+.r .gros { font-size: clamp(40px, 7vh, 72px); }
+.r .tas { font-size: clamp(24px, 4vh, 38px); max-width: 100%; }
+.r .legende { font-size: clamp(15px, 2.1vh, 19px); }
+.jeu > .arene { height: clamp(90px, 26vh, 240px); border-radius: 46%; }
+.jeu:has(> .arene, > .course, > .match) > .choix { flex: 1; align-content: center; }
+.jeu > .arene .lutteurs { top: 50%; font-size: clamp(40px, 9vh, 96px); transform: translate(-50%, -50%); }
+.jeu > .arene .nom-adv { font-size: 15px; }
+.jeu > .match { align-content: center; }
+.jeu > .match .terrain-match { height: clamp(54px, 16vh, 170px); }
+.jeu > .match .balle-match { top: 50%; font-size: clamp(30px, 6vh, 60px); transform: translate(-50%, -50%); }
+.jeu > .match .but-g, .jeu > .match .but-d { top: 50%; font-size: clamp(26px, 6vh, 56px); transform: translateY(-50%); }
+.jeu > .match .commentaire { font-size: 17px; }
+.jeu > .course { margin-top: 8px; }
+.jeu > .course .couloir { height: clamp(46px, 11vh, 110px); }
+.jeu > .course .couloir .qui, .jeu > .course .couloir .nom { top: 40%; }
+.jeu > .course .pirogue { font-size: clamp(38px, 6.5vh, 64px); top: 50%; transform: translateY(-50%) scaleX(-1); }
+.jeu > .zone-plateau { flex: 1; display: grid; place-items: center; }
+.jeu > .zone-plateau > .plateau { width: min(100%, 44vh); }
+.jeu > .zone-plateau .case-oie { font-size: 16px; }
+.jeu > .zone-plateau .labyrinthe { width: min(100%, 42vh); }
+.jeu > .zone-plateau .labyrinthe span { font-size: clamp(16px, 2.6vh, 26px); overflow: hidden; }
+.ecran > .dessin { flex: 1 1 0; min-height: 300px; display: grid; place-items: center; }
+.ecran > .dessin svg { width: 100%; height: 100%; }
+.palette { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; padding: 0 12%; }
+.ecran > .ardoise { flex: 1 1 0; min-height: 300px; }
+.ecran > .page-livre { flex: 1; align-content: center; }
+.page-livre .illustration { font-size: clamp(72px, 16vh, 150px); }
+.texte-livre { font-size: clamp(30px, 4.6vh, 44px); }
+.ecran > .coin-grille { flex: 1; grid-auto-rows: 1fr; }
+.coin-case { align-content: center; }
+.coin-case b { font-size: clamp(64px, 11vh, 110px); }
+.coin-case span { font-size: 22px; }
+.ecran > .etal { grid-auto-rows: clamp(110px, 24vh, 220px); gap: 12px; }
+.etal .objet { align-content: center; }
+.etal .objet b { font-size: clamp(54px, 10vh, 96px); }
+.cl-e { font-size: clamp(70px, 11vh, 110px); }
+.bulle-client { font-size: 22px; }
+.bulle-client b { font-size: clamp(30px, 5vh, 48px); }
+.panier { font-size: clamp(32px, 5vh, 48px); min-height: 80px; }
+.ecran > .tuiles { flex: 1; align-content: center; }
+.tuile { font-size: clamp(30px, 5vh, 46px); padding: 14px 22px; }
+.case-syl { min-width: 70px; height: 66px; font-size: 32px; }
+.objet b { font-size: clamp(40px, 6.5vh, 64px); }
+.objet.petit b { font-size: clamp(34px, 5.5vh, 52px); }
+.grille.six .objet.petit b { font-size: 34px; }
+.ecran > .mot-jour { flex: 1; align-content: center; }
+.mj-e { font-size: clamp(90px, 15vh, 150px); }
+.mj-mot { font-size: clamp(40px, 6vh, 60px); }
+.modele-mot { font-size: clamp(34px, 6vh, 56px); }
+.boutons .bouton { min-height: 64px; }
+.quotidien { overflow: visible; }
+.quotidien .qdj { flex: 1 1 0; min-width: 0; flex-direction: column; gap: 2px; text-align: center; padding: 6px 4px; }
+.quotidien .qdj b { font-size: 15px; }
+.quotidien .qdj small { display: none; }
+.quotidien .coffre-mini { font-size: 30px; }
 </style>
 
 <div class="app"><main class="ecran" id="ecran"></main></div>
@@ -558,6 +635,12 @@ __CONTENU__
     const P = window.PALIERS_PLUS(C.id);
     C.paliers = C.paliers.concat(P.paliers);
     P.lecons.forEach(l => { const m = C.mondes.find(x => x.id === l.monde); if (m) { const copie = Object.assign({}, l); delete copie.monde; m.lecons.push(copie); } });
+    // Grande mise à jour (source/senegal.js) : deux fois plus d'étapes et le monde « Mon Sénégal ».
+    if (window.SENEGAL_PLUS) {
+      const S = window.SENEGAL_PLUS(C.id);
+      if (!C.mondes.some(x => x.id === S.monde.id)) C.mondes.push(S.monde);
+      S.lecons.forEach(l => { const m = C.mondes.find(x => x.id === l.monde); if (m) { const copie = Object.assign({}, l); delete copie.monde; m.lecons.push(copie); } });
+    }
   }
   const PALIERS = C.paliers;
   // Les niveaux : on alterne les mondes (Lire, Compter, Découvrir…) le long du voyage, palier par palier.
@@ -801,15 +884,15 @@ __CONTENU__
 
   // ----- Les mini-jeux -----
   // Difficulté de 1 (guidé) à 3 (défi), propre à chaque étape, ajustée après chaque partie.
-  const difficulte = n => E.diff[n.id] || 2;
-  const cleQ = q => q.consigne + "|" + JSON.stringify(q.choix[q.bonne]) + "|" + JSON.stringify(q.scene || "");
-  function alleger(q) {
-    if (q.choix.length <= 2) return q;
-    const faux = q.choix.map((c, i) => i).filter(i => i !== q.bonne);
-    const retire = faux[Math.floor(Math.random() * faux.length)];
-    const choix = q.choix.filter((c, i) => i !== retire);
-    return Object.assign({}, q, { choix, bonne: choix.indexOf(q.choix[q.bonne]), disposition: q.disposition === "trois" ? "" : q.disposition });
+  const difficulte = n => E.diff[n.id] || (C.id === "ce2" ? 2 : 1);
+  // Jamais plus de trois réponses à l'écran : moins à lire, des boutons plus grands.
+  function troisMax(q) {
+    if (!q.choix || q.choix.length <= 3) return q;
+    const garde = [q.bonne].concat(melange(q.choix.map((c, i) => i).filter(i => i !== q.bonne)).slice(0, 2)).sort((a, b) => a - b);
+    const choix = garde.map(i => q.choix[i]);
+    return Object.assign({}, q, { choix, bonne: garde.indexOf(q.bonne), disposition: q.disposition === "ligne" ? "ligne" : "" });
   }
+  const cleQ = q => q.consigne + "|" + JSON.stringify(q.choix[q.bonne]) + "|" + JSON.stringify(q.scene || "");
   function noterErreur(p, q) {
     const cle = cleQ(q);
     if (E.erreurs.some(x => x.cle === cle)) return;
@@ -826,10 +909,10 @@ __CONTENU__
     if (n.voixHaute) return voixHaute(n);
     $ecran.className = "ecran sans-marge";
     const d = difficulte(n);
-    let questions = n.questions().slice(0, d === 3 ? 10 : 8).map(q => Object.assign({ _lecon: n.id }, q));
+    let questions = n.questions().slice(0, d === 3 ? 8 : 6).map(q => Object.assign({ _lecon: n.id }, q));
     E.erreurs.filter(x => x.id === n.id).slice(0, 2).forEach((x, i) => { questions[questions.length - 1 - i] = Object.assign({}, x.q, { _rattrapage: x.cle, _lecon: n.id }); });
     questions = melange(questions);
-    if (d === 1) questions = questions.map(alleger);
+    questions = questions.map(troisMax);
     const partie = { n, questions, k: 0, justes: 0, premier: true, d, vit: d === 1 ? 0.75 : d === 3 ? 1.25 : 1, debut: Date.now() };
     setTimeout(() => mascotte("debut", true), 900);
     ({ peche: jeuPeche, ballons: jeuBallons, pirogue: jeuPirogue, match: jeuMatch, lutte: jeuLutte, taupes: jeuTaupes, oie: jeuOie, labyrinthe: jeuLabyrinthe })[n.jeu](partie);
@@ -1081,7 +1164,7 @@ __CONTENU__
       const parMatiere = Math.max(2, Math.min(4, Math.floor(12 / C.mondes.length)));
       for (let k = 0; k < parMatiere; k++) { const l = lecons[(k + Math.floor(Math.random() * lecons.length)) % lecons.length]; const q = melange(l.questions())[0]; questions.push(Object.assign({ _monde: m.titre, _lecon: l.id }, q)); }
     });
-    const p = { n, questions: melange(questions), k: 0, justes: 0, premier: true, d: 2, resultats: [] };
+    const p = { n, questions: melange(questions).map(troisMax), k: 0, justes: 0, premier: true, d: 2, resultats: [] };
     p.fin = finComposition;
     jeuSimple(p, true);
   }
@@ -1481,13 +1564,13 @@ __CONTENU__
     dire("Écris la lettre " + L + ". Suis le chemin avec ton doigt.");
     document.getElementById("retour").onclick = coin;
     const boite = $ecran.querySelector(".ardoise"), cm = document.getElementById("modele"), ct = document.getElementById("trace");
-    const W = boite.clientWidth, Hh = Math.min(360, W);
+    const W = boite.clientWidth, Hh = Math.max(280, boite.clientHeight || Math.min(360, W));
     const dpr = window.devicePixelRatio || 1;
     [cm, ct].forEach(c => { c.width = W * dpr; c.height = Hh * dpr; c.style.width = W + "px"; c.style.height = Hh + "px"; c.getContext("2d").scale(dpr, dpr); });
     const xm = cm.getContext("2d"), xt = ct.getContext("2d");
     const dessinerModele = () => {
       xm.clearRect(0, 0, W, Hh);
-      xm.font = "700 " + Math.round(Hh * 0.82) + "px Andika, sans-serif"; xm.textAlign = "center"; xm.textBaseline = "middle";
+      xm.font = "700 " + Math.round(Math.min(Hh * 0.82, W * 0.95)) + "px Andika, sans-serif"; xm.textAlign = "center"; xm.textBaseline = "middle";
       xm.fillStyle = "#e8dcc6"; xm.fillText(L, W / 2, Hh / 2 + Hh * 0.04);
       xm.setLineDash([6, 10]); xm.lineWidth = 3; xm.strokeStyle = "#b9a98d"; xm.strokeText(L, W / 2, Hh / 2 + Hh * 0.04);
     };
@@ -2028,7 +2111,7 @@ __CONTENU__
     const portes = new Set(arrets.slice(1, -1).map(j => chemin[j]));
     const grille = () => {
       const ici = arrets[p.k], trace = new Set(chemin.slice(0, ici + 1));
-      let html = '<div class="labyrinthe" style="grid-template-columns:repeat(' + (2 * w + 1) + ',1fr)">';
+      let html = '<div class="labyrinthe" style="grid-template-columns:repeat(' + (2 * w + 1) + ',minmax(0,1fr))">';
       for (let gy = 0; gy < 2 * h + 1; gy++) for (let gx = 0; gx < 2 * w + 1; gx++) {
         let classe = "mur", contenu = "";
         if (gx % 2 && gy % 2) {
@@ -2494,7 +2577,7 @@ __CONTENU__
   function activiteQuiz(id, e, questions, finir) {
     changer();
     $ecran.className = "ecran sans-marge";
-    const p = { n: { id, jeu: "qdj", e, retour: defis }, questions, k: 0, justes: 0, premier: true, d: 2 };
+    const p = { n: { id, jeu: "qdj", e, retour: defis }, questions: questions.map(troisMax), k: 0, justes: 0, premier: true, d: 2 };
     p.fin = finir;
     jeuSimple(p, false);
   }
@@ -2526,14 +2609,14 @@ __CONTENU__
   function marchande(tour, score) {
     tour = tour || 0; score = score || 0;
     if (tour >= 6) return finActivite({ e: "🧺", titre: score + " client" + (score > 1 ? "s" : "") + " bien servi" + (score > 1 ? "s" : ""), texte: "Ta boutique marche très bien !", gain: gainJeu(score + 4), rejouer: () => marchande() });
-    const art = ETAL[Math.floor(Math.random() * ETAL.length)], n = 1 + Math.floor(Math.random() * 5), client = CLIENTS[tour % CLIENTS.length];
+    const etal = melange(ETAL.map((a, i) => i)).slice(0, 3), ia = etal[Math.floor(Math.random() * 3)], art = ETAL[ia], n = 1 + Math.floor(Math.random() * (tour < 3 ? 3 : 5)), client = CLIENTS[tour % CLIENTS.length];
     const NB = ["", "une", "deux", "trois", "quatre", "cinq"], demande = "Bonjour ! Je voudrais " + (n === 1 ? (/^[aeiouœ]/.test(art[1]) ? "un " : ["mangue", "banane", "tomate"].includes(art[1]) ? "une " : "un ") + art[1] : NB[n].replace("une", "un") + " " + art[2]) + ", s'il te plaît.";
     let panier = 0, fini = false;
     ecranActivite("La petite marchande", (tour + 1) + "/6");
     $ecran.insertAdjacentHTML("beforeend", '<div class="client"><span class="cl-e">' + client + '</span><span class="bulle-client">' + esc(demande) + '<br><b>' + Array(n).fill(art[0]).join("") + "</b></span></div>" +
-      '<p class="aide">Touche les produits pour les mettre dans le panier.</p><div class="etal">' + ETAL.map(([e], i) => '<button class="objet petit" data-a="' + i + '"><b>' + e + "</b></button>").join("") + "</div>" +
+      '<div class="etal">' + etal.map(i => '<button class="objet petit" data-a="' + i + '"><b>' + ETAL[i][0] + "</b></button>").join("") + "</div>" +
       '<div class="panier" id="panier">🧺</div><div class="boutons"><button class="bouton second" id="vider">↺ Vider</button><button class="bouton" id="donner">Donner</button></div>');
-    dire(demande); document.getElementById("retour").onclick = defis;
+    dire(demande + " Touche les " + art[2] + " pour les mettre dans le panier."); document.getElementById("retour").onclick = defis;
     const contenu = [];
     const dessiner = () => document.getElementById("panier").innerHTML = "🧺 " + contenu.join("");
     $ecran.querySelectorAll("[data-a]").forEach(b => b.onclick = () => { if (fini || contenu.length >= 8) return; contenu.push(ETAL[+b.dataset.a][0]); son("pop"); dire(String(contenu.length)); dessiner(); });
