@@ -398,7 +398,68 @@ window.LECONS_PLUS = function (classe) {
       return q(txt, { k: "image", e: carre ? "🟥" : "▭" }, mot(s + " m"), tirer([s + 2, s - 2, carre ? c * c : L * l, s + 4].filter(x => x > 0 && x !== s), 3).map(x => mot(x + " m")), { dire: txt });
     }) });
   }
+  // ================= RIEN QUE POUR MOI =================
+  if (GS) {
+    const CORPS = [["👁️", "l'œil"], ["👂🏾", "l'oreille"], ["👃🏾", "le nez"], ["👄", "la bouche"], ["🦷", "la dent"], ["✋🏾", "la main"], ["🦶🏾", "le pied"], ["🦵🏾", "la jambe"], ["💪🏾", "le bras"], ["🫀", "le cœur"], ["🧠", "le cerveau"], ["🦴", "l'os"]];
+    ajouter("moi", { id: "corps", icone: "🫀", titre: "Le corps humain", objectif: "Nommer les parties du corps, comme une docteure", questions: () => fois(8, () => { const [b, ...f] = tirer(CORPS, 3); return q("Docteure " + "Binta" + ", touche " + b[1], null, img(b[0], b[1]), f.map(x => img(x[0], x[1])), { dire: "Docteure Binta, montre-moi " + b[1] + ".", disposition: "trois" }); }) });
+    ajouter("moi", { id: "hygiene", icone: "🧼", titre: "Les gestes d'hygiène", objectif: "Se laver les mains, se brosser les dents", questions: quiz([
+      ["Avant de manger, je…", "me lave les mains", ["saute", "dors"], "🍽️"], ["Après avoir mangé, je…", "me brosse les dents", ["cours", "chante"], "🪥"],
+      ["Pour me laver les mains, j'utilise…", "de l'eau et du savon", ["du sable", "de la peinture"], "🧼"], ["Quand j'éternue, je mets…", "mon coude devant ma bouche", ["mes mains sur mes yeux", "rien du tout"], "🤧"],
+      ["Après être allée aux toilettes, je…", "me lave les mains", ["mange tout de suite", "joue au ballon"], "🚽"], ["Le soir, avant de dormir, je…", "prends ma douche", ["mange des bonbons", "cours dehors"], "🚿"],
+      ["Je bois de l'eau…", "propre", ["de la flaque", "sale"], "💧"], ["Pour avoir des dents solides, je mange moins de…", "bonbons", ["légumes", "fruits"], "🍬"],
+    ], 8, x => mot(x)) });
+    ajouter("moi", { id: "metiers", icone: "🩺", titre: "Les métiers de la santé", objectif: "Docteure, sage-femme, dentiste, pédiatre, infirmière", questions: quiz([
+      ["Qui soigne les dents ?", "la dentiste", ["la boulangère", "la coiffeuse"], "🦷"], ["Qui aide les bébés à naître ?", "la sage-femme", ["la pilote", "la vendeuse"], "👶🏾"],
+      ["Qui soigne les enfants ?", "la pédiatre", ["la maçonne", "la pêcheuse"], "🧒🏾"], ["Qui fait les piqûres et les pansements ?", "l'infirmière", ["la couturière", "la chanteuse"], "💉"],
+      ["Qui opère à l'hôpital ?", "la chirurgienne", ["la cuisinière", "la maîtresse"], "🏥"], ["Que met la docteure sur ses oreilles pour écouter le cœur ?", "le stéthoscope", ["le casque de moto", "le chapeau"], "🩺"],
+      ["Qui soigne les animaux ?", "la vétérinaire", ["la dentiste", "la pilote"], "🐕"], ["Qui soigne les os cassés ?", "l'orthopédiste", ["la boulangère", "la coiffeuse"], "🦴"],
+    ], 8, x => mot(x)) });
+    const COMPTINES = [
+      { id: "comptine-marche", titre: "Au marché Sandaga", lignes: ["Au marché, je vais", "Avec mon panier", "Trois tomates rouges", "Deux oignons dorés", "Un gros poisson frais", "Pour le thiéboudienne", "Maman va sourire", "Le repas est prêt !"], questions: [
+        ["Combien de tomates ?", "trois", ["deux", "une"], "🍅"], ["Combien d'oignons ?", "deux", ["trois", "cinq"], "🧅"], ["Quel plat va-t-on cuisiner ?", "le thiéboudienne", ["le yassa", "le mafé"], "🍲"], ["Où va-t-on ?", "au marché", ["à la plage", "à l'école"], "🧺"]] },
+      { id: "comptine-cuisine", titre: "Dans la cuisine", lignes: ["Tourne, tourne la cuillère", "Dans la grande marmite", "Le riz chante, le riz danse", "Ça sent bon, vite, vite !", "Un peu de sel, un peu d'huile", "On goûte du bout du doigt", "Mmm, c'est bon comme chez mamie", "À table tout le monde !"], questions: [
+        ["Qu'est-ce qu'on tourne ?", "la cuillère", ["le ballon", "la moto"], "🥄"], ["Dans quoi cuit le riz ?", "la marmite", ["le seau", "la voiture"], "🍲"], ["Qu'est-ce qu'on ajoute ?", "du sel et de l'huile", ["du sable", "de la peinture"], "🧂"], ["C'est bon comme chez…", "mamie", ["le docteur", "le maître"], "👵🏾"]] },
+    ];
+    COMPTINES.forEach(c => ajouter("moi", { id: c.id, icone: "🎶", titre: "Comptine : " + c.titre, objectif: "Chanter une comptine de la cuisine et du marché", chanson: { titre: c.titre, lignes: c.lignes }, questions: quiz(c.questions, 4, x => mot(x)) }));
+  }
+  if (CE2) {
+    ajouter("moi", { id: "lions", icone: "🦁", titre: "L'histoire des Lions", objectif: "Les grands moments de l'équipe du Sénégal", questions: quiz([
+      ["En quelle année le Sénégal a-t-il gagné sa première CAN ?", "2022", ["2002", "2010", "1990"], "🏆"], ["Contre quel pays le Sénégal a-t-il gagné la finale de la CAN 2022 ?", "l'Égypte", ["le Maroc", "le Cameroun", "le Nigeria"], "🏆"],
+      ["Comment s'est terminée la finale de la CAN 2022 ?", "aux tirs au but", ["par 5 buts à 0", "par un forfait", "sous la neige"], "🥅"], ["Quel sélectionneur a mené les Lions au titre en 2022 ?", "Aliou Cissé", ["Pep Guardiola", "Bruno Metsu", "Zinedine Zidane"], "🧑🏾‍💼"],
+      ["En 2002, pour sa première Coupe du monde, le Sénégal bat en match d'ouverture…", "la France", ["le Brésil", "l'Espagne", "l'Allemagne"], "🌍"], ["Qui a marqué le but contre la France en 2002 ?", "Papa Bouba Diop", ["Sadio Mané", "Kalidou Koulibaly", "Édouard Mendy"], "⚽"],
+      ["Jusqu'où les Lions sont-ils allés à la Coupe du monde 2002 ?", "en quart de finale", ["en finale", "au premier tour", "en demi-finale"], "📈"], ["Quel gardien des Lions a été élu meilleur gardien du monde en 2021 ?", "Édouard Mendy", ["Aliou Cissé", "El Hadji Diouf", "Papa Bouba Diop"], "🧤"],
+      ["Quel défenseur a été capitaine des Lions ?", "Kalidou Koulibaly", ["Lionel Messi", "Neymar", "Kylian Mbappé"], "©️"], ["Quel était le surnom de l'équipe en 2002 ?", "les Lions de la Teranga", ["les Aigles", "les Éléphants", "les Super Eagles"], "🦁"],
+    ], 8) });
+    ajouter("moi", { id: "monde", icone: "🌍", titre: "La Coupe du monde en géographie", objectif: "Pays, continents et grands clubs", questions: quiz([
+      ["Le FC Barcelone est un club de quel pays ?", "l'Espagne", ["la France", "l'Italie", "le Brésil"], "🔵🔴"], ["Le Paris Saint-Germain est un club de quel pays ?", "la France", ["l'Espagne", "l'Allemagne", "l'Angleterre"], "🗼"],
+      ["Le Bayern Munich est un club de quel pays ?", "l'Allemagne", ["l'Italie", "le Portugal", "la France"], "🍺"], ["Liverpool est un club de quel pays ?", "l'Angleterre", ["l'Écosse", "l'Espagne", "les Pays-Bas"], "🔴"],
+      ["La Juventus est un club de quel pays ?", "l'Italie", ["l'Espagne", "la Grèce", "la France"], "⚫⚪"], ["Neymar est né dans quel pays ?", "le Brésil", ["l'Argentine", "le Portugal", "l'Espagne"], "🇧🇷"],
+      ["Le Brésil se trouve sur quel continent ?", "l'Amérique du Sud", ["l'Afrique", "l'Europe", "l'Asie"], "🌎"], ["Le Sénégal se trouve sur quel continent ?", "l'Afrique", ["l'Europe", "l'Amérique", "l'Océanie"], "🌍"],
+      ["Quel pays a gagné le plus de Coupes du monde ?", "le Brésil", ["la France", "l'Allemagne", "le Sénégal"], "🏆"], ["Quelle est la capitale de l'Espagne ?", "Madrid", ["Barcelone", "Lisbonne", "Rome"], "🇪🇸"],
+      ["Quelle est la capitale du Brésil ?", "Brasilia", ["Rio de Janeiro", "São Paulo", "Buenos Aires"], "🇧🇷"], ["Le Maroc, le Sénégal et le Cameroun sont des pays…", "d'Afrique", ["d'Europe", "d'Asie", "d'Amérique"], "🌍"],
+      ["Combien d'équipes jouent la Coupe du monde 2026 ?", "48", ["16", "24", "100"], "🔢"], ["La Coupe du monde a lieu tous les…", "4 ans", ["ans", "2 ans", "10 ans"], "📅"],
+    ], 8) });
+    const statsMatch = () => fois(8, i => {
+      const t = i % 4;
+      if (t === 0) { const b = fois(4, () => r(0, 4)), s = b.reduce((x, y) => x + y, 0); if (s % 4) b[0] += 4 - (s % 4); const m = b.reduce((x, y) => x + y, 0) / 4; return q("Seydina marque " + b.join(", ") + " buts en 4 matchs. Quelle est sa moyenne par match ?", { k: "image", e: "📊" }, ch(m), tirer([m + 1, m - 1, m * 2, b.reduce((x, y) => x + y, 0)].filter(x => x >= 0 && x !== m), 3).map(ch), { dire: "Seydina marque " + b.join(", ") + " buts en 4 matchs. Quelle est sa moyenne ?" }); }
+      if (t === 1) { const p = hasard([50, 25, 10, 20]), tot = hasard([20, 40, 60, 80, 100]), s = tot * p / 100; return q("Sur " + tot + " passes, " + p + " % sont réussies. Combien de passes réussies ?", { k: "image", e: "🎯" }, ch(s), tirer([s + 5, s * 2, tot - s, s + 10].filter(x => x > 0 && x !== s), 3).map(ch), { dire: "Sur " + tot + " passes, " + p + " pour cent sont réussies. Combien ?" }); }
+      if (t === 2) { const a = r(30, 70); return q("Le Barça a le ballon " + a + " % du match. Et l'adversaire ?", { k: "image", e: "⚽" }, mot((100 - a) + " %"), tirer([a, 100 - a + 10, 100 - a - 10, 50].filter(x => x !== 100 - a && x > 0), 3).map(x => mot(x + " %")), { dire: "Le Barça a le ballon " + a + " pour cent du match. Et l'adversaire ?" }); }
+      const tirs = r(6, 15), cadres = r(2, tirs - 2), buts = r(1, cadres - 1); return q(tirs + " tirs, dont " + cadres + " cadrés et " + buts + " buts. Combien de tirs cadrés n'ont pas fait but ?", { k: "image", e: "🥅" }, ch(cadres - buts), tirer([tirs - buts, cadres, tirs - cadres, cadres - buts + 1].filter(x => x >= 0 && x !== cadres - buts), 3).map(ch), { dire: tirs + " tirs, " + cadres + " cadrés, " + buts + " buts. Combien de tirs cadrés n'ont pas fait but ?" });
+    });
+    ajouter("moi", { id: "stats", icone: "📊", titre: "Les statistiques du match", objectif: "Moyennes et pourcentages simples", questions: statsMatch });
+    ajouter("moi", { id: "tactique", icone: "📋", titre: "La tactique avancée", objectif: "Presser, défendre, contre-attaquer", questions: quiz([
+      ["Le pressing, c'est…", "aller vite reprendre le ballon à l'adversaire", ["attendre dans son but", "faire une pause", "tirer de loin"], "🏃🏾"], ["Un bloc bas, c'est quand l'équipe…", "défend tout près de son but", ["attaque à 11", "joue sans gardien", "sort du terrain"], "🧱"],
+      ["Une contre-attaque, c'est…", "attaquer très vite après avoir récupéré le ballon", ["reculer", "faire une touche", "changer de maillot"], "⚡"], ["Dans le jeu de position du Barça, les joueurs…", "font des triangles pour se passer le ballon", ["restent tous ensemble", "ne bougent pas", "dribblent seuls"], "🔺"],
+      ["Pour défendre un corner, les joueurs…", "marquent chacun un adversaire", ["vont tous en attaque", "s'assoient", "quittent la surface"], "🚩"], ["Le hors-jeu, c'est quand l'attaquant…", "est derrière le dernier défenseur au moment de la passe", ["tire trop fort", "parle à l'arbitre", "court trop vite"], "🚩"],
+      ["Dans un 4-3-3, combien y a-t-il d'attaquants ?", "3", ["4", "2", "1"], "📋"], ["Si on mène 1-0 à la 88e minute, on…", "garde le ballon et défend bien", ["laisse le but vide", "arrête de courir", "fait sortir le gardien"], "⏱️"],
+      ["Un latéral qui monte attaquer s'appelle un…", "latéral offensif", ["gardien volant", "arbitre", "remplaçant"], "↗️"], ["Pour presser en équipe, il faut…", "avancer tous ensemble", ["presser seul", "rester au milieu", "marcher"], "🤝🏾"],
+    ], 8) });
+    const FOOT_EN = [["goal", "le but", "🥅"], ["ball", "le ballon", "⚽"], ["team", "l'équipe", "👥"], ["player", "le joueur", "🏃🏾"], ["coach", "l'entraîneur", "🧑🏾‍💼"], ["referee", "l'arbitre", "🧑🏾‍⚖️"],
+      ["penalty", "le penalty", "🎯"], ["corner", "le corner", "🚩"], ["free kick", "le coup franc", "🦶🏾"], ["offside", "le hors-jeu", "🚫"], ["half-time", "la mi-temps", "⏸️"], ["kick-off", "le coup d'envoi", "▶️"],
+      ["goalkeeper", "le gardien", "🧤"], ["yellow card", "le carton jaune", "🟨"], ["red card", "le carton rouge", "🟥"], ["Pass the ball!", "Passe le ballon !", "↔️"], ["Well done!", "Bien joué !", "👏🏾"], ["Shoot!", "Tire !", "💥"]];
+    ajouter("moi", { id: "foot-en", icone: "🇬🇧", titre: "L'anglais du football", objectif: "Les mots et phrases des matchs en anglais", questions: anglais(FOOT_EN) });
+  }
   // Fiches : chaque leçon a un id unique par classe.
-  const MONDES = [["pays", "Mon pays, le Sénégal", "🇸🇳"], ["langues", "Les langues", "🗣️"], ["francais", "Contes, chansons et lecture", "📚"], ["maths", "Maths en plus", "🧮"], ["loin", "Pour aller plus loin", "🚀"]];
+  const MONDES = [["moi", GS ? "Le coin de Binta" : "Rien que pour moi", GS ? "🩺" : "⭐"], ["pays", "Mon pays, le Sénégal", "🇸🇳"], ["langues", "Les langues", "🗣️"], ["francais", "Contes, chansons et lecture", "📚"], ["maths", "Maths en plus", "🧮"], ["loin", "Pour aller plus loin", "🚀"]];
   return MONDES.map(([id, titre, icone]) => ({ id, titre, icone, lecons: lecons.filter(l => l.monde === id).map(l => Object.assign({}, l, { id: classe + "-plus-" + l.id, monde: undefined })) })).filter(m => m.lecons.length);
 };

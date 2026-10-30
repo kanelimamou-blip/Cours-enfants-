@@ -340,6 +340,38 @@ details[open] { display: grid; gap: 8px; }
 .course.route { background: linear-gradient(#6b6b6b, #555); }
 .course.route .couloir { border-bottom-color: #f5c518; }
 .course.pelouse { background: repeating-linear-gradient(90deg, #4caf50 0 30px, #45a049 30px 60px); }
+/* Vague 4 : rien que pour toi */
+.client { display: flex; gap: 10px; align-items: center; }
+.cl-e { font-size: 70px; line-height: 1; }
+.bulle-client { background: var(--carte); border-radius: 18px; padding: 10px 14px; font-weight: 700; box-shadow: 0 3px 0 var(--trait); }
+.bulle-client b { font-size: 26px; font-weight: 400; }
+.etal { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.panier { min-height: 64px; margin: 10px 0; background: #f6dc8c; border-radius: 18px; font-size: 32px; padding: 8px 12px; color: var(--encre); }
+.modele-mot { font-family: var(--titre); font-size: 34px; font-weight: 800; letter-spacing: 6px; color: var(--doux); }
+.lettre-ecole { font-family: var(--lecture); text-transform: uppercase; min-width: 48px; }
+.garage-v { display: grid; justify-items: center; gap: 6px; font-size: 80px; line-height: 1; }
+.pannes { display: flex; gap: 8px; font-size: 30px; }
+.pannes span { background: #fdeae6; border-radius: 10px; padding: 4px 6px; }
+.pannes span.repare { background: #c8f0d5; }
+.farce { position: absolute; inset: 0; z-index: 5; background: repeating-linear-gradient(45deg, #ffe066 0 30px, #ffd23a 30px 60px); border-radius: 18px; display: grid; place-items: center; text-align: center; padding: 12px; gap: 4px; color: #4a3a0a; animation: monter .3s ease-out; cursor: pointer; }
+.farce .f-e { font-size: 80px; line-height: 1; }
+.farce .f-e.frappe { animation: frappe .2s; }
+.farce small { font-weight: 700; font-size: 16px; }
+.parcours { display: grid; gap: 8px; margin: 12px 0; }
+.etape-c { display: flex; gap: 12px; align-items: center; background: var(--carte); border-radius: 16px; padding: 10px 12px; opacity: .55; box-shadow: 0 3px 0 var(--trait); }
+.etape-c b { font-size: 34px; }
+.etape-c.ok { opacity: 1; }
+.etape-c.ici { outline: 3px solid var(--theme); }
+.album-a { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.autocollant { aspect-ratio: 3 / 4; border-radius: 14px; display: grid; place-items: center; text-align: center; padding: 6px; font-weight: 800; font-size: 13px; box-shadow: 0 3px 0 rgba(0,0,0,.15); }
+.autocollant b { font-size: 40px; font-weight: 400; }
+.autocollant.vide { background: repeating-linear-gradient(45deg, var(--sable) 0 10px, var(--trait) 10px 20px); color: var(--doux); }
+.autocollant.voiture { background: linear-gradient(160deg, #a8d8ff, #2f6fd1); color: #fff; }
+.autocollant.lutteur { background: linear-gradient(160deg, #ffd27a, #e0533d); color: #fff; }
+.journal { background: #fbf7ee; color: #2b2118; border-radius: 6px; padding: 16px; box-shadow: 0 4px 12px rgba(0,0,0,.15); font-family: Georgia, serif; }
+.journal h2 { font-size: 26px; margin: 6px 0; border-bottom: 2px solid #2b2118; padding-bottom: 6px; }
+.journal p { font-size: 18px; line-height: 1.55; }
+.bon-ligne.fait { opacity: .7; }
 /* Vague 3 : bibliothèque, fiches, contes, chansons, lecture à voix haute */
 .lien { background: none; color: var(--theme); font-weight: 800; font-size: 17px; text-decoration: underline; margin: 4px auto; display: block; }
 .fiche { max-height: 86vh; overflow-y: auto; text-align: left; }
@@ -1313,8 +1345,69 @@ window.LECONS_PLUS = function (classe) {
       return q(txt, { k: "image", e: carre ? "🟥" : "▭" }, mot(s + " m"), tirer([s + 2, s - 2, carre ? c * c : L * l, s + 4].filter(x => x > 0 && x !== s), 3).map(x => mot(x + " m")), { dire: txt });
     }) });
   }
+  // ================= RIEN QUE POUR MOI =================
+  if (GS) {
+    const CORPS = [["👁️", "l'œil"], ["👂🏾", "l'oreille"], ["👃🏾", "le nez"], ["👄", "la bouche"], ["🦷", "la dent"], ["✋🏾", "la main"], ["🦶🏾", "le pied"], ["🦵🏾", "la jambe"], ["💪🏾", "le bras"], ["🫀", "le cœur"], ["🧠", "le cerveau"], ["🦴", "l'os"]];
+    ajouter("moi", { id: "corps", icone: "🫀", titre: "Le corps humain", objectif: "Nommer les parties du corps, comme une docteure", questions: () => fois(8, () => { const [b, ...f] = tirer(CORPS, 3); return q("Docteure " + "Binta" + ", touche " + b[1], null, img(b[0], b[1]), f.map(x => img(x[0], x[1])), { dire: "Docteure Binta, montre-moi " + b[1] + ".", disposition: "trois" }); }) });
+    ajouter("moi", { id: "hygiene", icone: "🧼", titre: "Les gestes d'hygiène", objectif: "Se laver les mains, se brosser les dents", questions: quiz([
+      ["Avant de manger, je…", "me lave les mains", ["saute", "dors"], "🍽️"], ["Après avoir mangé, je…", "me brosse les dents", ["cours", "chante"], "🪥"],
+      ["Pour me laver les mains, j'utilise…", "de l'eau et du savon", ["du sable", "de la peinture"], "🧼"], ["Quand j'éternue, je mets…", "mon coude devant ma bouche", ["mes mains sur mes yeux", "rien du tout"], "🤧"],
+      ["Après être allée aux toilettes, je…", "me lave les mains", ["mange tout de suite", "joue au ballon"], "🚽"], ["Le soir, avant de dormir, je…", "prends ma douche", ["mange des bonbons", "cours dehors"], "🚿"],
+      ["Je bois de l'eau…", "propre", ["de la flaque", "sale"], "💧"], ["Pour avoir des dents solides, je mange moins de…", "bonbons", ["légumes", "fruits"], "🍬"],
+    ], 8, x => mot(x)) });
+    ajouter("moi", { id: "metiers", icone: "🩺", titre: "Les métiers de la santé", objectif: "Docteure, sage-femme, dentiste, pédiatre, infirmière", questions: quiz([
+      ["Qui soigne les dents ?", "la dentiste", ["la boulangère", "la coiffeuse"], "🦷"], ["Qui aide les bébés à naître ?", "la sage-femme", ["la pilote", "la vendeuse"], "👶🏾"],
+      ["Qui soigne les enfants ?", "la pédiatre", ["la maçonne", "la pêcheuse"], "🧒🏾"], ["Qui fait les piqûres et les pansements ?", "l'infirmière", ["la couturière", "la chanteuse"], "💉"],
+      ["Qui opère à l'hôpital ?", "la chirurgienne", ["la cuisinière", "la maîtresse"], "🏥"], ["Que met la docteure sur ses oreilles pour écouter le cœur ?", "le stéthoscope", ["le casque de moto", "le chapeau"], "🩺"],
+      ["Qui soigne les animaux ?", "la vétérinaire", ["la dentiste", "la pilote"], "🐕"], ["Qui soigne les os cassés ?", "l'orthopédiste", ["la boulangère", "la coiffeuse"], "🦴"],
+    ], 8, x => mot(x)) });
+    const COMPTINES = [
+      { id: "comptine-marche", titre: "Au marché Sandaga", lignes: ["Au marché, je vais", "Avec mon panier", "Trois tomates rouges", "Deux oignons dorés", "Un gros poisson frais", "Pour le thiéboudienne", "Maman va sourire", "Le repas est prêt !"], questions: [
+        ["Combien de tomates ?", "trois", ["deux", "une"], "🍅"], ["Combien d'oignons ?", "deux", ["trois", "cinq"], "🧅"], ["Quel plat va-t-on cuisiner ?", "le thiéboudienne", ["le yassa", "le mafé"], "🍲"], ["Où va-t-on ?", "au marché", ["à la plage", "à l'école"], "🧺"]] },
+      { id: "comptine-cuisine", titre: "Dans la cuisine", lignes: ["Tourne, tourne la cuillère", "Dans la grande marmite", "Le riz chante, le riz danse", "Ça sent bon, vite, vite !", "Un peu de sel, un peu d'huile", "On goûte du bout du doigt", "Mmm, c'est bon comme chez mamie", "À table tout le monde !"], questions: [
+        ["Qu'est-ce qu'on tourne ?", "la cuillère", ["le ballon", "la moto"], "🥄"], ["Dans quoi cuit le riz ?", "la marmite", ["le seau", "la voiture"], "🍲"], ["Qu'est-ce qu'on ajoute ?", "du sel et de l'huile", ["du sable", "de la peinture"], "🧂"], ["C'est bon comme chez…", "mamie", ["le docteur", "le maître"], "👵🏾"]] },
+    ];
+    COMPTINES.forEach(c => ajouter("moi", { id: c.id, icone: "🎶", titre: "Comptine : " + c.titre, objectif: "Chanter une comptine de la cuisine et du marché", chanson: { titre: c.titre, lignes: c.lignes }, questions: quiz(c.questions, 4, x => mot(x)) }));
+  }
+  if (CE2) {
+    ajouter("moi", { id: "lions", icone: "🦁", titre: "L'histoire des Lions", objectif: "Les grands moments de l'équipe du Sénégal", questions: quiz([
+      ["En quelle année le Sénégal a-t-il gagné sa première CAN ?", "2022", ["2002", "2010", "1990"], "🏆"], ["Contre quel pays le Sénégal a-t-il gagné la finale de la CAN 2022 ?", "l'Égypte", ["le Maroc", "le Cameroun", "le Nigeria"], "🏆"],
+      ["Comment s'est terminée la finale de la CAN 2022 ?", "aux tirs au but", ["par 5 buts à 0", "par un forfait", "sous la neige"], "🥅"], ["Quel sélectionneur a mené les Lions au titre en 2022 ?", "Aliou Cissé", ["Pep Guardiola", "Bruno Metsu", "Zinedine Zidane"], "🧑🏾‍💼"],
+      ["En 2002, pour sa première Coupe du monde, le Sénégal bat en match d'ouverture…", "la France", ["le Brésil", "l'Espagne", "l'Allemagne"], "🌍"], ["Qui a marqué le but contre la France en 2002 ?", "Papa Bouba Diop", ["Sadio Mané", "Kalidou Koulibaly", "Édouard Mendy"], "⚽"],
+      ["Jusqu'où les Lions sont-ils allés à la Coupe du monde 2002 ?", "en quart de finale", ["en finale", "au premier tour", "en demi-finale"], "📈"], ["Quel gardien des Lions a été élu meilleur gardien du monde en 2021 ?", "Édouard Mendy", ["Aliou Cissé", "El Hadji Diouf", "Papa Bouba Diop"], "🧤"],
+      ["Quel défenseur a été capitaine des Lions ?", "Kalidou Koulibaly", ["Lionel Messi", "Neymar", "Kylian Mbappé"], "©️"], ["Quel était le surnom de l'équipe en 2002 ?", "les Lions de la Teranga", ["les Aigles", "les Éléphants", "les Super Eagles"], "🦁"],
+    ], 8) });
+    ajouter("moi", { id: "monde", icone: "🌍", titre: "La Coupe du monde en géographie", objectif: "Pays, continents et grands clubs", questions: quiz([
+      ["Le FC Barcelone est un club de quel pays ?", "l'Espagne", ["la France", "l'Italie", "le Brésil"], "🔵🔴"], ["Le Paris Saint-Germain est un club de quel pays ?", "la France", ["l'Espagne", "l'Allemagne", "l'Angleterre"], "🗼"],
+      ["Le Bayern Munich est un club de quel pays ?", "l'Allemagne", ["l'Italie", "le Portugal", "la France"], "🍺"], ["Liverpool est un club de quel pays ?", "l'Angleterre", ["l'Écosse", "l'Espagne", "les Pays-Bas"], "🔴"],
+      ["La Juventus est un club de quel pays ?", "l'Italie", ["l'Espagne", "la Grèce", "la France"], "⚫⚪"], ["Neymar est né dans quel pays ?", "le Brésil", ["l'Argentine", "le Portugal", "l'Espagne"], "🇧🇷"],
+      ["Le Brésil se trouve sur quel continent ?", "l'Amérique du Sud", ["l'Afrique", "l'Europe", "l'Asie"], "🌎"], ["Le Sénégal se trouve sur quel continent ?", "l'Afrique", ["l'Europe", "l'Amérique", "l'Océanie"], "🌍"],
+      ["Quel pays a gagné le plus de Coupes du monde ?", "le Brésil", ["la France", "l'Allemagne", "le Sénégal"], "🏆"], ["Quelle est la capitale de l'Espagne ?", "Madrid", ["Barcelone", "Lisbonne", "Rome"], "🇪🇸"],
+      ["Quelle est la capitale du Brésil ?", "Brasilia", ["Rio de Janeiro", "São Paulo", "Buenos Aires"], "🇧🇷"], ["Le Maroc, le Sénégal et le Cameroun sont des pays…", "d'Afrique", ["d'Europe", "d'Asie", "d'Amérique"], "🌍"],
+      ["Combien d'équipes jouent la Coupe du monde 2026 ?", "48", ["16", "24", "100"], "🔢"], ["La Coupe du monde a lieu tous les…", "4 ans", ["ans", "2 ans", "10 ans"], "📅"],
+    ], 8) });
+    const statsMatch = () => fois(8, i => {
+      const t = i % 4;
+      if (t === 0) { const b = fois(4, () => r(0, 4)), s = b.reduce((x, y) => x + y, 0); if (s % 4) b[0] += 4 - (s % 4); const m = b.reduce((x, y) => x + y, 0) / 4; return q("Seydina marque " + b.join(", ") + " buts en 4 matchs. Quelle est sa moyenne par match ?", { k: "image", e: "📊" }, ch(m), tirer([m + 1, m - 1, m * 2, b.reduce((x, y) => x + y, 0)].filter(x => x >= 0 && x !== m), 3).map(ch), { dire: "Seydina marque " + b.join(", ") + " buts en 4 matchs. Quelle est sa moyenne ?" }); }
+      if (t === 1) { const p = hasard([50, 25, 10, 20]), tot = hasard([20, 40, 60, 80, 100]), s = tot * p / 100; return q("Sur " + tot + " passes, " + p + " % sont réussies. Combien de passes réussies ?", { k: "image", e: "🎯" }, ch(s), tirer([s + 5, s * 2, tot - s, s + 10].filter(x => x > 0 && x !== s), 3).map(ch), { dire: "Sur " + tot + " passes, " + p + " pour cent sont réussies. Combien ?" }); }
+      if (t === 2) { const a = r(30, 70); return q("Le Barça a le ballon " + a + " % du match. Et l'adversaire ?", { k: "image", e: "⚽" }, mot((100 - a) + " %"), tirer([a, 100 - a + 10, 100 - a - 10, 50].filter(x => x !== 100 - a && x > 0), 3).map(x => mot(x + " %")), { dire: "Le Barça a le ballon " + a + " pour cent du match. Et l'adversaire ?" }); }
+      const tirs = r(6, 15), cadres = r(2, tirs - 2), buts = r(1, cadres - 1); return q(tirs + " tirs, dont " + cadres + " cadrés et " + buts + " buts. Combien de tirs cadrés n'ont pas fait but ?", { k: "image", e: "🥅" }, ch(cadres - buts), tirer([tirs - buts, cadres, tirs - cadres, cadres - buts + 1].filter(x => x >= 0 && x !== cadres - buts), 3).map(ch), { dire: tirs + " tirs, " + cadres + " cadrés, " + buts + " buts. Combien de tirs cadrés n'ont pas fait but ?" });
+    });
+    ajouter("moi", { id: "stats", icone: "📊", titre: "Les statistiques du match", objectif: "Moyennes et pourcentages simples", questions: statsMatch });
+    ajouter("moi", { id: "tactique", icone: "📋", titre: "La tactique avancée", objectif: "Presser, défendre, contre-attaquer", questions: quiz([
+      ["Le pressing, c'est…", "aller vite reprendre le ballon à l'adversaire", ["attendre dans son but", "faire une pause", "tirer de loin"], "🏃🏾"], ["Un bloc bas, c'est quand l'équipe…", "défend tout près de son but", ["attaque à 11", "joue sans gardien", "sort du terrain"], "🧱"],
+      ["Une contre-attaque, c'est…", "attaquer très vite après avoir récupéré le ballon", ["reculer", "faire une touche", "changer de maillot"], "⚡"], ["Dans le jeu de position du Barça, les joueurs…", "font des triangles pour se passer le ballon", ["restent tous ensemble", "ne bougent pas", "dribblent seuls"], "🔺"],
+      ["Pour défendre un corner, les joueurs…", "marquent chacun un adversaire", ["vont tous en attaque", "s'assoient", "quittent la surface"], "🚩"], ["Le hors-jeu, c'est quand l'attaquant…", "est derrière le dernier défenseur au moment de la passe", ["tire trop fort", "parle à l'arbitre", "court trop vite"], "🚩"],
+      ["Dans un 4-3-3, combien y a-t-il d'attaquants ?", "3", ["4", "2", "1"], "📋"], ["Si on mène 1-0 à la 88e minute, on…", "garde le ballon et défend bien", ["laisse le but vide", "arrête de courir", "fait sortir le gardien"], "⏱️"],
+      ["Un latéral qui monte attaquer s'appelle un…", "latéral offensif", ["gardien volant", "arbitre", "remplaçant"], "↗️"], ["Pour presser en équipe, il faut…", "avancer tous ensemble", ["presser seul", "rester au milieu", "marcher"], "🤝🏾"],
+    ], 8) });
+    const FOOT_EN = [["goal", "le but", "🥅"], ["ball", "le ballon", "⚽"], ["team", "l'équipe", "👥"], ["player", "le joueur", "🏃🏾"], ["coach", "l'entraîneur", "🧑🏾‍💼"], ["referee", "l'arbitre", "🧑🏾‍⚖️"],
+      ["penalty", "le penalty", "🎯"], ["corner", "le corner", "🚩"], ["free kick", "le coup franc", "🦶🏾"], ["offside", "le hors-jeu", "🚫"], ["half-time", "la mi-temps", "⏸️"], ["kick-off", "le coup d'envoi", "▶️"],
+      ["goalkeeper", "le gardien", "🧤"], ["yellow card", "le carton jaune", "🟨"], ["red card", "le carton rouge", "🟥"], ["Pass the ball!", "Passe le ballon !", "↔️"], ["Well done!", "Bien joué !", "👏🏾"], ["Shoot!", "Tire !", "💥"]];
+    ajouter("moi", { id: "foot-en", icone: "🇬🇧", titre: "L'anglais du football", objectif: "Les mots et phrases des matchs en anglais", questions: anglais(FOOT_EN) });
+  }
   // Fiches : chaque leçon a un id unique par classe.
-  const MONDES = [["pays", "Mon pays, le Sénégal", "🇸🇳"], ["langues", "Les langues", "🗣️"], ["francais", "Contes, chansons et lecture", "📚"], ["maths", "Maths en plus", "🧮"], ["loin", "Pour aller plus loin", "🚀"]];
+  const MONDES = [["moi", GS ? "Le coin de Binta" : "Rien que pour moi", GS ? "🩺" : "⭐"], ["pays", "Mon pays, le Sénégal", "🇸🇳"], ["langues", "Les langues", "🗣️"], ["francais", "Contes, chansons et lecture", "📚"], ["maths", "Maths en plus", "🧮"], ["loin", "Pour aller plus loin", "🚀"]];
   return MONDES.map(([id, titre, icone]) => ({ id, titre, icone, lecons: lecons.filter(l => l.monde === id).map(l => Object.assign({}, l, { id: classe + "-plus-" + l.id, monde: undefined })) })).filter(m => m.lecons.length);
 };
 
@@ -1390,7 +1483,7 @@ window.LECONS_PLUS = function (classe) {
 
   // ----- Mémoire du téléphone -----
   const defaut = () => ({ prenom: "", code: "1234", toutOuvert: false, progres: {}, journal: [], jours: {}, pieces: 0, achats: [], porte: "", album: [], serie: { jour: "", n: 0 }, erreurs: [], diff: {}, qdj: "", bulletins: [], bons: [], catalogue: null, bonjour: "", equipe: {}, animal: null, jetons: { manger: 2, laver: 2, jouer: 2 }, coloriages: {}, lettresTracees: [], famille: "", recus: [],
-    records: {}, stats: { parfaits: 0, coffres: 0, corrigees: 0, matins: 0, duels: 0, defis: 0 }, badges: [], dico: {}, matin: "", motJour: "", avatarChoisi: "", fond: "", avatars: [], fonds: [], anniv: "", annivFete: "", reglages: { soir: "auto", taille: 0, police: false }, village: {}, gainsJour: null });
+    records: {}, stats: { parfaits: 0, coffres: 0, corrigees: 0, matins: 0, duels: 0, defis: 0, lutte: 0 }, badges: [], dico: {}, matin: "", motJour: "", avatarChoisi: "", fond: "", avatars: [], fonds: [], anniv: "", annivFete: "", reglages: { soir: "auto", taille: 0, police: false }, village: {}, gainsJour: null, autocollants: [], club: "", ballonsOr: [], gestes: null });
   let E = defaut();
   try { const brut = localStorage.getItem(CLE); if (brut) E = Object.assign(defaut(), JSON.parse(brut)); } catch (e) {}
   E.stats = Object.assign(defaut().stats, E.stats); E.reglages = Object.assign(defaut().reglages, E.reglages);
@@ -1499,6 +1592,7 @@ window.LECONS_PLUS = function (classe) {
     changer();
     appliquerAffichage();
     if (verifierAnniversaire()) return;
+    verifierTransfert();
     $ecran.className = "ecran sans-marge";
     const actuel = NIVEAUX.findIndex((n, i) => ouvert(i) && etoilesDe(n) === 0);
     const largeur = Math.min(560, window.innerWidth);
@@ -1632,6 +1726,7 @@ window.LECONS_PLUS = function (classe) {
     document.getElementById("ecouter").onclick = ecoute;
     document.getElementById("quitter").onclick = p.n.retour || carte;
     if (C.voixAuto !== false) ecoute();
+    farceMalice(p);
   }
   // Mascotte farceuse (si l'appli en a une) : une bulle de temps en temps, jamais à chaque fois.
   function mascotte(type, force) {
@@ -1878,9 +1973,12 @@ window.LECONS_PLUS = function (classe) {
     E.progres[n.id] = { etoiles: Math.max(avant.etoiles, etoiles), fois: (avant.fois || 0) + 1, dernier: moyenne + "/10", date: b.date };
     E.journal.unshift({ id: n.id, score: moyenne + "/10", ratio: moyenne / 10, date: b.date });
     E.pieces += etoiles * 20; serieDuJour();
+    const ballonOr = C.id === "ce2" && moyenne >= 6;
+    if (ballonOr) { E.ballonsOr.push({ palier: b.palier, moyenne, date: b.date }); E.pieces += 50; }
     if (!E.album.includes(n.animal)) E.album.push(n.animal);
     sauver();
     bulletin(b, false);
+    if (ballonOr) document.getElementById("suite").onclick = () => ceremonieBallonOr(b);
     verifierBadges();
     son("gagne");
     parler(moyenne >= 6 ? "compo_bien" : "compo_courage", moyenne >= 6 ? "Quelle belle composition ! Félicitations !" : "La composition n'était pas facile. On va réviser ensemble.");
@@ -1918,6 +2016,8 @@ window.LECONS_PLUS = function (classe) {
     E.journal.unshift({ id: n.id, score: p.justes + "/" + total, ratio, date: new Date().toISOString() });
     E.journal = E.journal.slice(0, 60);
     if (p.justes === total) E.stats.parfaits++;
+    if (n.jeu === "lutte" && p.bakk) E.stats.lutte++;
+    const autocollant = C.id === "ci" && etoiles > avant.etoiles ? gagnerAutocollant() : null;
     const secondes = Math.round((Date.now() - (p.debut || Date.now())) / 1000), rec = E.records[n.id];
     const record = rec && (p.justes > rec.j || (p.justes === rec.j && secondes < rec.s));
     if (!rec || record) E.records[n.id] = { j: p.justes, t: total, s: secondes };
@@ -1934,6 +2034,7 @@ window.LECONS_PLUS = function (classe) {
       '<div class="gain"><span>🪙 +' + gain + "</span><span>🔥 " + E.serie.n + " jour" + (E.serie.n > 1 ? "s" : "") + "</span>" + (record ? "<span>🏆 Nouveau record !</span>" : "") + "</div>" +
       (nouveau ? '<div class="nouvel-animal">' + (n.carte ? carteHTML(n.carte, true) : "<b>" + n.animal + "</b>") + "<span>" + esc(H.album.nouveau) + esc(n.nomAnimal) + " !</span></div>" : "") +
       '<div class="boutons"><button class="bouton second" id="encore">Rejouer</button><button class="bouton" id="suite">Continuer</button></div></div>';
+    if (autocollant) $ecran.querySelector(".resultat .boutons").insertAdjacentHTML("beforebegin", '<div class="nouvel-animal"><b>' + autocollant[0] + "</b><span>Nouvel autocollant : " + esc(autocollant[1]) + " !</span></div>");
     parler("etoiles" + etoiles, titres[etoiles - 1] + " Tu gagnes " + gain + " pièces.");
     if (nouveau) setTimeout(() => parler("album", H.album.nouveau + n.nomAnimal + " !"), 2600);
     document.getElementById("encore").onclick = () => jouer(n);
@@ -2538,11 +2639,13 @@ window.LECONS_PLUS = function (classe) {
       '<button class="bon-ligne" data-d="bataille"><b>⏱️</b><span><strong>Contre la montre</strong><br><small>Les questions de tes étapes, en 1 minute</small></span><span class="prix">🏆 ' + (E.records.bataille || 0) + "</span></button>" +
       (C.id === "ce2" ? '<button class="bon-ligne" data-d="tables"><b>✖️</b><span><strong>Les tables en chrono</strong><br><small>Un maximum de multiplications en 1 minute</small></span><span class="prix">🏆 ' + (E.records.tables || 0) + "</span></button>" : "") +
       '<button class="bon-ligne" data-d="duel"><b>🤝</b><span><strong>Duel en famille</strong><br><small>À deux sur le même téléphone, chacun avec les questions de sa classe</small></span><span class="prix">▶</span></button>' +
-      "</div><h2 class=\"sous-titre\">La salle de jeux</h2>" +
+      "</div>" + (ACTIVITES_PERSO.length ? '<h2 class="sous-titre">⭐ Rien que pour toi</h2><div class="bons">' + ACTIVITES_PERSO.map(([d, e, t, s]) => '<button class="bon-ligne" data-p="' + d + '"><b>' + e + "</b><span><strong>" + esc(t) + "</strong><br><small>" + esc(s) + '</small></span><span class="prix">▶</span></button>').join("") + "</div>" : "") +
+      "<h2 class=\"sous-titre\">La salle de jeux</h2>" +
       '<button class="bon-ligne village-ligne" data-d="village"><b>' + (VILLAGE.items[0][0]) + "</b><span><strong>" + esc(VILLAGE.titre) + "</strong><br><small>Chaque étape réussie te donne un élément à construire</small></span><span class=\"prix\">" + (debloques() - Object.keys(E.village).length > 0 ? "🆕 " + (debloques() - Object.keys(E.village).length) : Object.keys(E.village).length + "/" + VILLAGE.items.length) + "</span></button>" +
       '<div class="salle">' + [["memory", "🃏", "Memory"], ["puzzle", "🧩", "Puzzle du Sénégal"], ["assembler", "🧱", "J'assemble les syllabes"], ["frapper", "🥁", "Frappe les syllabes"], ["simon", "🎵", "Répète le rythme"], ["logique", "🧠", "Suites et intrus"], ["sudoku", "🔢", "Sudoku"]]
         .map(([d, e, t]) => '<button class="objet" data-d="' + d + '"><b>' + e + "</b><span>" + t + "</span></button>").join("") + "</div>";
     lire("Les défis et la salle de jeux. Choisis !");
+    $ecran.querySelectorAll("[data-p]").forEach(b => b.onclick = () => lancerPerso(b.dataset.p));
     document.getElementById("retour").onclick = carte;
     $ecran.querySelectorAll("[data-d]").forEach(b => b.onclick = () => ({
       calcul: () => jeuChrono({ cle: "calcul", titre: "Calcul mental", e: "⚡", generer: calculMental }),
@@ -3244,6 +3347,237 @@ window.LECONS_PLUS = function (classe) {
     const a = 2 + Math.floor(Math.random() * 8), b = 1 + Math.floor(Math.random() * 10), ch = n => ({ k: "chiffre", t: String(n), dire: String(n) });
     const faux = [...new Set([a * b + a, a * b - a, a * b + 1, a * b - 1, (a + 1) * b].filter(x => x > 0 && x !== a * b))].slice(0, 3);
     return { consigne: a + " × " + b + " = ?", scene: null, choix: [ch(a * b)].concat(faux.map(ch)), bonne: 0, dire: a + " fois " + b };
+  }
+
+  // ----- Rien que pour toi : les activités propres à chaque enfant -----
+  function activiteQuiz(id, e, questions, finir) {
+    changer();
+    $ecran.className = "ecran sans-marge";
+    const p = { n: { id, jeu: "qdj", e, retour: defis }, questions, k: 0, justes: 0, premier: true, d: 2 };
+    p.fin = finir;
+    jeuSimple(p, false);
+  }
+  const fete = () => { for (let i = 0; i < 24; i++) { const c = document.createElement("span"); c.className = "confetti"; c.textContent = ["🎉", "⭐", "✨", "🎊"][i % 4]; c.style.left = Math.random() * 100 + "%"; c.style.animationDelay = Math.random() * 1.5 + "s"; $ecran.appendChild(c); } };
+  const ACTIVITES_PERSO = {
+    gs: [["recette", "🍳", "La cuisine de Binta", "Une recette sénégalaise pas à pas"], ["marchande", "🧺", "La petite marchande", "Sers les clients et compte"], ["prenom", "✏️", "J'écris mon prénom", "Les lettres dans l'ordre"]],
+    ci: [["garage", "🔧", "Le garage", "Répare la voiture avec des calculs"], ["carriere", "🤼🏾", "Ma carrière de lutteur", "Les arènes et le bàkk"], ["autocollants", "🚗", "Mon album d'autocollants", "Voitures et lutteurs à collectionner"]],
+    ce2: [["carriere", "🧳", "Ma carrière", "Transferts et Ballons d'or"], ["journaliste", "📰", "Le journaliste", "Écris le compte rendu du match"], ["mercato", "💼", "Le mercato", "Recrute ton équipe avec ton budget"], ["gestes", "🏃🏾", "Défis dehors", "Des gestes techniques avec un vrai ballon"]],
+  }[C.id] || [];
+  const lancerPerso = d => ({ recette: () => recette(), marchande: () => marchande(), prenom: () => ecrirePrenom(), garage: () => garage(), carriere: C.id === "ci" ? carriereLutte : carriereFoot, autocollants: albumAutocollants, journaliste: () => journaliste(), mercato: () => mercato(), gestes: gestesDehors })[d]();
+
+  // --- Bineta : la cuisine ---
+  const RECETTES = [
+    { nom: "Le thiéboudienne", e: "🍲", etapes: [["Je lave le riz.", "🍚", "le riz"], ["Je coupe les oignons.", "🧅", "l'oignon"], ["Je prépare le poisson.", "🐟", "le poisson"], ["J'ajoute la tomate.", "🍅", "la tomate"], ["Je mets les légumes : la carotte…", "🥕", "la carotte"], ["… et le chou.", "🥬", "le chou"], ["Je fais cuire le riz dans le bouillon.", "🍲", "la marmite"]] },
+    { nom: "Le yassa au poulet", e: "🍗", etapes: [["Je prends le poulet.", "🍗", "le poulet"], ["Je coupe beaucoup d'oignons.", "🧅", "l'oignon"], ["Je presse le citron.", "🍋", "le citron"], ["J'ajoute un peu de piment.", "🌶️", "le piment"], ["Je fais mijoter dans la marmite.", "🍲", "la marmite"], ["Je sers avec le riz blanc.", "🍚", "le riz"]] },
+    { nom: "Le mafé", e: "🥜", etapes: [["Je coupe la viande.", "🥩", "la viande"], ["Je prépare la pâte d'arachide.", "🥜", "l'arachide"], ["J'ajoute la tomate.", "🍅", "la tomate"], ["Je mets la patate douce.", "🍠", "la patate douce"], ["Je fais cuire doucement.", "🍲", "la marmite"], ["Je sers avec le riz.", "🍚", "le riz"]] },
+    { nom: "Le jus de bissap", e: "🥤", etapes: [["Je rince les fleurs de bissap.", "🌺", "la fleur de bissap"], ["Je les mets dans l'eau.", "💧", "l'eau"], ["J'ajoute le sucre.", "🍬", "le sucre"], ["Je mets un peu de menthe.", "🌿", "la menthe"], ["Je sers bien frais avec des glaçons.", "🧊", "les glaçons"]] },
+  ];
+  const INGREDIENTS = [["🍚", "le riz"], ["🧅", "l'oignon"], ["🐟", "le poisson"], ["🍅", "la tomate"], ["🥕", "la carotte"], ["🥬", "le chou"], ["🍗", "le poulet"], ["🍋", "le citron"], ["🌶️", "le piment"], ["🥩", "la viande"], ["🥜", "l'arachide"], ["🍠", "la patate douce"], ["🌺", "la fleur de bissap"], ["💧", "l'eau"], ["🍬", "le sucre"], ["🌿", "la menthe"], ["🧊", "les glaçons"], ["🍲", "la marmite"], ["🥖", "le pain"], ["🍌", "la banane"]];
+  function recette(k) {
+    k = k || 0;
+    const R = RECETTES[k % RECETTES.length], img = (e, t) => ({ k: "image", e, t, dire: t });
+    const questions = R.etapes.map(([texte, e, nom], i) => ({ consigne: "Étape " + (i + 1) + " : " + texte, scene: { k: "image", e: R.e }, choix: [img(e, nom)].concat(melange(INGREDIENTS.filter(x => x[0] !== e)).slice(0, 2).map(x => img(x[0], x[1]))), bonne: 0, dire: R.nom + ". " + texte + " Touche " + nom + ".", disposition: "trois" }));
+    activiteQuiz("recette", "🍳", questions, p => finActivite({ e: R.e, titre: R.nom + " est prêt !", texte: "Bon appétit ! Tu as appris " + R.etapes.length + " mots de cuisine.", gain: gainJeu(10), rejouer: () => recette(k + 1), encore: "Recette suivante" }));
+  }
+  // --- Bineta : la petite marchande ---
+  const ETAL = [["🥭", "mangue", "mangues"], ["🍌", "banane", "bananes"], ["🍅", "tomate", "tomates"], ["🥖", "pain", "pains"], ["🥚", "œuf", "œufs"], ["🧅", "oignon", "oignons"]];
+  const CLIENTS = ["👩🏾", "👨🏾", "👵🏾", "👴🏾", "🧕🏾", "👦🏾"];
+  function marchande(tour, score) {
+    tour = tour || 0; score = score || 0;
+    if (tour >= 6) return finActivite({ e: "🧺", titre: score + " client" + (score > 1 ? "s" : "") + " bien servi" + (score > 1 ? "s" : ""), texte: "Ta boutique marche très bien !", gain: gainJeu(score + 4), rejouer: () => marchande() });
+    const art = ETAL[Math.floor(Math.random() * ETAL.length)], n = 1 + Math.floor(Math.random() * 5), client = CLIENTS[tour % CLIENTS.length];
+    const NB = ["", "une", "deux", "trois", "quatre", "cinq"], demande = "Bonjour ! Je voudrais " + (n === 1 ? (/^[aeiouœ]/.test(art[1]) ? "un " : ["mangue", "banane", "tomate"].includes(art[1]) ? "une " : "un ") + art[1] : NB[n].replace("une", "un") + " " + art[2]) + ", s'il te plaît.";
+    let panier = 0, fini = false;
+    ecranActivite("La petite marchande", (tour + 1) + "/6");
+    $ecran.insertAdjacentHTML("beforeend", '<div class="client"><span class="cl-e">' + client + '</span><span class="bulle-client">' + esc(demande) + '<br><b>' + Array(n).fill(art[0]).join("") + "</b></span></div>" +
+      '<p class="aide">Touche les produits pour les mettre dans le panier.</p><div class="etal">' + ETAL.map(([e], i) => '<button class="objet petit" data-a="' + i + '"><b>' + e + "</b></button>").join("") + "</div>" +
+      '<div class="panier" id="panier">🧺</div><div class="boutons"><button class="bouton second" id="vider">↺ Vider</button><button class="bouton" id="donner">Donner</button></div>');
+    dire(demande); document.getElementById("retour").onclick = defis;
+    const contenu = [];
+    const dessiner = () => document.getElementById("panier").innerHTML = "🧺 " + contenu.join("");
+    $ecran.querySelectorAll("[data-a]").forEach(b => b.onclick = () => { if (fini || contenu.length >= 8) return; contenu.push(ETAL[+b.dataset.a][0]); son("pop"); dire(String(contenu.length)); dessiner(); });
+    document.getElementById("vider").onclick = () => { contenu.length = 0; dessiner(); };
+    document.getElementById("donner").onclick = () => {
+      if (fini || !contenu.length) return;
+      const ok = contenu.length === n && contenu.every(x => x === art[0]);
+      if (ok) { fini = true; son("piece"); bravo("Merci !"); dire("Merci beaucoup ! Voici " + n + (n > 1 ? " pièces" : " pièce") + "."); setTimeout(() => $ecran.querySelector(".cl-e") && marchande(tour + 1, score + (panier ? 0 : 1)), 1800); }
+      else { panier++; son("faux"); dire(contenu.every(x => x === art[0]) ? (contenu.length < n ? "Il en manque ! J'en voulais " + n + "." : "C'est trop ! J'en voulais " + n + ".") : "Ce n'est pas ce que j'ai demandé. Je voulais des " + art[2] + "."); }
+    };
+  }
+  // --- Bineta : écrire son prénom et ses premiers mots ---
+  function ecrirePrenom(k) {
+    k = k || 0;
+    const MOTS = [prenom().toUpperCase(), "BINTA", "MAMAN", "PAPA", "BÉBÉ", "AMI", "RIZ", "LAIT"].filter((x, i, a) => a.indexOf(x) === i), m = MOTS[k % MOTS.length], lettres = m.split("");
+    const tuiles = melange(lettres.map((l, i) => ({ l, i })));
+    let pos = 0;
+    ecranActivite("J'écris", (k % MOTS.length + 1) + "/" + MOTS.length);
+    $ecran.insertAdjacentHTML("beforeend", '<div class="mot-jour"><span class="modele-mot">' + esc(m) + '</span><div class="cases-syl">' + lettres.map((l, i) => '<span class="case-syl lettre-ecole" data-c="' + i + '"></span>').join("") + "</div></div>" +
+      '<p class="aide">Touche les lettres dans l\'ordre pour écrire le mot.</p><div class="tuiles">' + tuiles.map((t, j) => '<button class="tuile lettre-ecole" data-t="' + j + '">' + esc(t.l) + "</button>").join("") + "</div>");
+    dire("Écris : " + m.toLowerCase() + ". " + lettres.map(l => l.toLowerCase()).join(", ")); document.getElementById("retour").onclick = defis;
+    $ecran.querySelectorAll(".tuile").forEach(b => b.onclick = () => {
+      if (b.disabled || pos >= lettres.length) return;
+      if (tuiles[+b.dataset.t].l === lettres[pos]) {
+        b.disabled = true; $ecran.querySelector('[data-c="' + pos + '"]').textContent = lettres[pos]; dire(lettres[pos].toLowerCase()); pos++; son("pop");
+        if (pos === lettres.length) { son("bon"); bravo(m); setTimeout(() => dire("Bravo ! Tu as écrit " + m.toLowerCase()), 400); setTimeout(() => $ecran.querySelector(".modele-mot") && (k + 1 >= MOTS.length ? finActivite({ e: "✏️", titre: "Tu sais écrire " + MOTS.length + " mots !", texte: "Ton prénom et les mots de la famille.", gain: gainJeu(10), rejouer: () => ecrirePrenom(0) }) : ecrirePrenom(k + 1)), 1800); }
+      } else { b.classList.add("secoue"); setTimeout(() => b.classList.remove("secoue"), 400); son("faux"); dire("Cherche la lettre " + lettres[pos].toLowerCase()); }
+    });
+  }
+
+  // --- Soubeyrou : le garage ---
+  const PANNES = [["🛞", "la roue"], ["💡", "le phare"], ["⚙️", "le moteur"], ["🪟", "la vitre"], ["🎨", "la peinture"], ["⛽", "le réservoir"]];
+  function garage() {
+    const pannes = melange(PANNES).slice(0, 4), voiture = ["🚗", "🚕", "🚙", "🏎️", "🚓"][Math.floor(Math.random() * 5)];
+    const questions = pannes.map(([e, nom], i) => { const c = calculMental(); return Object.assign(c, { consigne: "Répare " + nom + " " + e + " : " + c.consigne, dire: "Pour réparer " + nom + ", calcule : " + c.dire, scene: { k: "html", html: '<div class="garage-v">' + voiture + '<div class="pannes">' + pannes.map(([e2], j) => '<span class="' + (j < i ? "repare" : "") + '">' + (j < i ? "✅" : e2) + "</span>").join("") + "</div></div>" } }); });
+    activiteQuiz("garage", "🔧", questions, p => finActivite({ e: voiture, titre: "La voiture est réparée !", texte: "Vroum ! " + p.justes + " réparation" + (p.justes > 1 ? "s" : "") + " du premier coup.", gain: gainJeu(p.justes * 2 + 2), rejouer: garage, encore: "Voiture suivante" }));
+  }
+  // --- Soubeyrou : la carrière de lutteur ---
+  const ARENES = [[0, "L'arène du quartier", "🏘️"], [10, "Les navétanes", "🎪"], [25, "L'arène de Pikine", "🏟️"], [45, "Le stade Demba Diop", "🏟️"], [70, "L'Arène nationale", "👑"]];
+  function carriereLutte() {
+    ecranActivite("Ma carrière de lutteur");
+    const et = totalEtoiles(), ici = ARENES.filter(a => et >= a[0]).length - 1;
+    $ecran.insertAdjacentHTML("beforeend", '<div class="profil">' + persoHTML(true) + "<div><b>" + esc(prenom()) + "</b><span>" + esc(grade()) + "</span><span>🤼🏾 " + (E.stats.lutte || 0) + " combat" + ((E.stats.lutte || 0) > 1 ? "s" : "") + " gagné" + ((E.stats.lutte || 0) > 1 ? "s" : "") + "</span></div></div>" +
+      '<div class="parcours">' + ARENES.map((a, i) => '<div class="etape-c' + (i <= ici ? " ok" : "") + (i === ici ? " ici" : "") + '"><b>' + (i <= ici ? a[2] : "🔒") + "</b><span><strong>" + esc(a[1]) + "</strong><br><small>" + (i <= ici ? (i === ici ? "Tu combats ici !" : "Déjà gagnée") : "À " + a[0] + " ⭐") + "</small></span></div>").join("") + "</div>" +
+      '<button class="bouton" id="bakk">🥁 Mon bàkk !</button><p class="aide">Gagne des combats de lutte sur la carte pour monter dans les arènes.</p>');
+    document.getElementById("retour").onclick = defis;
+    document.getElementById("bakk").onclick = () => {
+      const phrases = ["Je suis " + prenom() + ", le lion de l'arène !", "Personne ne peut me faire tomber !", "Je travaille à l'école, je gagne dans l'arène !"];
+      [196, 196, 262, 196, 330].forEach((f, i) => setTimeout(() => ton(f, 0.18), i * 220));
+      setTimeout(() => { const ph = phrases[Math.floor(Math.random() * phrases.length)]; bravo("Bàkk !"); dire(ph); }, 1200);
+    };
+    lire("Ma carrière de lutteur. Tu es à " + ARENES[ici][1] + ".");
+  }
+  // --- Soubeyrou : Malice fait des farces ---
+  function farceMalice(p) {
+    if (C.id !== "ci" || !C.mascotte || p.n.boss || p.k === 0 || Math.random() > 0.15) return;
+    const zone = $ecran.querySelector(".choix, .aire"); if (!zone) return;
+    const f = document.createElement("div"); f.className = "farce";
+    let coups = 0;
+    f.innerHTML = '<span class="f-e">' + C.mascotte.e + '</span><b>Malice a caché les réponses sous des bananes ! 🍌🍌🍌</b><small>Tape 3 fois sur Malice pour le chasser !</small>';
+    zone.style.position = zone.style.position || "relative"; zone.appendChild(f);
+    dire("Ha ha ! Malice a caché les réponses ! Tape trois fois sur Malice pour le chasser !");
+    f.onclick = () => { coups++; son("pop"); f.querySelector(".f-e").classList.remove("frappe"); void f.offsetWidth; f.querySelector(".f-e").classList.add("frappe"); if (coups >= 3) { f.remove(); bravo("Farce déjouée !"); dire("Bien joué, tu as chassé Malice !"); } };
+  }
+  // --- Soubeyrou : l'album d'autocollants ---
+  const AUTOCOLLANTS = [["🚗", "La petite rouge"], ["🚕", "Le taxi jaune et noir"], ["🚙", "Le 4x4 du désert"], ["🏎️", "La voiture de course"], ["🚓", "La voiture de police"], ["🚑", "L'ambulance"], ["🚒", "Le camion de pompiers"], ["🚌", "Le car rapide"], ["🚚", "Le gros camion"], ["🛻", "Le pick-up"], ["🚜", "Le tracteur"], ["🏍️", "La moto Jakarta"],
+    ["🤼🏾", "Modou Lô"], ["🤼🏾", "Balla Gaye 2"], ["🤼🏾", "Eumeu Sène"], ["🤼🏾", "Bombardier"], ["🤼🏾", "Yékini"], ["🤼🏾", "Tyson"], ["🤼🏾", "Gris Bordeaux"], ["🤼🏾", "Reug Reug"], ["🤼🏾", "Ama Baldé"], ["🤼🏾", "Boy Niang 2"], ["🤼🏾", "Lac de Guiers 2"], ["🤼🏾", "Siteu"]];
+  function gagnerAutocollant() {
+    const manque = AUTOCOLLANTS.map((a, i) => i).filter(i => !E.autocollants.includes(i));
+    if (!manque.length) return null;
+    const i = manque[Math.floor(Math.random() * manque.length)]; E.autocollants.push(i); sauver();
+    return AUTOCOLLANTS[i];
+  }
+  function albumAutocollants() {
+    ecranActivite("Mon album d'autocollants", E.autocollants.length + "/" + AUTOCOLLANTS.length);
+    const case_ = (a, i) => '<div class="autocollant' + (E.autocollants.includes(i) ? (i >= 12 ? " lutteur" : " voiture") : " vide") + '"><b>' + (E.autocollants.includes(i) ? a[0] : "?") + "</b><span>" + (E.autocollants.includes(i) ? esc(a[1]) : "") + "</span></div>";
+    $ecran.insertAdjacentHTML("beforeend", '<p class="aide">Chaque nouvelle étoile sur la carte te donne un autocollant.</p><h2 class="sous-titre">🚗 Les voitures</h2><div class="album-a">' + AUTOCOLLANTS.slice(0, 12).map(case_).join("") + '</div><h2 class="sous-titre">🤼🏾 Les lutteurs</h2><div class="album-a">' + AUTOCOLLANTS.slice(12).map((a, i) => case_(a, i + 12)).join("") + "</div>" +
+      (E.autocollants.length < AUTOCOLLANTS.length ? '<div class="boutons"><button class="bouton" id="pochette">🎴 Une pochette : 40 🪙</button></div>' : ""));
+    document.getElementById("retour").onclick = defis;
+    const po = document.getElementById("pochette");
+    if (po) po.onclick = () => { if (E.pieces < 40) { son("faux"); return dire("Il te faut 40 pièces."); } E.pieces -= 40; const a = gagnerAutocollant(); son("piece"); albumAutocollants(); if (a) { bravo(a[0] + " " + a[1]); dire("Nouvel autocollant : " + a[1] + " !"); } };
+    lire("Mon album d'autocollants.");
+  }
+
+  // --- Seydina : la carrière, les transferts et le Ballon d'or ---
+  const CLUBS = [[0, "L'académie du quartier", "🏘️"], [10, "Diambars", "🟢"], [25, "Casa Sports", "🟡"], [45, "Génération Foot", "🟠"], [70, "FC Metz", "🇫🇷"], [100, "Le Paris Saint-Germain", "🗼"], [140, "Le FC Barcelone", "🔵🔴"]];
+  const pointsCarriere = () => totalEtoiles() + 5 * E.bulletins.length;
+  const clubActuel = () => CLUBS.filter(c => pointsCarriere() >= c[0]).pop();
+  function verifierTransfert() {
+    if (C.id !== "ce2") return;
+    const c = clubActuel();
+    if (!E.club) { E.club = c[1]; sauver(); return; }
+    if (E.club === c[1]) return;
+    E.club = c[1]; E.pieces += 30; sauver();
+    setTimeout(() => {
+      const v = document.createElement("div"); v.className = "voile";
+      v.innerHTML = '<div class="fenetre"><div class="grosse-icone">' + c[2] + "</div><h2>Transfert officiel !</h2><p>" + esc(prenom()) + " signe à <b>" + esc(c[1]) + "</b> ! Prime de signature : 🪙 30</p><div class=\"boutons\"><button class=\"bouton\" id=\"okT\">Je signe ✍🏾</button></div></div>";
+      document.body.appendChild(v); son("gagne"); dire("Transfert officiel ! " + prenom() + " signe à " + c[1] + " !");
+      v.querySelector("#okT").onclick = () => v.remove();
+    }, 700);
+  }
+  function carriereFoot() {
+    ecranActivite("Ma carrière");
+    const pts = pointsCarriere(), ici = CLUBS.filter(c => pts >= c[0]).length - 1;
+    $ecran.insertAdjacentHTML("beforeend", '<div class="profil">' + persoHTML(true) + "<div><b>" + esc(prenom()) + "</b><span>" + esc(grade()) + " · " + esc(CLUBS[ici][1]) + "</span><span>🏆 " + E.ballonsOr.length + " Ballon" + (E.ballonsOr.length > 1 ? "s" : "") + " d'or</span></div></div>" +
+      '<div class="parcours">' + CLUBS.map((c, i) => '<div class="etape-c' + (i <= ici ? " ok" : "") + (i === ici ? " ici" : "") + '"><b>' + (i <= ici ? c[2] : "🔒") + "</b><span><strong>" + esc(c[1]) + "</strong><br><small>" + (i === ici ? "Ton club actuel" : i < ici ? "Ancien club" : "Transfert à " + c[0] + " points") + "</small></span></div>").join("") + "</div>" +
+      '<p class="aide">Points de carrière : ' + pts + " (chaque étoile = 1 point, chaque bulletin = 5 points).</p>" +
+      (E.ballonsOr.length ? '<h2 class="sous-titre">🏆 Mes Ballons d\'or</h2><div class="bons">' + E.ballonsOr.map(b => '<div class="bon-ligne"><b>🏆</b><span><strong>Ballon d\'or · ' + esc(b.palier) + "</strong><br><small>Moyenne " + String(b.moyenne).replace(".", ",") + '/10</small></span></div>').join("") + "</div>" : '<p class="aide">Réussis la composition de fin de palier pour recevoir le Ballon d\'or.</p>'));
+    document.getElementById("retour").onclick = defis;
+    lire("Ma carrière. Tu joues à " + CLUBS[ici][1] + ".");
+  }
+  function ceremonieBallonOr(b) {
+    changer();
+    $ecran.className = "ecran fete";
+    $ecran.innerHTML = '<div class="resultat"><div class="gateau">🏆</div><h1>Le Ballon d\'or</h1><p>Le Ballon d\'or du ' + esc(b.palier) + " est attribué à… <b>" + esc(prenom()) + "</b> !</p><div class=\"gain\"><span>🪙 +50</span></div><div class=\"boutons\"><button class=\"bouton\" id=\"suite\">Merci !</button></div></div>";
+    fete(); son("gagne"); parler("ballon_or", "Le Ballon d'or est attribué à " + prenom() + " ! Félicitations !");
+    document.getElementById("suite").onclick = carte;
+  }
+  // --- Seydina : le journaliste ---
+  const ARTICLES = [
+    { titre: "Le Barça renverse le Real !", phrases: [["Hier soir, le Barça ", ["a joué", "à joué", "a jouer"], " contre le Real Madrid."], ["Dès la 10e minute, Seydina ", ["a marqué", "à marqué", "a marquer"], " un superbe but."], ["Les supporters ", ["chantaient", "chantait", "chantais"], " dans les tribunes."], ["En deuxième mi-temps, le gardien ", ["a arrêté", "à arrêté", "a arrêter"], " un penalty."], ["À la fin, le Barça ", ["a gagné", "à gagné", "a gagner"], " deux buts à un."], ["C'était un match ", ["magnifique", "magnifiquement", "magnifier"], " !"]] },
+    { titre: "Les Lions rugissent à Dakar", phrases: [["Le stade ", ["était", "étaient", "été"], " plein à craquer."], ["Les Lions ", ["sont entrés", "est entré", "sont entré"], " sur le terrain sous les applaudissements."], ["Le capitaine ", ["a levé", "à levé", "a lever"], " le bras pour saluer la foule."], ["Les joueurs étaient très ", ["concentrés", "concentré", "concentrée"], "."], ["Grâce à une belle ", ["passe", "passer", "passé"], ", l'attaquant a marqué."], ["Ce soir, tout le Sénégal ", ["est", "et", "ai"], " heureux !"]] },
+    { titre: "Un match sous la pluie", phrases: [["Il ", ["pleuvait", "pleuvaient", "pleuvais"], " très fort sur le terrain."], ["Les joueurs ", ["glissaient", "glissait", "glissais"], " dans la boue."], ["L'arbitre ", ["a sifflé", "à sifflé", "a siffler"], " une faute."], ["Seydina a tiré ", ["un", "une", "des"], " coup franc parfait."], ["Le ballon est ", ["entré", "entrer", "entrée"], " dans la lucarne."], ["Les ", ["supporters", "supporter", "supportère"], " ont dansé de joie !"]] },
+  ];
+  function journaliste(k) {
+    k = k || 0;
+    const A = ARTICLES[k % ARTICLES.length], mot = t => ({ k: "mots", t, dire: t });
+    const questions = A.phrases.map(([avant, choix, apres]) => ({ consigne: "Choisis le bon mot", scene: { k: "phrase", t: avant + "___" + apres }, choix: choix.map(mot), bonne: 0, dire: "Choisis le bon mot pour ton article. " + avant + "blanc" + apres, disposition: "trois" }));
+    activiteQuiz("journaliste", "📰", questions, p => {
+      changer(); $ecran.className = "ecran";
+      const g = gainJeu(p.justes + 4);
+      $ecran.innerHTML = enTeteActivite("Le Journal de " + prenom()) + '<article class="journal"><small>' + new Date().toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" }) + " · par " + esc(prenom()) + ", journaliste sportif</small><h2>" + esc(A.titre) + "</h2><p>" + A.phrases.map(([a, c, b]) => esc(a) + "<b>" + esc(c[0]) + "</b>" + esc(b)).join(" ") + "</p></article>" +
+        '<div class="gain">' + (g ? "<span>🪙 +" + g + "</span>" : "") + "<span>✍🏾 " + p.justes + "/" + A.phrases.length + ' du premier coup</span></div><div class="boutons"><button class="bouton second" id="encore">Article suivant</button><button class="bouton" id="suite">Continuer</button></div>';
+      son("gagne"); dire(A.titre + ". " + A.phrases.map(([a, c, b]) => a + c[0] + b).join(" "));
+      document.getElementById("retour").onclick = defis; document.getElementById("suite").onclick = defis; document.getElementById("encore").onclick = () => journaliste(k + 1);
+    });
+  }
+  // --- Seydina : le mercato ---
+  const RECRUES = [["Gardien", "🧤", ["Ibrahima Faye", "Moussa Ndiaye", "Pape Sarr"]], ["Défenseur", "🛡️", ["Cheikh Diallo", "Abdou Fall", "Lamine Sy"]], ["Milieu", "🎯", ["Ousmane Ba", "Malick Gueye", "Babacar Thiam"]], ["Attaquant", "⚡", ["Mamadou Diop", "Saliou Cissé", "Aliou Kane"]]];
+  function mercato() {
+    let budget = 10000, k = 0, equipe = [], erreurs = 0;
+    function poste() {
+      if (k >= RECRUES.length) return finMercato();
+      const [nom, e, joueurs] = RECRUES[k];
+      const offres = joueurs.map((j, i) => ({ j, prix: [1200, 1500, 1800, 2200, 2500, 2800, 3100, 3400][Math.floor(Math.random() * 8)] + (i === 0 ? 200 : 0), note: 3 + Math.floor(Math.random() * 3) }));
+      ecranActivite("Le mercato", "💰 " + budget.toLocaleString("fr-FR") + " F");
+      $ecran.insertAdjacentHTML("beforeend", '<p class="aide">Recrute un ' + nom.toLowerCase() + " " + e + ". Il te reste " + budget.toLocaleString("fr-FR") + " F pour " + (RECRUES.length - k) + " joueur" + (RECRUES.length - k > 1 ? "s" : "") + ".</p><div class=\"bons\">" +
+        offres.map((o, i) => '<button class="bon-ligne" data-o="' + i + '"><b>' + e + "</b><span><strong>" + esc(o.j) + "</strong><br><small>" + nom + " · " + "⭐".repeat(o.note) + '</small></span><span class="prix">' + o.prix.toLocaleString("fr-FR") + " F</span></button>").join("") + "</div>");
+      lire("Recrute ton " + nom.toLowerCase() + ". Il te reste " + budget + " francs.");
+      document.getElementById("retour").onclick = defis;
+      $ecran.querySelectorAll("[data-o]").forEach(b => b.onclick = () => {
+        const o = offres[+b.dataset.o], reste = RECRUES.length - k - 1;
+        if (o.prix > budget - reste * 1200) { son("faux"); return dire("Trop cher ! Garde assez d'argent pour les autres joueurs."); }
+        const bon = budget - o.prix, ch = n => ({ k: "chiffre", t: n.toLocaleString("fr-FR") + " F", dire: n + " francs" });
+        const faux = melange([bon + 100, bon - 100, bon + 1000, bon - 1000, budget + o.prix].filter(x => x > 0 && x !== bon)).slice(0, 2);
+        const q = { consigne: "Tu avais " + budget.toLocaleString("fr-FR") + " F. " + o.j + " coûte " + o.prix.toLocaleString("fr-FR") + " F. Combien te reste-t-il ?", scene: null, choix: [ch(bon)].concat(faux.map(ch)), bonne: 0, dire: "Tu avais " + budget + " francs. Le joueur coûte " + o.prix + " francs. Combien te reste-t-il ?", disposition: "trois" };
+        changer(); $ecran.className = "ecran sans-marge";
+        const p = { n: { id: "mercato", jeu: "qdj", e: "💼", retour: defis }, questions: [q], k: 0, justes: 0, premier: true, d: 2 };
+        p.fin = pp => { if (!pp.justes) erreurs++; budget = bon; equipe.push([e, o.j, nom]); k++; poste(); };
+        jeuSimple(p, false);
+      });
+    }
+    function finMercato() {
+      finActivite({ e: "💼", titre: "Ton équipe est prête !", texte: equipe.map(x => x[0] + " " + x[1]).join(", ") + ". Il te reste " + budget.toLocaleString("fr-FR") + " F.", gain: gainJeu(12 - erreurs * 2), rejouer: mercato, encore: "Nouveau mercato" });
+    }
+    poste();
+  }
+  // --- Seydina : les défis dehors avec un vrai ballon ---
+  const GESTES = [["⚽", "Jongler 10 fois sans faire tomber le ballon"], ["🧱", "20 passes contre un mur : 10 du pied droit, 10 du pied gauche"], ["🔀", "Slalom entre 5 bouteilles en gardant le ballon"], ["🎯", "Tirer entre deux tongs : 5 tirs réussis"], ["🪄", "Le passement de jambes de Neymar, 5 fois"], ["🦶🏾", "Contrôler 5 ballons lancés par un adulte"], ["🏃🏾", "Sprint : 5 allers-retours entre deux tongs"], ["🧤", "Jouer gardien : arrêter 5 tirs"], ["🔁", "10 passes avec un partenaire sans faire tomber le ballon"]];
+  function gestesDehors() {
+    const j = aujourdhui();
+    if (!E.gestes || E.gestes.date !== j) {
+      const d = new Date(), graine = d.getFullYear() * 400 + d.getMonth() * 31 + d.getDate();
+      E.gestes = { date: j, liste: [graine % GESTES.length, (graine * 7 + 3) % GESTES.length, (graine * 13 + 5) % GESTES.length].filter((x, i, a) => a.indexOf(x) === i), faits: [] }; sauver();
+    }
+    ecranActivite("Défis dehors", "☀️ " + E.gestes.faits.length + "/" + E.gestes.liste.length);
+    $ecran.insertAdjacentHTML("beforeend", '<p class="aide">Les défis du jour, à faire dehors avec un vrai ballon et un adulte pas loin. Un adulte confirme quand c\'est réussi !</p><div class="bons">' +
+      E.gestes.liste.map(i => '<button class="bon-ligne' + (E.gestes.faits.includes(i) ? " fait" : "") + '" data-g="' + i + '"><b>' + GESTES[i][0] + "</b><span><strong>" + esc(GESTES[i][1]) + "</strong><br><small>" + (E.gestes.faits.includes(i) ? "Réussi ✅" : "Un adulte touche ici quand c'est réussi") + '</small></span><span class="prix">' + (E.gestes.faits.includes(i) ? "✅" : "🪙 5") + "</span></button>").join("") + "</div>");
+    lire("Les défis dehors. " + E.gestes.liste.map(i => GESTES[i][1]).join(". "));
+    document.getElementById("retour").onclick = defis;
+    $ecran.querySelectorAll("[data-g]").forEach(b => b.onclick = () => {
+      const i = +b.dataset.g; if (E.gestes.faits.includes(i)) return dire(GESTES[i][1]);
+      E.gestes.faits.push(i); E.pieces += 5; E.stats.defis = (E.stats.defis || 0) + 1; sauver(); son("piece"); bravo("⚽ Bien joué !");
+      parler("bravo", "Bravo, défi réussi !"); gestesDehors();
+    });
   }
 
   // ----- Espace parent -----
