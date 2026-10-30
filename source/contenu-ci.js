@@ -180,6 +180,19 @@
     prenom: "Soubeyrou",
     classe: "Cours d'Initiation",
     avatar: "🦁",
+    avatars: ["🦁", "👦🏾", "🏎️", "🤼🏾", "🐒", "🦸🏾‍♂️", "🐯", "🤖"],
+    motsDuJour: [
+      ["la voiture", "🚗", "La voiture roule vite sur la route."], ["le lutteur", "🤼🏾", "Le lutteur est fort et courageux."], ["le stade", "🏟️", "Les supporters chantent au stade."], ["le camion", "🚚", "Le camion transporte du sable."],
+      ["le singe", "🐒", "Le singe saute de branche en branche."], ["la pirogue", "🛶", "Le pêcheur part en pirogue."], ["le marché", "🧺", "Maman achète des tomates au marché."], ["le baobab", "🌳", "Le baobab est un arbre géant."],
+      ["le cartable", "🎒", "Je range mes cahiers dans mon cartable."], ["l'ardoise", "🔲", "J'écris sur mon ardoise."], ["le maître", "🧑🏾‍🏫", "Le maître écrit au tableau."], ["la récréation", "🛝", "À la récréation, je joue avec mes amis."],
+      ["le tambour", "🥁", "Le tambour fait boum boum."], ["le soleil", "☀️", "Le soleil chauffe très fort à midi."], ["la mer", "🌊", "La mer est bleue et salée."], ["le moteur", "⚙️", "Le moteur fait vroum."],
+      ["le pneu", "🛞", "La voiture a quatre pneus."], ["le feu rouge", "🚦", "Au feu rouge, on s'arrête."], ["le casque", "⛑️", "À moto, on met un casque."], ["le pêcheur", "🎣", "Le pêcheur attrape des poissons."],
+      ["la chèvre", "🐐", "La chèvre mange de l'herbe."], ["le mouton", "🐑", "On achète un mouton pour la Tabaski."], ["l'avion", "✈️", "L'avion vole très haut."], ["la lune", "🌙", "La lune éclaire la nuit."],
+      ["le pain", "🥖", "Le boulanger fait du pain."], ["la famille", "👨🏾‍👩🏾‍👧🏾‍👦🏾", "J'aime ma famille."], ["le frère", "👦🏾", "Mon frère joue au ballon."], ["la sœur", "👧🏾", "Ma sœur aime cuisiner."],
+      ["le jardin", "🌱", "Les légumes poussent dans le jardin."], ["la fourmi", "🐜", "La fourmi est petite mais forte."], ["le champion", "🏆", "Le champion lève la coupe."], ["la course", "🏁", "Qui va gagner la course ?"],
+      ["l'arbitre", "🧑🏾‍⚖️", "L'arbitre siffle la fin du match."], ["le drapeau", "🇸🇳", "Le drapeau du Sénégal est vert, jaune et rouge."], ["la gourde", "🧴", "Je bois de l'eau dans ma gourde."], ["le rire", "😂", "Mon rire fait rire tout le monde."],
+      ["la blague", "🤭", "J'aime faire des blagues."], ["le bus", "🚌", "Le bus emmène les enfants."], ["la moto", "🏍️", "La moto fait beaucoup de bruit."], ["le garage", "🔧", "Le mécanicien répare la voiture au garage."],
+    ],
     livre: [
       { apres: "ci-p1-l1", e: "🧒🏾⚽", texte: "Ali a un ballon. Ali a un ami. Allez, on joue !" },
       { apres: "ci-p1-l2", e: "🚗💨", texte: "Une auto rouge file sur la route. Elle va vite, très vite !" },
@@ -197,6 +210,7 @@
     },
     habillage: {
       lutte: true, taupes: true,
+      grades: ["Petit mbër", "Lutteur du quartier", "Lutteur des navétanes", "Lutteur de l'arène", "Champion de Dakar", "Roi des arènes", "Légende de la lutte"],
       jeux: {
         ballons: { nom: "Les jongles", e: "⚽", aide: "Touche le bon ballon pour ne pas le laisser tomber !" },
         pirogue: { nom: "La course de voitures", e: "🏎️", aide: "Réponds vite pour gagner la course !" },

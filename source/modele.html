@@ -2,7 +2,7 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="theme-color" content="__COULEUR__">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Baloo+2:wght@600;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Baloo+2:wght@600;800&family=Lexend:wght@400;700&display=swap">
 <style>
 /* Mise en page : un jeu d'une seule colonne. La carte du voyage défile, chaque niveau ouvre un mini-jeu plein écran. */
 :root {
@@ -329,6 +329,53 @@ details[open] { display: grid; gap: 8px; }
 .course.route { background: linear-gradient(#6b6b6b, #555); }
 .course.route .couloir { border-bottom-color: #f5c518; }
 .course.pelouse { background: repeating-linear-gradient(90deg, #4caf50 0 30px, #45a049 30px 60px); }
+/* Vague 1 : quotidien, sac, défis, badges, dictionnaire, fête, affichage */
+.quotidien { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; padding-bottom: 4px; }
+.quotidien .qdj { flex: none; padding: 6px 12px; animation: none; }
+.quotidien .qdj:first-child { animation: battre 2s infinite; }
+.qdj.matin { background: linear-gradient(90deg, #ffd36b, #ffe9a8); }
+.qdj.mot { background: linear-gradient(90deg, #a8d8ff, #d6ecff); }
+.coin-case small { font-size: 13px; }
+.coin-case.choisi { outline: 4px solid var(--theme); }
+.profil { display: flex; gap: 14px; align-items: center; background: var(--carte); border-radius: 22px; padding: 14px; box-shadow: 0 4px 0 var(--trait); }
+.profil > div { display: grid; gap: 4px; flex: 1; }
+.profil b { font-family: var(--titre); font-size: 24px; }
+.progression.petite { height: 10px; flex: none; }
+.progression.chrono i { background: var(--mangue); transition: none; }
+.toast-badge { position: fixed; left: 50%; top: 18px; transform: translateX(-50%); z-index: 50; display: flex; gap: 12px; align-items: center; background: var(--carte); border-radius: 20px; padding: 10px 18px; box-shadow: 0 6px 0 rgba(0,0,0,.18), 0 0 0 3px var(--mangue); animation: monter .3s ease-out; max-width: 90%; }
+.toast-badge b { font-size: 42px; line-height: 1; }
+.toast-badge span { font-size: 15px; line-height: 1.3; }
+.mot-jour { background: var(--carte); border-radius: 26px; padding: 22px; display: grid; justify-items: center; gap: 8px; text-align: center; box-shadow: 0 5px 0 var(--trait); }
+.mj-e { font-size: 90px; line-height: 1; }
+.mj-mot { font-family: var(--titre); font-weight: 800; font-size: 40px; color: var(--theme); }
+.mot-jour p { margin: 0; font-size: 22px; font-weight: 700; }
+.dico { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.dico-lettre { grid-column: 1 / -1; font-size: 22px; color: var(--theme); margin-top: 6px; }
+.dico-mot { display: flex; align-items: center; gap: 8px; background: var(--carte); border-radius: 14px; padding: 8px 10px; font-weight: 700; text-align: left; box-shadow: 0 3px 0 var(--trait); }
+.dico-mot b { font-size: 28px; }
+.grille.six { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.objet.petit b { font-size: 34px; }
+.palette .pot { font-size: 14px; display: grid; place-items: center; }
+.score-duel { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+.score-duel span { background: var(--carte); border-radius: 999px; padding: 6px 14px; font-weight: 700; box-shadow: 0 3px 0 var(--trait); }
+.score-duel b { font-family: var(--titre); font-size: 22px; color: var(--theme); }
+.fete { position: relative; overflow: hidden; }
+.gateau { font-size: 110px; line-height: 1; animation: battre 1.2s infinite; }
+.confetti { position: absolute; top: -40px; font-size: 28px; animation: tombe 3s linear infinite; pointer-events: none; }
+@keyframes tombe { to { transform: translateY(110vh) rotate(360deg); } }
+body.soir { --sable: #2b2420; --carte: #3a312a; --encre: #f4e9da; --doux: #c9b8a3; --trait: #4d4137; --mer: #3f6f86; --mer-fonce: #2c5367; --savane: #6e6038; --fleuve: #3f6b5a; --foret: #3d6339; color-scheme: dark; }
+body.soir .carte-haut { background: linear-gradient(var(--sable) 75%, rgba(43,36,32,0)); }
+body.soir .noeud .lieu { background: rgba(58,49,42,.9); }
+body.soir .zone-nom { color: rgba(244,233,218,.6); }
+body.soir .reponse.bon { background: #24452f; } body.soir .reponse.faux { background: #4a2a24; }
+body.soir .page-livre, body.soir .bulletin, body.soir .bulle-animal { color: #2b2118; }
+body.t1 { font-size: 20px; } body.t2 { font-size: 22px; }
+body.t1 .consigne p { font-size: 25px; } body.t2 .consigne p { font-size: 29px; }
+body.t1 .r .mots { font-size: 32px; } body.t2 .r .mots { font-size: 36px; }
+body.t1 .r .phrase, body.t1 .scene .phrase { font-size: 24px; } body.t2 .r .phrase, body.t2 .scene .phrase { font-size: 27px; }
+body.t1 .scene .texte, body.t1 .r .legende, body.t1 .aide { font-size: 19px; } body.t2 .scene .texte, body.t2 .r .legende, body.t2 .aide { font-size: 21px; }
+body.t1 .texte-livre { font-size: 34px; } body.t2 .texte-livre { font-size: 38px; }
+body.lisible { --lecture: "Lexend", "Andika", system-ui, sans-serif; letter-spacing: .02em; word-spacing: .08em; }
 @media (prefers-reduced-motion: reduce) { .noeud.actuel .bulle, .resultat .grandes-etoiles span, .nouvel-animal b { animation: none !important; } }
 </style>
 
@@ -404,9 +451,11 @@ __CONTENU__
   }
 
   // ----- Mémoire du téléphone -----
-  const defaut = () => ({ prenom: "", code: "1234", toutOuvert: false, progres: {}, journal: [], jours: {}, pieces: 0, achats: [], porte: "", album: [], serie: { jour: "", n: 0 }, erreurs: [], diff: {}, qdj: "", bulletins: [], bons: [], catalogue: null, bonjour: "", equipe: {}, animal: null, jetons: { manger: 2, laver: 2, jouer: 2 }, coloriages: {}, lettresTracees: [], famille: "", recus: [] });
+  const defaut = () => ({ prenom: "", code: "1234", toutOuvert: false, progres: {}, journal: [], jours: {}, pieces: 0, achats: [], porte: "", album: [], serie: { jour: "", n: 0 }, erreurs: [], diff: {}, qdj: "", bulletins: [], bons: [], catalogue: null, bonjour: "", equipe: {}, animal: null, jetons: { manger: 2, laver: 2, jouer: 2 }, coloriages: {}, lettresTracees: [], famille: "", recus: [],
+    records: {}, stats: { parfaits: 0, coffres: 0, corrigees: 0, matins: 0, duels: 0, defis: 0 }, badges: [], dico: {}, matin: "", motJour: "", avatarChoisi: "", fond: "", avatars: [], fonds: [], anniv: "", annivFete: "", reglages: { soir: "auto", taille: 0, police: false } });
   let E = defaut();
   try { const brut = localStorage.getItem(CLE); if (brut) E = Object.assign(defaut(), JSON.parse(brut)); } catch (e) {}
+  E.stats = Object.assign(defaut().stats, E.stats); E.reglages = Object.assign(defaut().reglages, E.reglages);
   let envoiPrevu = 0;
   function sauver() { try { localStorage.setItem(CLE, JSON.stringify(E)); } catch (e) {} clearTimeout(envoiPrevu); envoiPrevu = setTimeout(envoyer, 2500); }
   const prenom = () => E.prenom || C.prenom;
@@ -481,7 +530,7 @@ __CONTENU__
   const totalEtoiles = () => Object.values(E.progres).reduce((s, p) => s + (p.etoiles || 0), 0);
   const ouvert = i => E.toutOuvert || i === 0 || etoilesDe(NIVEAUX[i - 1]) > 0;
   const bossOuvert = () => E.toutOuvert || NIVEAUX.every(n => etoilesDe(n) > 0);
-  function persoHTML(grand) { return '<span class="perso' + (grand ? " grand" : "") + '" aria-hidden="true">' + C.avatar + (E.porte ? '<span class="accessoire">' + E.porte + "</span>" : "") + "</span>"; }
+  function persoHTML(grand) { return '<span class="perso' + (grand ? " grand" : "") + '" aria-hidden="true"' + (E.fond ? ' style="background:' + E.fond + '"' : "") + ">" + (E.avatarChoisi || C.avatar) + (E.porte ? '<span class="accessoire">' + E.porte + "</span>" : "") + "</span>"; }
   function rendu(x) {
     if (x == null) return "";
     if (typeof x === "string") return '<span class="gros">' + esc(x) + "</span>";
@@ -505,21 +554,26 @@ __CONTENU__
   // ----- La carte -----
   function carte() {
     changer();
+    appliquerAffichage();
+    if (verifierAnniversaire()) return;
     $ecran.className = "ecran sans-marge";
     const actuel = NIVEAUX.findIndex((n, i) => ouvert(i) && etoilesDe(n) === 0);
     const largeur = Math.min(560, window.innerWidth);
     const xDe = i => Math.round(largeur / 2 + Math.sin(i * 1.15) * (largeur * 0.27));
     let html = '<div class="carte-haut"><div class="barre"><button id="btnPerso" aria-label="Mon personnage et la boutique">' + persoHTML() + '</button>' +
-      '<span class="salut">' + esc(prenom()) + '<small>' + esc(C.classe) + '</small></span><span class="espace"></span>' +
+      '<span class="salut">' + esc(prenom()) + (E.anniv === aujourdhui().slice(5) ? " 🎂" : "") + '<small>' + esc(C.classe) + " · " + esc(grade()) + '</small></span><span class="espace"></span>' +
       '<button class="rond" id="btnParent" aria-label="Espace parent">🔒</button></div>' +
-      '<div class="barre compteurs"><span class="pastille" title="Jours de suite">🔥 ' + serieActive() + '</span><span class="pastille" title="Pièces">🪙 ' + E.pieces + '</span><span class="pastille" title="Étoiles">⭐ ' + totalEtoiles() + '</span>' +
+      '<div class="barre compteurs"><span class="pastille" title="Jours de suite, pièces, étoiles">🔥 ' + serieActive() + ' · 🪙 ' + E.pieces + ' · ⭐ ' + totalEtoiles() + '</span><span class="espace"></span>' +
       (H.cartes ? '<button class="pastille" id="btnEquipe" aria-label="Mon équipe">🏟️</button>' : "") +
       (C.coin ? '<button class="pastille" id="btnCoin" aria-label="Mon coin">' + (E.animal ? ANIMAUX_COMPAGNONS[E.animal.type][0] : "🏡") + "</button>" : "") +
       (E.famille && window.FIREBASE_CONFIG ? '<button class="pastille" id="btnHonneur" aria-label="Tableau d\'honneur">🏆</button>' : "") +
       (C.livre ? '<button class="pastille" id="btnLivre" aria-label="Mon livre de lecture">📖</button>' : "") +
-      (E.bulletins.length ? '<button class="pastille" id="btnBulletin" aria-label="Mes bulletins">📜</button>' : "") +
-      '<span class="espace"></span><button class="pastille" id="btnAlbum">' + (H.cartes ? "🃏 " : "📒 ") + E.album.length + '/' + (NIVEAUX.length + 1) + '</button></div></div>';
-    if (E.qdj !== aujourdhui()) html = html.replace(/<\/div><\/div>$/, '</div><button class="qdj" id="btnQdj"><span class="coffre-mini">🎁</span><span><b>Question du jour</b><small>Ouvre le coffre !</small></span></button></div>');
+      '<button class="pastille" id="btnDefis" aria-label="Défis">🎯</button><button class="pastille" id="btnSac" aria-label="Mon sac">🎒</button></div>';
+    const quotidien = [];
+    if (E.qdj !== aujourdhui()) quotidien.push('<button class="qdj" id="btnQdj"><span class="coffre-mini">🎁</span><span><b>Question du jour</b><small>Ouvre le coffre !</small></span></button>');
+    if (matinOuvert()) quotidien.push('<button class="qdj matin" id="btnMatin"><span class="coffre-mini">☀️</span><span><b>Révision du matin</b><small>5 questions avant l\'école</small></span></button>');
+    if (MOTS_JOUR.length && E.motJour !== aujourdhui()) quotidien.push('<button class="qdj mot" id="btnMot"><span class="coffre-mini">💬</span><span><b>Le mot du jour</b><small>' + esc(motDuJourAuj()[0]) + "</small></span></button>");
+    html += (quotidien.length ? '<div class="quotidien">' + quotidien.join("") + "</div>" : "") + "</div>";
     html += '<div class="voyage" id="voyage"><svg class="route" id="route" aria-hidden="true"></svg>';
     let decor = "";
     NIVEAUX.forEach((n, i) => {
@@ -555,13 +609,15 @@ __CONTENU__
     });
     document.getElementById("btnParent").onclick = () => codeParent();
     document.getElementById("btnPerso").onclick = boutique;
-    document.getElementById("btnAlbum").onclick = album;
     const be = document.getElementById("btnEquipe"); if (be) be.onclick = () => equipe();
     const bc = document.getElementById("btnCoin"); if (bc) bc.onclick = () => coin();
     const bl = document.getElementById("btnLivre"); if (bl) bl.onclick = () => livre(0);
     const bh = document.getElementById("btnHonneur"); if (bh) bh.onclick = () => base ? honneur() : dire("Il faut internet pour voir le tableau d'honneur.");
     const bq = document.getElementById("btnQdj"); if (bq) bq.onclick = questionDuJour;
-    const bb = document.getElementById("btnBulletin"); if (bb) bb.onclick = () => bulletin(E.bulletins[0], true);
+    const bm = document.getElementById("btnMatin"); if (bm) bm.onclick = revisionMatin;
+    const bw = document.getElementById("btnMot"); if (bw) bw.onclick = motDuJour;
+    document.getElementById("btnDefis").onclick = defis;
+    document.getElementById("btnSac").onclick = sac;
     const acc = E.bons.filter(b => b.statut === "accorde" && !b.vu);
     if (acc.length) { acc.forEach(b => b.vu = true); sauver(); setTimeout(() => { bravo("🎟️ Récompense acceptée !"); parler("bon_ok", "Ta récompense est acceptée : " + acc[0].nom + " !"); }, 400); }
     if (E.bonjour !== aujourdhui()) document.addEventListener("click", function salut() { document.removeEventListener("click", salut, true); if (E.bonjour === aujourdhui()) return; E.bonjour = aujourdhui(); sauver(); parler("bonjour_" + C.id, "Bonjour " + prenom() + " !"); }, true);
@@ -601,7 +657,7 @@ __CONTENU__
     E.erreurs = E.erreurs.slice(0, 60);
     sauver();
   }
-  function effacerErreur(q) { const cle = q._rattrapage || cleQ(q); E.erreurs = E.erreurs.filter(x => x.cle !== cle); sauver(); }
+  function effacerErreur(q) { const cle = q._rattrapage || cleQ(q); if (E.erreurs.some(x => x.cle === cle)) E.stats.corrigees++; E.erreurs = E.erreurs.filter(x => x.cle !== cle); sauver(); }
 
   function jouer(n) {
     changer();
@@ -612,7 +668,7 @@ __CONTENU__
     E.erreurs.filter(x => x.id === n.id).slice(0, 2).forEach((x, i) => { questions[questions.length - 1 - i] = Object.assign({}, x.q, { _rattrapage: x.cle, _lecon: n.id }); });
     questions = melange(questions);
     if (d === 1) questions = questions.map(alleger);
-    const partie = { n, questions, k: 0, justes: 0, premier: true, d, vit: d === 1 ? 0.75 : d === 3 ? 1.25 : 1 };
+    const partie = { n, questions, k: 0, justes: 0, premier: true, d, vit: d === 1 ? 0.75 : d === 3 ? 1.25 : 1, debut: Date.now() };
     setTimeout(() => mascotte("debut", true), 900);
     ({ peche: jeuPeche, ballons: jeuBallons, pirogue: jeuPirogue, match: jeuMatch, lutte: jeuLutte, taupes: jeuTaupes })[n.jeu](partie);
   }
@@ -620,7 +676,7 @@ __CONTENU__
   function enTete(p, q) {
     p.qc = q;
     return '<div class="jeu-haut"><div class="barre"><button class="rond" id="quitter" aria-label="Quitter">✕</button><div class="progression"><i style="width:' + Math.round(100 * p.k / p.questions.length) + '%"></i></div>' +
-      '<span class="pastille">' + (p.n.boss ? BOSS.e : p.n.jeu === "qdj" ? "🎁" : JEUX[p.n.jeu].e) + " " + p.k + "/" + p.questions.length + "</span></div>" +
+      '<span class="pastille">' + (p.n.boss ? BOSS.e : p.n.e || (p.n.jeu === "qdj" ? "🎁" : JEUX[p.n.jeu].e)) + " " + p.k + "/" + p.questions.length + "</span></div>" +
       '<div class="consigne"><button class="haut-parleur" id="ecouter" aria-label="Écouter">🔊</button><p>' + esc(q.consigne) + "</p></div>" +
       (q.scene ? '<div class="scene">' + rendu(q.scene) + "</div>" : "") + "</div>";
   }
@@ -641,6 +697,7 @@ __CONTENU__
   function reussite(p, suite) {
     mascotte("bon");
     if (p.premier) { p.justes++; if (p.qc && p.qc._rattrapage) effacerErreur(p.qc); }
+    if (p.qc) { const c = p.qc.choix[p.qc.bonne]; if (c && c.k === "image") ajouterMot(c.t || c.dire, c.e); }
     son("bon");
     const mot = MOTS_BRAVO[Math.floor(Math.random() * MOTS_BRAVO.length)];
     bravo(mot); parler(C.habillage && Math.random() < 0.3 ? "but" : "bravo", mot);
@@ -831,7 +888,7 @@ __CONTENU__
   function coffre(premierCoup) {
     changer();
     $ecran.className = "ecran";
-    E.qdj = aujourdhui(); serieDuJour();
+    E.qdj = aujourdhui(); serieDuJour(); E.stats.coffres++;
     let gain = premierCoup ? [15, 20, 25, 30][Math.floor(Math.random() * 4)] : 10, cadeau = null;
     const libres = BOUTIQUE.filter(x => !E.achats.includes(x[0]) && x[2] <= 50);
     if (premierCoup && libres.length && Math.random() < 0.25) { cadeau = libres[Math.floor(Math.random() * libres.length)]; E.achats.push(cadeau[0]); gain = 0; }
@@ -847,6 +904,7 @@ __CONTENU__
       setTimeout(() => { b.textContent = cadeau ? cadeau[0] : "🪙"; document.getElementById("contenu").hidden = false; document.getElementById("suite").hidden = false; son("gagne"); parler("coffre", "Bravo, tu as ouvert le coffre !"); }, 700);
     };
     document.getElementById("suite").onclick = carte;
+    verifierBadges();
   }
 
   function composition(n) {
@@ -876,6 +934,7 @@ __CONTENU__
     if (!E.album.includes(n.animal)) E.album.push(n.animal);
     sauver();
     bulletin(b, false);
+    verifierBadges();
     son("gagne");
     parler(moyenne >= 6 ? "compo_bien" : "compo_courage", moyenne >= 6 ? "Quelle belle composition ! Félicitations !" : "La composition n'était pas facile. On va réviser ensemble.");
   }
@@ -911,6 +970,10 @@ __CONTENU__
     E.progres[n.id] = { etoiles: Math.max(avant.etoiles, etoiles), fois: (avant.fois || 0) + 1, dernier: p.justes + "/" + total, date: new Date().toISOString() };
     E.journal.unshift({ id: n.id, score: p.justes + "/" + total, ratio, date: new Date().toISOString() });
     E.journal = E.journal.slice(0, 60);
+    if (p.justes === total) E.stats.parfaits++;
+    const secondes = Math.round((Date.now() - (p.debut || Date.now())) / 1000), rec = E.records[n.id];
+    const record = rec && (p.justes > rec.j || (p.justes === rec.j && secondes < rec.s));
+    if (!rec || record) E.records[n.id] = { j: p.justes, t: total, s: secondes };
     E.pieces += gain;
     if (C.coin) ["manger", "laver", "jouer"].forEach(k => E.jetons[k] = (E.jetons[k] || 0) + 1);
     serieDuJour();
@@ -921,16 +984,19 @@ __CONTENU__
     const titres = ["Continue, tu progresses !", "Bien joué !", C.feminin ? "Championne !" : "Champion !"];
     $ecran.innerHTML = '<div class="resultat"><div class="grandes-etoiles">' + etoilesHTML(etoiles) + "</div><h1>" + esc(titres[etoiles - 1]) + "</h1>" +
       "<p>" + p.justes + " sur " + total + " du premier coup" + (p.texteFin ? " · " + p.texteFin : n.jeu === "pirogue" ? (gagneCourse ? " · " + H.victoire : " · " + H.defaite) : "") + "</p>" +
-      '<div class="gain"><span>🪙 +' + gain + "</span><span>🔥 " + E.serie.n + " jour" + (E.serie.n > 1 ? "s" : "") + "</span></div>" +
+      '<div class="gain"><span>🪙 +' + gain + "</span><span>🔥 " + E.serie.n + " jour" + (E.serie.n > 1 ? "s" : "") + "</span>" + (record ? "<span>🏆 Nouveau record !</span>" : "") + "</div>" +
       (nouveau ? '<div class="nouvel-animal">' + (n.carte ? carteHTML(n.carte, true) : "<b>" + n.animal + "</b>") + "<span>" + esc(H.album.nouveau) + esc(n.nomAnimal) + " !</span></div>" : "") +
       '<div class="boutons"><button class="bouton second" id="encore">Rejouer</button><button class="bouton" id="suite">Continuer</button></div></div>';
     parler("etoiles" + etoiles, titres[etoiles - 1] + " Tu gagnes " + gain + " pièces.");
     if (nouveau) setTimeout(() => parler("album", H.album.nouveau + n.nomAnimal + " !"), 2600);
     document.getElementById("encore").onclick = () => jouer(n);
     document.getElementById("suite").onclick = carte;
+    verifierBadges();
   }
 
   // ----- Boutique du personnage -----
+  const AVATARS = (C.avatars || [C.avatar]).map((e, i) => [e, i ? 40 + i * 20 : 0]);
+  const FONDS = [["", 0], ["#e0533d", 30], ["#f08a1c", 30], ["#2e9e5b", 30], ["#2f6fd1", 30], ["#8a4fd6", 30], ["#ff8fc7", 30], ["#2b2118", 50]];
   const CATALOGUE = [["📺", "Regarder un match avec papa", 150], ["🍨", "Mon dessert préféré", 80], ["🎬", "30 minutes de dessin animé", 100], ["🏖️", "Une sortie à la plage", 250], ["🍲", "Choisir le repas du dimanche", 200]];
   const catalogue = () => E.catalogue || CATALOGUE;
   function boutique(message) {
@@ -938,7 +1004,9 @@ __CONTENU__
     $ecran.className = "ecran";
     $ecran.innerHTML = '<div class="titre-page"><button class="rond" id="retour" aria-label="Retour">←</button><h1>Mon personnage</h1><span class="espace" style="flex:1"></span><span class="pastille">🪙 ' + E.pieces + "</span></div>" +
       '<div style="display:grid;justify-items:center;gap:6px;padding:14px 0">' + persoHTML(true) + '<p class="aide">' + esc(message || "Gagne des pièces en jouant et habille ton personnage.") + "</p></div>" +
-      '<div class="grille">' + BOUTIQUE.map(([e, nom, prix]) => {
+      '<h2 class="sous-titre">Mon personnage</h2><div class="grille six">' + AVATARS.map(([e, prix]) => { const a = !prix || E.avatars.includes(e), choisi = (E.avatarChoisi || C.avatar) === e; return '<button class="objet petit' + (choisi ? " porte" : "") + '" data-av="' + e + '"><b>' + e + '</b><span class="prix">' + (choisi ? "✓" : a ? "À toi" : "🪙 " + prix) + "</span></button>"; }).join("") + "</div>" +
+      '<h2 class="sous-titre">Ma couleur</h2><div class="palette">' + FONDS.map(([c, prix]) => { const a = !prix || E.fonds.includes(c); return '<button class="pot' + ((E.fond || "") === c ? " choisi" : "") + '" data-fond="' + c + '" style="background:' + (c || "var(--theme)") + '" aria-label="Couleur ' + (a ? "à toi" : prix + " pièces") + '">' + (a ? "" : "🔒") + "</button>"; }).join("") + "</div>" +
+      '<h2 class="sous-titre">Mes accessoires</h2><div class="grille">' + BOUTIQUE.map(([e, nom, prix]) => {
         const a = E.achats.includes(e);
         return '<button class="objet' + (E.porte === e ? " porte" : "") + '" data-e="' + e + '"><b>' + e + "</b><span>" + esc(nom) + '</span><span class="prix">' + (E.porte === e ? "Porté" : a ? "À toi" : "🪙 " + prix) + "</span></button>";
       }).join("") + "</div>";
@@ -953,7 +1021,24 @@ __CONTENU__
       boutique("Demande envoyée à papa : " + nom);
     });
     document.getElementById("retour").onclick = carte;
-    $ecran.querySelectorAll(".objet").forEach(b => b.onclick = () => {
+    if (message) lire(message);
+    $ecran.querySelectorAll("[data-av]").forEach(b => b.onclick = () => {
+      const [e, prix] = AVATARS.find(x => x[0] === b.dataset.av);
+      if (prix && !E.avatars.includes(e)) {
+        if (E.pieces < prix) { son("faux"); dire("Il te manque " + (prix - E.pieces) + " pièces."); return boutique("Il te manque " + (prix - E.pieces) + " pièces pour ce personnage."); }
+        E.pieces -= prix; E.avatars.push(e); son("piece");
+      } else son("pop");
+      E.avatarChoisi = e; sauver(); boutique("Voici ton nouveau personnage !");
+    });
+    $ecran.querySelectorAll("[data-fond]").forEach(b => b.onclick = () => {
+      const [c, prix] = FONDS.find(x => x[0] === b.dataset.fond);
+      if (prix && !E.fonds.includes(c)) {
+        if (E.pieces < prix) { son("faux"); dire("Il te manque " + (prix - E.pieces) + " pièces."); return boutique("Il te manque " + (prix - E.pieces) + " pièces pour cette couleur."); }
+        E.pieces -= prix; E.fonds.push(c); son("piece");
+      } else son("pop");
+      E.fond = c; sauver(); boutique("Nouvelle couleur !");
+    });
+    $ecran.querySelectorAll(".objet[data-e]").forEach(b => b.onclick = () => {
       const [e, nom, prix] = BOUTIQUE.find(x => x[0] === b.dataset.e);
       if (E.achats.includes(e)) { E.porte = E.porte === e ? "" : e; sauver(); son("pop"); return boutique(E.porte ? "Tu portes : " + nom : "Tu as enlevé : " + nom); }
       if (E.pieces < prix) { son("faux"); dire("Il te manque " + (prix - E.pieces) + " pièces. Joue encore !"); return boutique("Il te manque " + (prix - E.pieces) + " pièces pour : " + nom); }
@@ -1309,6 +1394,396 @@ __CONTENU__
     };
   }
 
+  // ----- Grades, badges, records -----
+  const SEUILS_GRADES = [0, 5, 15, 30, 50, 75, 100];
+  const GRADES = H.grades || (C.feminin ? ["Débutante", "Apprentie", "Exploratrice", "Championne", "Experte", "Reine du savoir", "Légende"] : ["Débutant", "Apprenti", "Explorateur", "Champion", "Expert", "Maître du savoir", "Légende"]);
+  const rangGrade = () => { const t = totalEtoiles(); let r = 0; SEUILS_GRADES.forEach((s, i) => { if (t >= s) r = i; }); return r; };
+  const grade = () => GRADES[rangGrade()];
+  const lire = t => { if (C.lectureAuto) dire(t); };
+  const nbDico = () => Object.keys(E.dico).length;
+  const BADGES = [
+    ["etoile1", "🌟", "Première étoile", "Réussir une première étape", () => totalEtoiles() >= 1],
+    ["etoiles10", "⭐", "10 étoiles", "Gagner 10 étoiles", () => totalEtoiles() >= 10],
+    ["etoiles30", "🌠", "30 étoiles", "Gagner 30 étoiles", () => totalEtoiles() >= 30],
+    ["serie3", "🔥", "3 jours de suite", "Jouer 3 jours de suite", () => E.serie.n >= 3],
+    ["serie7", "🔥", "Une semaine", "Jouer 7 jours de suite", () => E.serie.n >= 7],
+    ["serie30", "🌋", "Un mois", "Jouer 30 jours de suite", () => E.serie.n >= 30],
+    ["parfait", "💯", "Sans faute", "Finir une étape sans aucune erreur", () => E.stats.parfaits >= 1],
+    ["parfait10", "🎯", "Dix sans faute", "Finir 10 étapes sans erreur", () => E.stats.parfaits >= 10],
+    ["compo", "📝", "Première compo", "Passer une composition", () => E.bulletins.length >= 1],
+    ["felicitations", "🎓", "Félicitations", "Avoir 8/10 ou plus à une composition", () => E.bulletins.some(b => b.moyenne >= 8)],
+    ["coffres", "🎁", "Chasseur de coffres", "Ouvrir 7 coffres de la question du jour", () => E.stats.coffres >= 7],
+    ["correcteur", "🩹", "Je corrige mes erreurs", "Réussir 10 questions ratées avant", () => E.stats.corrigees >= 10],
+    ["album1", "📒", "Album à moitié", "Remplir la moitié de l'album", () => E.album.length >= Math.ceil((NIVEAUX.length + 1) / 2)],
+    ["album2", "🏆", "Album complet", "Remplir tout l'album", () => E.album.length >= NIVEAUX.length + 1],
+    ["matieres", "🌈", "Touche-à-tout", "Une étoile dans chaque matière", () => C.mondes.every(m => NIVEAUX.some(n => n.monde === m && etoilesDe(n) > 0))],
+    ["calcul10", "⚡", "Calcul éclair", "10 bonnes réponses au calcul mental", () => (E.records.calcul || 0) >= 10],
+    ["calcul25", "🧠", "Cerveau rapide", "25 bonnes réponses au calcul mental", () => (E.records.calcul || 0) >= 25],
+    ["bataille", "⏱️", "Contre la montre", "15 bonnes réponses en 1 minute", () => (E.records.bataille || 0) >= 15],
+    ["duel", "🤝", "Duelliste", "Gagner un duel", () => E.stats.duels >= 1],
+    ["dico20", "📚", "20 mots", "20 mots dans mon dictionnaire", () => nbDico() >= 20],
+    ["dico60", "📖", "60 mots", "60 mots dans mon dictionnaire", () => nbDico() >= 60],
+    ["matin5", "☀️", "Lève-tôt", "Faire 5 révisions du matin", () => E.stats.matins >= 5],
+    ["riche", "💰", "Tirelire pleine", "Avoir 500 pièces", () => E.pieces >= 500],
+    ["anniv", "🎂", "Joyeux anniversaire", "Fêter son anniversaire dans l'appli", () => !!E.annivFete],
+  ];
+  function verifierBadges() {
+    const nouveaux = BADGES.filter(b => !E.badges.includes(b[0]) && b[4]());
+    if (!nouveaux.length) return;
+    nouveaux.forEach(b => { E.badges.push(b[0]); E.pieces += 10; });
+    sauver();
+    const b = nouveaux[0];
+    setTimeout(() => {
+      const t = document.createElement("div"); t.className = "toast-badge"; t.innerHTML = "<b>" + b[1] + "</b><span>Nouveau badge !<br><strong>" + esc(b[2]) + "</strong> · 🪙 +10</span>";
+      document.body.appendChild(t); son("gagne"); dire("Nouveau badge : " + b[2] + " !"); setTimeout(() => t.remove(), 3200);
+    }, 1400);
+  }
+  // Le dictionnaire se remplit avec les mots illustrés réussis et les mots du jour.
+  function ajouterMot(mot, e) {
+    mot = String(mot || "").trim();
+    if (!mot || mot.split(" ").length > 3 || /[…?!]/.test(mot) || E.dico[mot]) return;
+    E.dico[mot] = e || "📝";
+  }
+  function noterRecord(cle, valeur) {
+    const avant = E.records[cle] || 0;
+    if (valeur > avant) { E.records[cle] = valeur; return avant > 0; }
+    return false;
+  }
+
+  // ----- Rubriques du quotidien : révision du matin, mot du jour, anniversaire -----
+  const heure = () => new Date().getHours();
+  const matinOuvert = () => heure() >= 5 && heure() < 13 && E.matin !== aujourdhui();
+  const MOTS_JOUR = C.motsDuJour || [];
+  function motDuJourAuj() {
+    if (!MOTS_JOUR.length) return null;
+    const j = Math.floor((new Date(aujourdhui() + "T12:00") - new Date("2026-01-01T12:00")) / 864e5);
+    return MOTS_JOUR[((j % MOTS_JOUR.length) + MOTS_JOUR.length) % MOTS_JOUR.length];
+  }
+  function motDuJour() {
+    changer();
+    $ecran.className = "ecran";
+    const [mot, e, phrase] = motDuJourAuj();
+    const deja = E.motJour === aujourdhui();
+    $ecran.innerHTML = '<div class="titre-page"><button class="rond" id="retour" aria-label="Retour">←</button><h1>Le mot du jour</h1></div>' +
+      '<div class="mot-jour"><span class="mj-e">' + e + '</span><span class="mj-mot">' + esc(mot) + '</span><p>' + esc(phrase) + "</p></div>" +
+      '<div class="boutons"><button class="bouton second" id="ecouterMot">🔊 Écouter</button><button class="bouton" id="appris">' + (deja ? "Retour à la carte" : "Je l'ai appris ✓") + "</button></div>" +
+      '<p class="aide">Essaie de dire une phrase avec ce mot à quelqu\'un de ta famille !</p>';
+    const ecoute = () => dire(mot + ". " + phrase);
+    ecoute();
+    document.getElementById("retour").onclick = carte;
+    document.getElementById("ecouterMot").onclick = ecoute;
+    document.getElementById("appris").onclick = () => {
+      if (!deja) { E.motJour = aujourdhui(); ajouterMot(mot, e); E.pieces += 5; serieDuJour(); sauver(); son("piece"); bravo("📚 +1 mot · 🪙 +5"); verifierBadges(); }
+      setTimeout(carte, deja ? 0 : 700);
+    };
+  }
+  function questionsRevision(nb) {
+    const pris = new Set(), liste = [];
+    melange(E.erreurs).slice(0, Math.ceil(nb / 2)).forEach(x => { liste.push(Object.assign({}, x.q, { _rattrapage: x.cle, _lecon: x.id })); pris.add(x.cle); });
+    const faits = NIVEAUX.filter(n => etoilesDe(n) > 0);
+    const source = faits.length ? faits : NIVEAUX.slice(0, 2);
+    let essais = 0;
+    while (liste.length < nb && essais++ < 40) {
+      const n = source[Math.floor(Math.random() * source.length)];
+      const q = melange(n.questions())[0];
+      if (q && !pris.has(cleQ(q))) { pris.add(cleQ(q)); liste.push(Object.assign({ _lecon: n.id }, q)); }
+    }
+    return melange(liste);
+  }
+  function revisionMatin() {
+    changer();
+    $ecran.className = "ecran sans-marge";
+    const p = { n: { id: "matin", jeu: "qdj", e: "☀️" }, questions: questionsRevision(5), k: 0, justes: 0, premier: true, d: 2 };
+    p.fin = pp => {
+      changer();
+      $ecran.className = "ecran";
+      const gain = 10 + pp.justes * 2;
+      E.matin = aujourdhui(); E.stats.matins++; E.pieces += gain; serieDuJour(); sauver();
+      son("gagne");
+      $ecran.innerHTML = '<div class="resultat"><div class="grosse-icone" style="font-size:80px">☀️</div><h1>Bien réveillé' + (C.feminin ? "e" : "") + " !</h1><p>" + pp.justes + " sur " + pp.questions.length + " du premier coup. Bonne journée à l'école !</p>" +
+        '<div class="gain"><span>🪙 +' + gain + '</span><span>☀️ ' + E.stats.matins + '</span></div><div class="boutons"><button class="bouton" id="suite">Continuer</button></div></div>';
+      dire("Bien joué ! Bonne journée à l'école !");
+      document.getElementById("suite").onclick = carte;
+      verifierBadges();
+    };
+    dire("Révision du matin : cinq petites questions avant l'école !");
+    setTimeout(() => jeuSimple(p, false), 300);
+  }
+  function verifierAnniversaire() {
+    if (!E.anniv || E.anniv !== aujourdhui().slice(5) || E.annivFete === aujourdhui().slice(0, 4)) return false;
+    changer();
+    $ecran.className = "ecran";
+    E.annivFete = aujourdhui().slice(0, 4); E.pieces += 100; sauver();
+    $ecran.innerHTML = '<div class="resultat fete"><div class="gateau">🎂</div><h1>Joyeux anniversaire ' + esc(prenom()) + " !</h1><p>Toute la famille te souhaite une très belle journée.</p>" +
+      '<div class="gain"><span>🪙 +100</span><span>🎁 Cadeau de papa</span></div><div class="boutons"><button class="bouton" id="suite">Merci !</button></div></div>';
+    for (let i = 0; i < 24; i++) { const c = document.createElement("span"); c.className = "confetti"; c.textContent = ["🎉", "🎈", "✨", "🎊"][i % 4]; c.style.left = Math.random() * 100 + "%"; c.style.animationDelay = Math.random() * 1.5 + "s"; $ecran.appendChild(c); }
+    son("gagne");
+    parler("anniv", "Joyeux anniversaire " + prenom() + " ! Papa est fier de toi.");
+    document.getElementById("suite").onclick = () => { verifierBadges(); carte(); };
+    return true;
+  }
+
+  // ----- Mon sac : badges, dictionnaire, records -----
+  function sac() {
+    changer();
+    $ecran.className = "ecran";
+    const cases = [
+      ["badges", "🏅", "Mes badges", E.badges.length + "/" + BADGES.length],
+      ["dico", "📚", "Mon dictionnaire", nbDico() + " mot" + (nbDico() > 1 ? "s" : "")],
+      ["records", "🏆", "Mes records", ""],
+      ["album", H.cartes ? "🃏" : "📒", H.cartes ? "Mes cartes" : H.album.titre, E.album.length + "/" + (NIVEAUX.length + 1)],
+    ];
+    if (E.bulletins.length) cases.push(["bulletins", "📜", "Mes bulletins", E.bulletins.length + ""]);
+    $ecran.innerHTML = '<div class="titre-page"><button class="rond" id="retour" aria-label="Retour">←</button><h1>Mon sac</h1></div>' +
+      '<div class="profil">' + persoHTML(true) + '<div><b>' + esc(prenom()) + '</b><span>' + esc(grade()) + "</span>" + jaugeGrade() + "</div></div>" +
+      '<div class="coin-grille">' + cases.map(([k, e, t, s]) => '<button class="coin-case" data-k="' + k + '"><b>' + e + "</b><span>" + esc(t) + '</span><small class="aide">' + esc(s) + "</small></button>").join("") + "</div>";
+    lire("Mon sac. Tu es " + grade() + ".");
+    document.getElementById("retour").onclick = carte;
+    $ecran.querySelectorAll("[data-k]").forEach(b => b.onclick = () => ({ badges: badgesEcran, dico: dictionnaire, records: recordsEcran, album: album, bulletins: () => bulletin(E.bulletins[0], true) })[b.dataset.k]());
+  }
+  function jaugeGrade() {
+    const r = rangGrade(), t = totalEtoiles();
+    if (r >= SEUILS_GRADES.length - 1) return '<small class="aide">Tu as atteint le plus haut grade !</small>';
+    const a = SEUILS_GRADES[r], b = SEUILS_GRADES[r + 1];
+    return '<span class="progression petite"><i style="width:' + Math.round(100 * (t - a) / (b - a)) + '%"></i></span><small class="aide">Encore ' + (b - t) + " ⭐ pour devenir " + esc(GRADES[r + 1]) + "</small>";
+  }
+  function badgesEcran() {
+    changer();
+    $ecran.className = "ecran";
+    $ecran.innerHTML = '<div class="titre-page"><button class="rond" id="retour" aria-label="Retour">←</button><h1>Mes badges</h1><span style="flex:1"></span><span class="pastille">' + E.badges.length + "/" + BADGES.length + "</span></div>" +
+      '<p class="aide">Chaque badge rapporte 10 pièces. Touche un badge pour savoir comment le gagner.</p>' +
+      '<div class="grille">' + BADGES.map(b => { const a = E.badges.includes(b[0]); return '<button class="objet' + (a ? "" : " cache") + '" data-b="' + b[0] + '"><b>' + b[1] + "</b><span>" + esc(b[2]) + "</span></button>"; }).join("") + "</div>";
+    lire("Mes badges. Tu en as " + E.badges.length + ".");
+    document.getElementById("retour").onclick = sac;
+    $ecran.querySelectorAll("[data-b]").forEach(x => x.onclick = () => { const b = BADGES.find(y => y[0] === x.dataset.b); dire((E.badges.includes(b[0]) ? "Gagné ! " : "Pour le gagner : ") + b[3] + "."); });
+  }
+  function dictionnaire() {
+    changer();
+    $ecran.className = "ecran";
+    const sans = m => m.replace(/^(le |la |les |l'|un |une |des )/i, "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+    const mots = Object.keys(E.dico).sort((a, b) => sans(a).localeCompare(sans(b)));
+    let lettre = "";
+    $ecran.innerHTML = '<div class="titre-page"><button class="rond" id="retour" aria-label="Retour">←</button><h1>Mon dictionnaire</h1><span style="flex:1"></span><span class="pastille">' + mots.length + "</span></div>" +
+      (mots.length ? '<p class="aide">Touche un mot pour l\'entendre.</p><div class="dico">' + mots.map(m => { const l = sans(m)[0].toUpperCase(); const t = l !== lettre ? '<h3 class="dico-lettre">' + l + "</h3>" : ""; lettre = l; return t + '<button class="dico-mot" data-m="' + esc(m) + '"><b>' + E.dico[m] + "</b>" + esc(m) + "</button>"; }).join("") + "</div>"
+        : '<p class="aide">Ton dictionnaire est vide. Il se remplit avec les mots du jour et les mots illustrés que tu réussis.</p>');
+    lire("Mon dictionnaire. " + mots.length + " mots.");
+    document.getElementById("retour").onclick = sac;
+    $ecran.querySelectorAll("[data-m]").forEach(b => b.onclick = () => dire(b.dataset.m));
+  }
+  function recordsEcran() {
+    changer();
+    $ecran.className = "ecran";
+    const lignes = NIVEAUX.filter(n => E.records[n.id]).map(n => { const r = E.records[n.id]; return "<tr><td>" + esc(n.lieu) + '<br><span class="note">' + esc(n.titre) + "</span></td><td>" + r.j + "/" + r.t + (r.s ? '<br><span class="note">' + r.s + " s</span>" : "") + "</td></tr>"; });
+    $ecran.innerHTML = '<div class="titre-page"><button class="rond" id="retour" aria-label="Retour">←</button><h1>Mes records</h1></div>' +
+      '<div class="stat bloc"><div><b>' + (E.records.calcul || 0) + '</b><span>⚡ calcul mental</span></div><div><b>' + (E.records.bataille || 0) + '</b><span>⏱️ contre la montre</span></div><div><b>' + E.stats.duels + "</b><span>🤝 duels gagnés</span></div></div>" +
+      '<h2 class="sous-titre">Mes meilleures parties</h2><div class="bloc"><table>' + (lignes.join("") || '<tr><td class="note">Joue une étape pour faire ton premier record.</td><td></td></tr>') + "</table></div>";
+    lire("Mes records.");
+    document.getElementById("retour").onclick = sac;
+  }
+
+  // ----- Défis : calcul mental, contre la montre, duel -----
+  function defis() {
+    changer();
+    $ecran.className = "ecran";
+    $ecran.innerHTML = '<div class="titre-page"><button class="rond" id="retour" aria-label="Retour">←</button><h1>Défis</h1></div>' +
+      '<div class="bons">' +
+      '<button class="bon-ligne" data-d="calcul"><b>⚡</b><span><strong>Calcul mental</strong><br><small>Un maximum de calculs en 1 minute</small></span><span class="prix">🏆 ' + (E.records.calcul || 0) + "</span></button>" +
+      '<button class="bon-ligne" data-d="bataille"><b>⏱️</b><span><strong>Contre la montre</strong><br><small>Les questions de tes étapes, en 1 minute</small></span><span class="prix">🏆 ' + (E.records.bataille || 0) + "</span></button>" +
+      '<button class="bon-ligne" data-d="duel"><b>🤝</b><span><strong>Duel en famille</strong><br><small>À deux sur le même téléphone, chacun avec les questions de sa classe</small></span><span class="prix">▶</span></button>' +
+      "</div>";
+    lire("Les défis. Choisis ton défi !");
+    document.getElementById("retour").onclick = carte;
+    $ecran.querySelectorAll("[data-d]").forEach(b => b.onclick = () => ({
+      calcul: () => jeuChrono({ cle: "calcul", titre: "Calcul mental", e: "⚡", generer: calculMental }),
+      bataille: () => jeuChrono({ cle: "bataille", titre: "Contre la montre", e: "⏱️", generer: () => questionsRevision(1)[0] }),
+      duel: duel,
+    })[b.dataset.d]());
+  }
+  // Calcul mental adapté à la classe
+  function calculMental() {
+    const r = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+    const ch = n => ({ k: "chiffre", t: String(n), dire: String(n) });
+    const proches = (n, min) => { const s = new Set([n]); let g = 0; while (s.size < 4 && g++ < 50) { const x = n + r(-3, 3); if (x >= min && x !== n) s.add(x); } while (s.size < 4) s.add(n + s.size + 4); return [...s].slice(1); };
+    let consigne, scene, bonne, dit;
+    if (C.id === "gs") {
+      const n = r(1, 6), e = ["🥭", "⚽", "🐟", "⭐", "🍌"][r(0, 4)];
+      if (Math.random() < 0.5) { consigne = "Combien ?"; scene = { k: "tas", items: Array(n).fill(e) }; bonne = n; dit = "Combien en vois-tu ?"; }
+      else { consigne = "Un de plus, ça fait ?"; scene = { k: "tas", items: Array(n).fill(e) }; bonne = n + 1; dit = "Il y en a " + n + ". Un de plus, ça fait combien ?"; }
+    } else if (C.id === "ci") {
+      const a = r(0, 6), b = r(0, Math.min(4, 10 - a));
+      if (Math.random() < 0.7 || a < b) { consigne = a + " + " + b + " = ?"; bonne = a + b; dit = a + " plus " + b; }
+      else { consigne = a + " − " + b + " = ?"; bonne = a - b; dit = a + " moins " + b; }
+    } else {
+      const t = r(0, 2);
+      if (t === 0) { const a = r(2, 5), b = r(1, 10); consigne = a + " × " + b + " = ?"; bonne = a * b; dit = a + " fois " + b; }
+      else if (t === 1) { const a = r(10, 70), b = r(2, 29); consigne = a + " + " + b + " = ?"; bonne = a + b; dit = a + " plus " + b; }
+      else { const a = r(20, 99), b = r(2, a - 5 > 30 ? 30 : a - 5); consigne = a + " − " + b + " = ?"; bonne = a - b; dit = a + " moins " + b; }
+    }
+    return { consigne, scene: scene || null, choix: [ch(bonne)].concat(proches(bonne, 0).map(ch)), bonne: 0, dire: dit };
+  }
+  function jeuChrono(o) {
+    changer();
+    $ecran.className = "ecran sans-marge";
+    const duree = (C.id === "gs" ? 90 : 60) * 1000, debut = performance.now();
+    let score = 0, fini = false, anim = 0, q = null, bloque = false;
+    function poser() {
+      q = o.generer();
+      if (!q) return terminer();
+      const ordre = melange(q.choix.map((c, i) => i));
+      $ecran.innerHTML = '<div class="jeu"><div class="jeu-haut"><div class="barre"><button class="rond" id="quitter" aria-label="Quitter">✕</button><div class="progression chrono"><i id="temps"></i></div><span class="pastille">' + o.e + " " + score + "</span></div>" +
+        '<div class="consigne"><button class="haut-parleur" id="ecouter" aria-label="Écouter">🔊</button><p>' + esc(q.consigne) + "</p></div>" + (q.scene ? '<div class="scene">' + rendu(q.scene) + "</div>" : "") + "</div>" +
+        '<div class="choix ' + (q.disposition || (q.choix.length === 3 ? "trois" : "")) + '">' + ordre.map(i => '<button class="reponse r" data-i="' + i + '">' + rendu(q.choix[i]) + "</button>").join("") + "</div></div>";
+      document.getElementById("quitter").onclick = carte;
+      document.getElementById("ecouter").onclick = () => dire(q.dire || q.consigne);
+      if (C.voixAuto !== false) dire(q.dire || q.consigne);
+      bloque = false;
+      $ecran.querySelectorAll(".reponse").forEach(b => b.onclick = () => {
+        if (bloque || fini) return; bloque = true;
+        const i = +b.dataset.i;
+        if (i === q.bonne) { b.classList.add("bon"); score++; son("bon"); setTimeout(poser, 250); }
+        else { b.classList.add("faux"); $ecran.querySelector('.reponse[data-i="' + q.bonne + '"]').classList.add("bon"); son("faux"); setTimeout(poser, 900); }
+      });
+    }
+    function boucle(t) {
+      const reste = Math.max(0, 1 - (t - debut) / duree);
+      const i = document.getElementById("temps"); if (i) i.style.width = reste * 100 + "%";
+      if (reste <= 0) return terminer();
+      if (!fini) anim = requestAnimationFrame(boucle);
+    }
+    function terminer() {
+      if (fini) return; fini = true; cancelAnimationFrame(anim);
+      const record = noterRecord(o.cle, score), gain = Math.min(30, score);
+      E.pieces += gain; E.stats.defis++; serieDuJour(); sauver();
+      changer();
+      $ecran.className = "ecran";
+      son("gagne");
+      $ecran.innerHTML = '<div class="resultat"><div class="grosse-icone" style="font-size:80px">' + o.e + "</div><h1>" + score + " bonne" + (score > 1 ? "s" : "") + " réponse" + (score > 1 ? "s" : "") + " !</h1>" +
+        "<p>" + (record ? "🏆 Nouveau record !" : "Ton record : " + (E.records[o.cle] || 0)) + '</p><div class="gain"><span>🪙 +' + gain + "</span></div>" +
+        '<div class="boutons"><button class="bouton second" id="encore">Rejouer</button><button class="bouton" id="suite">Continuer</button></div></div>';
+      dire(score + " bonnes réponses !" + (record ? " Nouveau record !" : ""));
+      document.getElementById("encore").onclick = () => jeuChrono(o);
+      document.getElementById("suite").onclick = defis;
+      verifierBadges();
+    }
+    arreter = () => { fini = true; cancelAnimationFrame(anim); };
+    poser();
+    anim = requestAnimationFrame(boucle);
+  }
+
+  // Duel : deux joueurs de la famille, chacun reçoit les questions de sa classe.
+  const JOUEURS_DUEL = [["gs", "Bineta", "🦋", "Grande Section"], ["ci", "Soubeyrou", "🦁", "CI"], ["ce2", "Seydina", "⚽", "CE2"], ["ce2", "Papa", "👨🏾", "questions de CE2"]];
+  function chargerContenus() {
+    if (window.TOUS_CONTENUS) return Promise.resolve(window.TOUS_CONTENUS);
+    return new Promise((ok, ko) => { const s = document.createElement("script"); s.src = "../commun/contenus.js"; s.onload = () => ok(window.TOUS_CONTENUS); s.onerror = ko; document.head.appendChild(s); });
+  }
+  function questionDe(classe) {
+    const contenu = window.TOUS_CONTENUS && window.TOUS_CONTENUS[classe];
+    const lecons = (contenu || C).mondes.flatMap(m => m.lecons);
+    for (let g = 0; g < 10; g++) { const q = melange(lecons[Math.floor(Math.random() * lecons.length)].questions())[0]; if (q && q.choix && q.choix.length >= 2) return q; }
+    return null;
+  }
+  function duel(choisis) {
+    changer();
+    $ecran.className = "ecran";
+    choisis = choisis || [];
+    $ecran.innerHTML = '<div class="titre-page"><button class="rond" id="retour" aria-label="Retour">←</button><h1>Duel en famille</h1></div>' +
+      '<p class="aide">' + (choisis.length ? "Qui joue contre " + esc(JOUEURS_DUEL[choisis[0]][1]) + " ?" : "Qui joue ? Touche le premier joueur.") + " 5 questions chacun, à tour de rôle.</p>" +
+      '<div class="coin-grille">' + JOUEURS_DUEL.map(([cl, nom, e, lab], i) => '<button class="coin-case' + (choisis.includes(i) ? " choisi" : "") + '" data-j="' + i + '"' + (choisis.includes(i) ? " disabled" : "") + "><b>" + e + "</b><span>" + esc(nom) + '</span><small class="aide">' + esc(lab) + "</small></button>").join("") + "</div>";
+    lire(choisis.length ? "Qui joue contre " + JOUEURS_DUEL[choisis[0]][1] + " ?" : "Duel en famille. Qui joue ?");
+    document.getElementById("retour").onclick = defis;
+    $ecran.querySelectorAll("[data-j]").forEach(b => b.onclick = () => {
+      const c = choisis.concat([+b.dataset.j]); son("pop");
+      if (c.length < 2) return duel(c);
+      $ecran.innerHTML = '<p class="aide" style="padding:40px;text-align:center">Préparation du duel…</p>';
+      chargerContenus().catch(() => null).then(() => partieDuel(c.map(i => ({ cl: JOUEURS_DUEL[i][0], nom: JOUEURS_DUEL[i][1], e: JOUEURS_DUEL[i][2], points: 0 }))));
+    });
+  }
+  function partieDuel(joueurs) {
+    const TOURS = 5;
+    let tour = 0;
+    function passer() {
+      changer();
+      $ecran.className = "ecran";
+      if (tour >= TOURS * 2) return finDuel();
+      const j = joueurs[tour % 2];
+      $ecran.innerHTML = '<div class="resultat"><div class="grosse-icone" style="font-size:80px">' + j.e + "</div><h1>À " + esc(j.nom) + " !</h1><p>Question " + (Math.floor(tour / 2) + 1) + " sur " + TOURS + "</p>" +
+        '<div class="score-duel">' + joueurs.map(x => "<span>" + x.e + " " + esc(x.nom) + " <b>" + x.points + "</b></span>").join("") + '</div><div class="boutons"><button class="bouton" id="pret">Je suis prêt' + (j.nom === "Bineta" ? "e" : "") + " !</button></div></div>";
+      dire("Au tour de " + j.nom + " !");
+      document.getElementById("pret").onclick = () => question(j);
+    }
+    function question(j) {
+      changer();
+      $ecran.className = "ecran sans-marge";
+      const q = questionDe(j.cl);
+      if (!q) { tour++; return passer(); }
+      const ordre = melange(q.choix.map((c, i) => i)), debut = performance.now(), LIMITE = j.cl === "gs" ? 20000 : 15000;
+      let fini = false, anim = 0;
+      $ecran.innerHTML = '<div class="jeu"><div class="jeu-haut"><div class="barre"><span class="pastille">' + j.e + " " + esc(j.nom) + '</span><div class="progression chrono"><i id="temps"></i></div><span class="pastille">' + j.points + "</span></div>" +
+        '<div class="consigne"><button class="haut-parleur" id="ecouter" aria-label="Écouter">🔊</button><p>' + esc(q.consigne) + "</p></div>" + (q.scene ? '<div class="scene">' + rendu(q.scene) + "</div>" : "") + "</div>" +
+        '<div class="choix ' + (q.disposition || (q.choix.length === 3 ? "trois" : "")) + '">' + ordre.map(i => '<button class="reponse r" data-i="' + i + '">' + rendu(q.choix[i]) + "</button>").join("") + "</div></div>";
+      const ecoute = () => dire(q.dire || q.consigne);
+      document.getElementById("ecouter").onclick = ecoute; ecoute();
+      const finir = (i) => {
+        if (fini) return; fini = true; cancelAnimationFrame(anim);
+        const bonne = i === q.bonne, gain = bonne ? 10 + Math.round(5 * Math.max(0, 1 - (performance.now() - debut) / LIMITE)) : 0;
+        j.points += gain;
+        $ecran.querySelectorAll(".reponse").forEach(x => x.disabled = true);
+        const b = $ecran.querySelector('.reponse[data-i="' + q.bonne + '"]'); if (b) b.classList.add("bon");
+        if (i != null && !bonne) { const m = $ecran.querySelector('.reponse[data-i="' + i + '"]'); if (m) m.classList.add("faux"); }
+        son(bonne ? "bon" : "faux"); if (bonne) bravo("+" + gain);
+        tour++; setTimeout(passer, bonne ? 1100 : 1800);
+      };
+      $ecran.querySelectorAll(".reponse").forEach(b => b.onclick = () => finir(+b.dataset.i));
+      const boucle = t => { const reste = Math.max(0, 1 - (t - debut) / LIMITE); const el = document.getElementById("temps"); if (el) el.style.width = reste * 100 + "%"; if (reste <= 0) return finir(null); if (!fini) anim = requestAnimationFrame(boucle); };
+      anim = requestAnimationFrame(boucle);
+      arreter = () => { fini = true; cancelAnimationFrame(anim); };
+    }
+    function finDuel() {
+      const [a, b] = joueurs, egalite = a.points === b.points, g = a.points > b.points ? a : b;
+      if (!egalite && g.cl === C.id && g.nom !== "Papa") { E.stats.duels++; E.pieces += 15; serieDuJour(); sauver(); }
+      son("gagne");
+      $ecran.innerHTML = '<div class="resultat fete"><div class="gateau">' + (egalite ? "🤝" : g.e) + "</div><h1>" + (egalite ? "Égalité !" : esc(g.nom) + " gagne !") + "</h1>" +
+        '<div class="score-duel">' + joueurs.map(x => "<span>" + x.e + " " + esc(x.nom) + " <b>" + x.points + "</b></span>").join("") + "</div>" +
+        '<div class="boutons"><button class="bouton second" id="encore">Revanche</button><button class="bouton" id="suite">Terminer</button></div></div>';
+      dire(egalite ? "Égalité ! Bravo à tous les deux." : g.nom + " gagne le duel ! Bravo !");
+      document.getElementById("encore").onclick = () => { joueurs.forEach(x => x.points = 0); partieDuel(joueurs.slice().reverse()); };
+      document.getElementById("suite").onclick = defis;
+      verifierBadges();
+    }
+    passer();
+  }
+
+  // ----- Affichage : mode du soir, taille du texte, police -----
+  function appliquerAffichage() {
+    const r = E.reglages, h = heure();
+    const soir = r.soir === "oui" || (r.soir !== "non" && (h >= 19 || h < 7));
+    document.body.classList.toggle("soir", soir);
+    document.body.classList.toggle("t1", r.taille === 1);
+    document.body.classList.toggle("t2", r.taille === 2);
+    document.body.classList.toggle("lisible", !!r.police);
+    const m = document.querySelector('meta[name="theme-color"]'); if (m) m.content = soir ? "#2b2420" : getComputedStyle(document.documentElement).getPropertyValue("--theme").trim();
+  }
+  setInterval(appliquerAffichage, 60000);
+
+  // ----- Sauvegarde des progrès dans un fichier -----
+  function sauvegarder() {
+    const fichier = new File([JSON.stringify({ appli: C.id, date: new Date().toISOString(), etat: E })], "progres-" + prenom().toLowerCase() + "-" + aujourdhui() + ".json", { type: "application/json" });
+    if (navigator.canShare && navigator.canShare({ files: [fichier] })) return navigator.share({ files: [fichier], title: "Progrès de " + prenom() }).catch(() => {});
+    const a = document.createElement("a"); a.href = URL.createObjectURL(fichier); a.download = fichier.name; a.click();
+  }
+  function restaurer(fichier) {
+    const lecteurF = new FileReader();
+    lecteurF.onload = () => {
+      try {
+        const d = JSON.parse(lecteurF.result);
+        if (d.appli !== C.id || !d.etat) return parent("Ce fichier n'est pas une sauvegarde de cette appli.");
+        E = Object.assign(defaut(), d.etat); sauver(); appliquerAffichage();
+        parent("Progrès restaurés (sauvegarde du " + new Date(d.date).toLocaleDateString("fr-FR") + ").");
+      } catch (e) { parent("Fichier illisible."); }
+    };
+    lecteurF.readAsText(fichier);
+  }
+
   // ----- Espace parent -----
   function codeParent() {
     changer();
@@ -1359,6 +1834,11 @@ __CONTENU__
       '<div class="rangee"><label for="champCode">Nouveau code parent (4 chiffres)</label><input type="password" id="champCode" inputmode="numeric" maxlength="4" placeholder="••••"><button class="petit-bouton" id="okCode">Changer</button></div>' +
       '<div class="rangee"><label>Ouvrir toutes les étapes sans suivre l\'ordre</label><button class="petit-bouton ' + (E.toutOuvert ? "" : "neutre") + '" id="okOuvert">' + (E.toutOuvert ? "Activé" : "Désactivé") + "</button></div>" +
       '<div class="rangee"><label for="champPieces">Donner des pièces en récompense</label><input type="text" id="champPieces" inputmode="numeric" maxlength="3" placeholder="20"><button class="petit-bouton" id="okPieces">Donner</button></div>' +
+      '<div class="rangee"><label for="champAnniv">Date d\'anniversaire de ' + esc(prenom()) + '</label><input type="date" id="champAnniv" value="' + (E.anniv ? "2018-" + E.anniv : "") + '" style="width:160px"><button class="petit-bouton" id="okAnniv">Enregistrer</button></div>' +
+      '<div class="rangee"><label>Mode du soir (couleurs douces)</label><button class="petit-bouton neutre" id="okSoir">' + ({ auto: "Auto, de 19 h à 7 h", oui: "Toujours", non: "Jamais" })[E.reglages.soir] + "</button></div>" +
+      '<div class="rangee"><label>Taille du texte</label><button class="petit-bouton neutre" id="okTaille">' + ["Normale", "Grande", "Très grande"][E.reglages.taille] + "</button></div>" +
+      '<div class="rangee"><label>Police plus facile à lire</label><button class="petit-bouton ' + (E.reglages.police ? "" : "neutre") + '" id="okPolice">' + (E.reglages.police ? "Activée" : "Désactivée") + "</button></div>" +
+      '<div class="rangee"><label>Sauvegarde des progrès (pour changer de téléphone)</label><button class="petit-bouton" id="okSauve">💾 Sauvegarder</button><button class="petit-bouton neutre" id="okRestaure">📂 Restaurer</button><input type="file" id="fichierRestaure" accept=".json,application/json" hidden></div>' +
       '<div class="rangee"><label>Effacer tous les progrès de ce téléphone</label><button class="petit-bouton danger" id="effacer">Effacer</button></div>' +
       '<div id="confirme" hidden class="rangee"><label><strong>Sûr ? Étoiles, pièces, album et historique seront perdus.</strong></label><button class="petit-bouton neutre" id="non">Annuler</button><button class="petit-bouton danger" id="oui">Oui, effacer</button></div>' +
       "</div>" + (E.code === "1234" ? '<p class="note">Le code est encore 1234. Change-le pour que les enfants ne puissent pas entrer ici.</p>' : "") +
@@ -1382,9 +1862,16 @@ __CONTENU__
     document.getElementById("okCode").onclick = () => { const v = document.getElementById("champCode").value.trim(); if (/^\d{4}$/.test(v)) { E.code = v; sauver(); parent("Nouveau code enregistré. Retiens-le bien."); } else parent("Le code doit faire exactement 4 chiffres."); };
     document.getElementById("okOuvert").onclick = () => { E.toutOuvert = !E.toutOuvert; sauver(); parent(E.toutOuvert ? "Toutes les étapes sont ouvertes." : "Les étapes s'ouvrent à nouveau dans l'ordre."); };
     document.getElementById("okPieces").onclick = () => { const v = parseInt(document.getElementById("champPieces").value, 10); if (v > 0 && v <= 500) { E.pieces += v; sauver(); parent(v + " pièces données."); } else parent("Indique un nombre de pièces entre 1 et 500."); };
+    document.getElementById("okAnniv").onclick = () => { const v = document.getElementById("champAnniv").value; E.anniv = v ? v.slice(5) : ""; E.annivFete = ""; sauver(); parent(v ? "Anniversaire enregistré : le " + new Date(v + "T12:00").toLocaleDateString("fr-FR", { day: "numeric", month: "long" }) + "." : "Anniversaire effacé."); };
+    document.getElementById("okSoir").onclick = () => { E.reglages.soir = { auto: "oui", oui: "non", non: "auto" }[E.reglages.soir]; sauver(); appliquerAffichage(); parent("Mode du soir modifié."); };
+    document.getElementById("okTaille").onclick = () => { E.reglages.taille = (E.reglages.taille + 1) % 3; sauver(); appliquerAffichage(); parent("Taille du texte modifiée."); };
+    document.getElementById("okPolice").onclick = () => { E.reglages.police = !E.reglages.police; sauver(); appliquerAffichage(); parent("Police modifiée."); };
+    document.getElementById("okSauve").onclick = sauvegarder;
+    document.getElementById("okRestaure").onclick = () => document.getElementById("fichierRestaure").click();
+    document.getElementById("fichierRestaure").onchange = e => { if (e.target.files[0]) restaurer(e.target.files[0]); };
     document.getElementById("effacer").onclick = () => { document.getElementById("confirme").hidden = false; };
     document.getElementById("non").onclick = () => { document.getElementById("confirme").hidden = true; };
-    document.getElementById("oui").onclick = () => { const garde = { prenom: E.prenom, code: E.code }; E = Object.assign(defaut(), garde); sauver(); parent("Progrès effacés."); };
+    document.getElementById("oui").onclick = () => { const garde = { prenom: E.prenom, code: E.code, anniv: E.anniv, reglages: E.reglages }; E = Object.assign(defaut(), garde); sauver(); parent("Progrès effacés."); };
   }
 
   function donneesSemaine() {
@@ -1484,6 +1971,7 @@ __CONTENU__
   }
 
   window.addEventListener("resize", () => { if (document.getElementById("voyage")) carte(); });
+  appliquerAffichage();
   carte();
   demarrerSync();
 })();

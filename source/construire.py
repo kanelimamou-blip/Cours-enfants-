@@ -35,12 +35,18 @@ def page_appli(ident, a):
 </html>
 """
 
+# Tous les contenus réunis, pour le duel en famille (chacun reçoit les questions de sa classe).
+(RACINE / "commun").mkdir(exist_ok=True)
+(RACINE / "commun" / "contenus.js").write_text("window.TOUS_CONTENUS = window.TOUS_CONTENUS || {};\n" + "".join(
+    f"(function () {{ const garde = window.CONTENU;\n{(SRC / f'contenu-{i}.js').read_text(encoding='utf-8')}\nwindow.TOUS_CONTENUS[{json.dumps(i)}] = window.CONTENU; window.CONTENU = garde; }})();\n"
+    for i, x in applis.items() if not x.get("manuel")), encoding="utf-8")
+
 for ident, a in applis.items():
     dossier = RACINE / ident
     dossier.mkdir(exist_ok=True)
     if not a.get("manuel"):  # l'appli Papa (papa/index.html) est écrite à la main
         (dossier / "index.html").write_text(page_appli(ident, a), encoding="utf-8")
-    voix = ["../voix/voix.js", "../sync/config.js", "../sync/sync.js"] + sorted("../voix/" + f.name for f in (RACINE / "voix").glob("*.mp3"))
+    voix = ["../voix/voix.js", "../sync/config.js", "../sync/sync.js", "../commun/contenus.js"] + sorted("../voix/" + f.name for f in (RACINE / "voix").glob("*.mp3"))
     (dossier / "sw.js").write_text(sw.replace("__VERSION__", f"{ident}-{version}").replace('"./icone-512.png"]', '"./icone-512.png", ' + ", ".join(json.dumps(v) for v in voix) + "]"), encoding="utf-8")
     manifeste = {
         "name": a["nom"], "short_name": a["court"], "lang": "fr", "id": "./", "start_url": "./", "scope": "./",
