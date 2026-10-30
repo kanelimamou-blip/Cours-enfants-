@@ -1,5 +1,5 @@
 // Garde l'appli disponible hors ligne. Changer VERSION à chaque mise à jour.
-const VERSION = "ci-202610300026";
+const VERSION = "ci-202610300032";
 const FICHIERS = ["./", "./index.html", "./manifest.webmanifest", "./icone-192.png", "./icone-512.png", "../voix/voix.js", "../sync/config.js", "../sync/sync.js"];
 
 self.addEventListener("install", e => {
