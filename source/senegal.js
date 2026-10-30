@@ -390,5 +390,140 @@ window.SENEGAL_PLUS = function (classe) {
     L("p4", "maths", "d15", "✌🏾", "Calcul mental rapide", "Doubles, moitiés, tables", () => calcul("*", 9, 9)().slice(0, 3).concat(calcul("+", 50, 49)().slice(0, 3)));
   }
 
+  // ================= Encore plus d'étapes (deuxième série, même niveau simple) =================
+  const CRIS = [["Meuh !", "la vache", "🐄"], ["Bêê !", "le mouton", "🐑"], ["Cocorico !", "le coq", "🐓"], ["Ouaf ouaf !", "le chien", "🐕"], ["Miaou !", "le chat", "🐈"], ["Hi-han !", "l'âne", "🫏"], ["Groar !", "le lion", "🦁"], ["Coin coin !", "le canard", "🦆"], ["Hennissement !", "le cheval", "🐎"], ["Cui cui !", "l'oiseau", "🐦"]];
+  const cris = () => fois(N, () => { const [b, ...f] = tirer(CRIS, 3); return q("Qui fait « " + b[0] + " » ?", null, img(b[2], b[1]), f.map(x => img(x[2], x[1])), { dire: "Qui fait " + b[0] + " ?" }); });
+  const EMOTIONS = [["content", "😀"], ["triste", "😢"], ["en colère", "😠"], ["surpris", "😮"], ["qui a peur", "😨"], ["fatigué", "😴"], ["amoureux", "😍"], ["malade", "🤒"]];
+  const emotions = () => fois(N, () => { const [b, ...f] = tirer(EMOTIONS, 3); return q("Touche l'enfant " + b[0], null, img(b[1], b[0]), f.map(x => img(x[1], x[0])), { dire: "Touche le visage de l'enfant " + b[0] + "." }); });
+  const CONTRAIRES = [["chaud", "🔥", "froid", "🧊"], ["jour", "☀️", "nuit", "🌙"], ["grand", "🐘", "petit", "🐭"], ["plein", "🍯", "vide", "🫙"], ["rapide", "🐆", "lent", "🐢"], ["content", "😀", "triste", "😢"], ["mouillé", "🌧️", "sec", "🏜️"], ["haut", "🦒", "bas", "🐊"]];
+  const contraires = () => fois(N, () => { const [b, ...f] = tirer(CONTRAIRES, 3); return q("Le contraire de « " + b[0] + " » ?", { k: "image", e: b[1] }, img(b[3], b[2]), f.map(x => img(x[3], x[2])), { dire: "Quel est le contraire de " + b[0] + " ?" }); });
+  const toucheChiffre = max => () => fois(N, () => { const n = r(1, max); return q("Touche le chiffre " + n, null, ch(n), proches(n, 0, max).map(ch), { dire: "Touche le chiffre " + NOMBRES[n] + "." }); });
+  const lettre = t => ({ k: "lettre", t, dire: t });
+  const toucheLettre = liste => () => fois(N, () => { const [b, ...f] = tirer(liste, 3); return q("Touche la lettre " + b, null, lettre(b), f.map(lettre), { dire: "Touche la lettre " + b.toLowerCase() + "." }); });
+  const CORPS = [["la tête", "🙂"], ["la main", "✋🏾"], ["le pied", "🦶🏾"], ["l'œil", "👁️"], ["l'oreille", "👂🏾"], ["le nez", "👃🏾"], ["la bouche", "👄"], ["la dent", "🦷"], ["le bras", "💪🏾"], ["la jambe", "🦵🏾"]];
+  const SENS = [["Avec quoi je vois ?", ["les yeux", "👀"], [["les pieds", "🦶🏾"], ["le nez", "👃🏾"]], "🌈"], ["Avec quoi j'entends ?", ["les oreilles", "👂🏾"], [["les yeux", "👀"], ["la main", "✋🏾"]], "🥁"], ["Avec quoi je sens les odeurs ?", ["le nez", "👃🏾"], [["l'oreille", "👂🏾"], ["le pied", "🦶🏾"]], "🌸"], ["Avec quoi je goûte ?", ["la langue", "👅"], [["le nez", "👃🏾"], ["la main", "✋🏾"]], "🍬"], ["Avec quoi je touche ?", ["la main", "✋🏾"], [["l'oreille", "👂🏾"], ["les yeux", "👀"]], "🧸"]];
+  const COUL_FRUITS = [["la banane", "🍌", "jaune"], ["la tomate", "🍅", "rouge"], ["le citron vert", "🍈", "vert"], ["l'orange", "🍊", "orange"], ["la fraise", "🍓", "rouge"], ["la feuille", "🍃", "vert"], ["le ciel", "🌌", "bleu"], ["le lait", "🥛", "blanc"], ["le charbon", "⚫", "noir"]];
+  const couleurDe = () => fois(N, () => { const b = hasard(COUL_FRUITS), c = COULEURS.find(x => x[0] === b[2]), f = tirer(COULEURS.filter(x => x[0] !== b[2]), 2); return q("De quelle couleur est " + b[0] + " ?", { k: "image", e: b[1] }, pastille(c), f.map(pastille), { dire: "De quelle couleur est " + b[0] + " ?" }); });
+  const suiteImages = () => fois(N, () => { const [a, b] = tirer(OBJETS_COMPTER, 2), c = hasard(OBJETS_COMPTER.filter(x => x !== a && x !== b)); return q("Qu'est-ce qui vient après ?", { k: "tas", items: [a, b, a, b, a, "❓"] }, img(b, ""), [img(a, ""), img(c, "")], { dire: "Regarde bien. Qu'est-ce qui vient après ?" }); });
+  const PIECES = [5, 10, 25, 50, 100, 200];
+  const piece = v => ({ k: "html", html: '<span style="display:inline-grid;place-items:center;width:1.9em;height:1.9em;border-radius:50%;background:' + (v >= 100 ? "#d9d9d9" : "#e6b422") + ';box-shadow:inset 0 -4px 0 rgba(0,0,0,.2);font:800 26px/1 var(--titre);color:#3a2a00">' + v + "</span>", dire: v + " francs" });
+  const monnaie = max => () => fois(N, () => { const l = PIECES.filter(v => v <= max), n = r(2, 3), ps = fois(n, () => hasard(l.slice(0, 3))), s = ps.reduce((a, b) => a + b, 0); return q("Combien d'argent ?", { k: "html", html: ps.map(v => piece(v).html).join(" ") }, ch(s), [s + 5, Math.max(5, s - 5)].map(ch), { dire: "Compte les pièces. Combien de francs ?" }); });
+  const SINGPLUR = [["un poisson", "🐟", 1], ["des poissons", "🐟", 3], ["une mangue", "🥭", 1], ["des mangues", "🥭", 3], ["un mouton", "🐑", 1], ["des moutons", "🐑", 4], ["une pirogue", "🛶", 1], ["des pirogues", "🛶", 3]];
+  const unDes = () => fois(N, () => { const b = hasard(SINGPLUR), autre = b[2] === 1 ? r(3, 4) : 1; return q("Touche : " + b[0], { k: "mots", t: b[0] }, tas(b[2], b[1]), [tas(autre, b[1])], { dire: "Lis : " + b[0] + ". Touche la bonne image." }); });
+  const LELA = [["lion", "🦁", "le"], ["lune", "🌙", "la"], ["mouton", "🐑", "le"], ["tomate", "🍅", "la"], ["pirogue", "🛶", "la"], ["baobab", "🌳", "le"], ["robe", "👗", "la"], ["riz", "🍚", "le"], ["moto", "🏍️", "la"], ["pain", "🥖", "le"], ["mangue", "🥭", "la"], ["sac", "👜", "le"]];
+  const leLa = () => fois(N, () => { const b = hasard(LELA); return q("Le ou la ? … " + b[0], { k: "image", e: b[1] }, mot(b[2]), [mot(b[2] === "le" ? "la" : "le")], { dire: "Dit-on le ou la " + b[0] + " ?" }); });
+  const MOTS_TROU = [["ma_gue", "n", "🥭", "mangue"], ["l_on", "i", "🦁", "lion"], ["ri_", "z", "🍚", "riz"], ["mo_o", "t", "🏍️", "moto"], ["l_ne", "u", "🌙", "lune"], ["pa_a", "p", "👨🏾", "papa"], ["s_c", "a", "👜", "sac"], ["vé_o", "l", "🚲", "vélo"], ["ta_i", "x", "🚕", "taxi"], ["ro_e", "b", "👗", "robe"]];
+  const lettreManque = () => fois(N, () => { const b = hasard(MOTS_TROU), f = tirer(["a", "e", "i", "o", "u", "m", "l", "p", "t", "r", "s"].filter(x => x !== b[1]), 2); return q("Quelle lettre manque ?", { k: "html", html: '<span class="emoji">' + b[2] + '</span><span class="mots">' + b[0] + "</span>" }, lettre(b[1]), f.map(lettre), { dire: "C'est le mot " + b[3] + ". Quelle lettre manque ?" }); });
+  const complement10 = () => fois(N, () => { const a = r(1, 9), b = 10 - a; return q(a + " + ? = 10", { k: "html", html: '<span class="tas">' + fois(a, () => "<i>🥭</i>").join("") + fois(b, () => "<i>⬜</i>").join("") + "</span>" }, ch(b), proches(b, 0, 10).map(ch), { dire: a + " plus combien font dix ?" }); });
+  const L2 = (palier, monde, id, icone, titre, objectif, questions) => L(palier, monde, "f" + id, icone, titre, objectif, questions);
+
+  if (classe === "gs") {
+    L2("p1", "decouvrir", "1", "🐄", "Qui fait ce cri ?", "Reconnaître les cris des animaux", cris);
+    L2("p1", "parler", "2", "😀", "Mes émotions", "Reconnaître les émotions", emotions);
+    L2("p1", "compter", "3", "1", "Les chiffres de 1 à 5", "Reconnaître les chiffres", toucheChiffre(5));
+    L2("p1", "parler", "4", "A", "Les voyelles", "Reconnaître A, E, I, O, U", toucheLettre(["A", "E", "I", "O", "U"]));
+    L2("p1", "docteure", "5", "👃🏾", "Mon corps", "Nommer les parties du corps", imagier(CORPS));
+    L2("p1", "cuisine", "6", "🍌", "La couleur des fruits", "Couleurs et fruits", couleurDe);
+    L2("p1", "compter", "7", "🔁", "Qu'est-ce qui vient après ?", "Continuer une suite", suiteImages);
+    L2("p2", "parler", "8", "🔥", "Les contraires", "Chaud, froid, jour, nuit…", contraires);
+    L2("p2", "docteure", "9", "👀", "Mes cinq sens", "Voir, entendre, sentir, goûter, toucher", quizImg(SENS));
+    L2("p2", "compter", "10", "7", "Les chiffres de 1 à 7", "Reconnaître les chiffres", toucheChiffre(7));
+    L2("p2", "decouvrir", "11", "🐓", "Les cris de la ferme", "Reconnaître les cris des animaux", cris);
+    L2("p2", "parler", "12", "M", "Les lettres de MAMAN et PAPA", "Reconnaître M, A, P", toucheLettre(["M", "A", "P", "N"]));
+    L2("p2", "compter", "13", "🔢", "Encore compter", "Dénombrer jusqu'à 6", compter(2, 6));
+    L2("p2", "cuisine", "14", "🍅", "Les couleurs dans l'assiette", "Couleurs et aliments", couleurDe);
+    L2("p3", "parler", "15", "😢", "Comment il se sent ?", "Reconnaître les émotions", emotions);
+    L2("p3", "compter", "16", "9", "Les chiffres de 1 à 9", "Reconnaître les chiffres", toucheChiffre(9));
+    L2("p3", "docteure", "17", "🦵🏾", "Les parties du corps", "Nommer les parties du corps", imagier(CORPS));
+    L2("p3", "compter", "18", "🔁", "Les suites d'images", "Continuer une suite", suiteImages);
+    L2("p3", "parler", "19", "🐘", "Encore les contraires", "Grand, petit, plein, vide…", contraires);
+    L2("p3", "compter", "20", "🥭", "Je compte jusqu'à 8", "Dénombrer jusqu'à 8", compter(3, 8));
+    L2("p3", "parler", "21", "B", "Les lettres de BINTA", "Reconnaître B, I, N, T, A", toucheLettre(["B", "I", "N", "T", "A"]));
+    L2("p4", "compter", "22", "🔟", "Les chiffres de 1 à 10", "Reconnaître les chiffres", toucheChiffre(10));
+    L2("p4", "decouvrir", "23", "🦁", "Les cris de la savane", "Reconnaître les cris des animaux", cris);
+    L2("p4", "docteure", "24", "👂🏾", "Docteure des cinq sens", "Les cinq sens", quizImg(SENS));
+    L2("p4", "parler", "25", "O", "Toutes les voyelles", "Reconnaître A, E, I, O, U", toucheLettre(["A", "E", "I", "O", "U"]));
+    L2("p4", "compter", "26", "🔟", "Faire 10", "Compléter jusqu'à 10 avec des images", complement10);
+    L2("p4", "parler", "27", "😍", "Toutes les émotions", "Reconnaître les émotions", emotions);
+    L2("p4", "compter", "28", "🐟", "Je compte jusqu'à 10", "Dénombrer jusqu'à 10", compter(5, 10));
+  }
+  if (classe === "ci") {
+    L2("p1", "lire", "1", "a", "Les voyelles", "Reconnaître a, e, i, o, u, é", toucheLettre(["a", "e", "i", "o", "u", "é"]));
+    L2("p1", "compter", "2", "🔢", "Les chiffres jusqu'à 10", "Reconnaître les nombres", toucheChiffre(10));
+    L2("p1", "decouvrir", "3", "👀", "Les cinq sens", "Voir, entendre, sentir, goûter, toucher", quizImg(SENS));
+    L2("p1", "lire", "4", "🐟", "Un ou des ?", "Singulier et pluriel", unDes);
+    L2("p1", "compter", "5", "🔁", "Les suites d'images", "Continuer une suite", suiteImages);
+    L2("p1", "decouvrir", "6", "😀", "Les émotions", "Reconnaître les émotions", emotions);
+    L2("p1", "lire", "7", "🔥", "Les contraires", "Le vocabulaire des contraires", contraires);
+    L2("p2", "lire", "8", "🦁", "Le ou la ?", "Le genre des noms", leLa);
+    L2("p2", "compter", "9", "🪙", "Les pièces de monnaie", "Compter de petites sommes", monnaie(25));
+    L2("p2", "lire", "10", "m", "Les lettres m, l, p, t", "Reconnaître les consonnes", toucheLettre(["m", "l", "p", "t", "r", "s"]));
+    L2("p2", "compter", "11", "🔟", "Faire 10", "Compléter jusqu'à 10", complement10);
+    L2("p2", "decouvrir", "12", "🐄", "Les cris des animaux", "Reconnaître les animaux", cris);
+    L2("p2", "lire", "13", "✏️", "La lettre qui manque", "Compléter un mot simple", lettreManque);
+    L2("p2", "compter", "14", "🔢", "Les nombres jusqu'à 20", "Reconnaître les nombres", toucheChiffre(20));
+    L2("p3", "lire", "15", "📝", "Encore la lettre qui manque", "Compléter un mot simple", lettreManque);
+    L2("p3", "compter", "16", "🪙", "Au marché avec des pièces", "Compter de petites sommes", monnaie(50));
+    L2("p3", "lire", "17", "🌙", "Le ou la ? (suite)", "Le genre des noms", leLa);
+    L2("p3", "decouvrir", "18", "🦵🏾", "Mon corps", "Nommer les parties du corps", quelNom(CORPS));
+    L2("p3", "compter", "19", "🔟", "Les amis de 10", "Compléter jusqu'à 10", complement10);
+    L2("p3", "lire", "20", "🥭", "Un, une, des", "Singulier et pluriel", unDes);
+    L2("p3", "decouvrir", "21", "😢", "Comment je me sens", "Reconnaître les émotions", emotions);
+    L2("p4", "lire", "22", "🔤", "Toutes les lettres", "Reconnaître les lettres", toucheLettre(["b", "d", "p", "q", "m", "n", "f", "v", "ch", "on", "ou", "an"]));
+    L2("p4", "compter", "23", "🪙", "Les pièces de 100", "Compter des sommes", monnaie(100));
+    L2("p4", "lire", "24", "✏️", "Le mot à compléter", "Compléter un mot simple", lettreManque);
+    L2("p4", "compter", "25", "🔢", "Les nombres jusqu'à 30", "Reconnaître les nombres", toucheChiffre(30));
+    L2("p4", "decouvrir", "26", "👂🏾", "Les sens, révision", "Les cinq sens", quizImg(SENS));
+    L2("p4", "lire", "27", "🔥", "Contraires, révision", "Le vocabulaire des contraires", contraires);
+    L2("p4", "compter", "28", "🔁", "Suites, révision", "Continuer une suite", suiteImages);
+  }
+  if (classe === "ce2") {
+    const HOMO = [["Awa ___ une pirogue.", "a", ["à"]], ["Il va ___ Dakar.", "à", ["a"]], ["Le lion ___ fort.", "est", ["et"]], ["Moussa ___ Fatou jouent.", "et", ["est"]], ["Ils ___ au marché.", "sont", ["son"]], ["Il range ___ cartable.", "son", ["sont"]], ["Les Lions ___ gagné.", "ont", ["on"]], ["___ joue au foot ce soir.", "On", ["Ont"]], ["Je vais ___ la plage.", "à", ["a"]], ["La mer ___ calme.", "est", ["et"]]];
+    const NATURE = [["« mangue » est…", "un nom", ["un verbe", "un adjectif"], "🥭"], ["« courir » est…", "un verbe", ["un nom", "un adjectif"], "🏃🏾"], ["« rapide » est…", "un adjectif", ["un verbe", "un nom"], "⚡"], ["« Dakar » est…", "un nom propre", ["un verbe", "un adjectif"], "🏙️"], ["« manger » est…", "un verbe", ["un nom", "un adjectif"], "🍛"], ["« joli » est…", "un adjectif", ["un nom", "un verbe"], "🌸"], ["« ballon » est…", "un nom", ["un verbe", "un adjectif"], "⚽"], ["« marquer » est…", "un verbe", ["un adjectif", "un nom"], "🥅"]];
+    const PLUR = [["un cheval", "des chevaux", ["des chevals", "des chevauxs"]], ["un journal", "des journaux", ["des journals", "des journales"]], ["un bateau", "des bateaux", ["des bateaus", "des bateauxs"]], ["un jeu", "des jeux", ["des jeus", "des jeuxs"]], ["un clou", "des clous", ["des cloux", "des clouxs"]], ["un bijou", "des bijoux", ["des bijous", "des bijouxs"]], ["un pneu", "des pneus", ["des pneux", "des pneuxs"]], ["un animal", "des animaux", ["des animals", "des animales"]]];
+    const ETRE_AVOIR = [["Nous ___ au stade.", "sommes", ["avons", "êtes"]], ["Tu ___ un ballon.", "as", ["es", "a"]], ["Ils ___ contents.", "sont", ["ont", "est"]], ["J' ___ faim.", "ai", ["suis", "as"]], ["Vous ___ des Lions.", "êtes", ["avez", "sont"]], ["Elle ___ à Dakar.", "est", ["a", "es"]], ["Nous ___ une pirogue.", "avons", ["sommes", "ont"]], ["Je ___ en CE2.", "suis", ["ai", "es"]]];
+    const SCIENCES = [["L'eau qui gèle devient…", "de la glace", ["de la vapeur", "du sable"], "🧊"], ["L'eau qui bout devient…", "de la vapeur", ["de la glace", "du sel"], "♨️"], ["La Terre tourne autour…", "du Soleil", ["de la Lune", "de Mars"], "🌍"], ["Combien de sens avons-nous ?", "5", ["3", "7"], "👀"], ["Les plantes fabriquent leur nourriture grâce…", "à la lumière", ["au bruit", "au vent"], "🌱"], ["Le cœur est un…", "muscle", ["os", "poumon"], "🫀"], ["Un aimant attire…", "le fer", ["le bois", "le plastique"], "🧲"], ["La Lune tourne autour…", "de la Terre", ["du Soleil", "de Mars"], "🌙"]];
+    const fraction = { 2: "un demi", 3: "un tiers", 4: "un quart" };
+    const fractions = () => fois(N, () => { const d = hasard([2, 3, 4]), tranche = (k, n) => '<svg viewBox="-1 -1 2 2" width="90" height="90">' + fois(n, i => { const a0 = 2 * Math.PI * i / n - Math.PI / 2, a1 = 2 * Math.PI * (i + 1) / n - Math.PI / 2; return '<path d="M0 0L' + Math.cos(a0).toFixed(3) + " " + Math.sin(a0).toFixed(3) + "A1 1 0 0 1 " + Math.cos(a1).toFixed(3) + " " + Math.sin(a1).toFixed(3) + 'Z" fill="' + (i < k ? "#e6b422" : "#f5ecd8") + '" stroke="#2b2118" stroke-width=".04"/>'; }).join("") + "</svg>"; const fr = n => ({ k: "html", html: tranche(1, n), dire: fraction[n] }); return q("Touche " + fraction[d] + " de la galette", null, fr(d), [2, 3, 4].filter(x => x !== d).map(fr), { dire: "Touche " + fraction[d] + " de la galette." }); });
+    const COTES = [["un triangle", 3, "🔺"], ["un carré", 4, "🟥"], ["un rectangle", 4, "▭"], ["un pentagone", 5, "⬠"], ["un hexagone", 6, "⬡"]];
+    const cotes = () => fois(N, () => { const b = hasard(COTES); return q("Combien de côtés a " + b[0] + " ?", { k: "image", e: b[2] }, ch(b[1]), proches(b[1], 2, 8).map(ch), { dire: "Combien de côtés a " + b[0] + " ?" }); });
+    const table = t => () => fois(N, () => { const b = r(2, 10); return q(t + " × " + b + " = ?", null, ch(t * b), proches(t * b, 0, 100).filter(x => x !== t * b).map(ch), { dire: t + " fois " + b + " ?" }); });
+    const rendre = () => fois(N, () => { const p = r(2, 19) * 25, billet = p <= 500 ? 500 : 1000; return q("Je paie " + p + " F avec " + billet + " F. On me rend ?", { k: "image", e: "🧾" }, ch(billet - p), proches(billet - p, 0, 1000).map(x => ch(x * 1)), { dire: "J'achète pour " + p + " francs. Je donne " + billet + " francs. Combien me rend-on ?" }); });
+    const butsMaths = histoires([
+      () => { const a = r(1, 4), b = r(1, 4), c = r(1, 4); return ["Les Lions marquent " + a + ", puis " + b + ", puis " + c + " buts. Combien en tout ?", a + b + c, "⚽"]; },
+      () => { const m = r(3, 9), b = r(1, 3); return ["En " + m + " matchs, Sadio marque " + b + " buts par match. Combien de buts ?", m * b, "🦁"]; },
+      () => { const s = r(30000, 60000), v = r(5000, 20000); return ["Le stade a " + s + " places. " + v + " sont vides. Combien de spectateurs ?", s - v, "🏟️"]; },
+    ]);
+    const phrasesQuiz2 = liste => () => tirer(liste, Math.min(N, liste.length)).map(([p, b, f]) => q("Complète la phrase", { k: "phrase", t: p }, mot(b), f.map(mot), { dire: p.replace("___", "quoi") + " Choisis le bon mot." }));
+    L2("p1", "francais", "1", "à", "a ou à ? et ou est ?", "Les homophones", phrasesQuiz2(HOMO));
+    L2("p1", "maths", "2", "2", "La table de 2", "Réciter la table de 2", table(2));
+    L2("p1", "francais", "3", "🏷️", "Nom, verbe ou adjectif ?", "La nature des mots", quiz(NATURE));
+    L2("p1", "maths", "4", "3", "La table de 3", "Réciter la table de 3", table(3));
+    L2("p1", "decouvrir", "5", "🧊", "Les sciences", "L'eau, la Terre, le corps", quiz(SCIENCES));
+    L2("p1", "francais", "6", "✅", "Être et avoir", "Conjuguer être et avoir au présent", phrasesQuiz2(ETRE_AVOIR));
+    L2("p1", "maths", "7", "🔺", "Les côtés des formes", "Les polygones", cotes);
+    L2("p2", "maths", "8", "4", "La table de 4", "Réciter la table de 4", table(4));
+    L2("p2", "francais", "9", "🐎", "Les pluriels en -aux", "Le pluriel des noms", quiz(PLUR.map(([a, b, f]) => ["Le pluriel de « " + a + " » ?", b, f])));
+    L2("p2", "maths", "10", "🥧", "Les fractions", "Demi, tiers, quart", fractions);
+    L2("p2", "foot", "11", "⚽", "Les maths du foot", "Problèmes avec des buts", butsMaths);
+    L2("p2", "maths", "12", "5", "La table de 5", "Réciter la table de 5", table(5));
+    L2("p2", "francais", "13", "son", "son ou sont ? on ou ont ?", "Les homophones", phrasesQuiz2(HOMO));
+    L2("p2", "decouvrir", "14", "🌍", "La Terre et le ciel", "Sciences", quiz(SCIENCES));
+    L2("p3", "maths", "15", "6", "La table de 6", "Réciter la table de 6", table(6));
+    L2("p3", "francais", "16", "🏷️", "La nature des mots (suite)", "Nom, verbe, adjectif", quiz(NATURE));
+    L2("p3", "maths", "17", "🧾", "Rendre la monnaie", "Calculer ce qu'on rend", rendre);
+    L2("p3", "maths", "18", "7", "La table de 7", "Réciter la table de 7", table(7));
+    L2("p3", "francais", "19", "✅", "Être et avoir (suite)", "Conjuguer être et avoir", phrasesQuiz2(ETRE_AVOIR));
+    L2("p3", "foot", "20", "🏟️", "Le stade en chiffres", "Problèmes avec des buts", butsMaths);
+    L2("p3", "maths", "21", "🥧", "Partager la galette", "Demi, tiers, quart", fractions);
+    L2("p4", "maths", "22", "8", "La table de 8", "Réciter la table de 8", table(8));
+    L2("p4", "francais", "23", "🐎", "Pluriels difficiles", "Le pluriel des noms", quiz(PLUR.map(([a, b, f]) => ["Le pluriel de « " + a + " » ?", b, f])));
+    L2("p4", "maths", "24", "9", "La table de 9", "Réciter la table de 9", table(9));
+    L2("p4", "decouvrir", "25", "🧲", "Sciences, révision", "L'eau, la Terre, le corps", quiz(SCIENCES));
+    L2("p4", "maths", "26", "🧾", "Le marchand rend la monnaie", "Calculer ce qu'on rend", rendre);
+    L2("p4", "francais", "27", "à", "Homophones, révision", "a/à, et/est, son/sont", phrasesQuiz2(HOMO));
+    L2("p4", "maths", "28", "⬡", "Formes, révision", "Les polygones", cotes);
+  }
+
   return { monde: { id: "senegal", titre: "Mon Sénégal", icone: "🇸🇳", couleur: "#c8ecc0", lecons: [] }, lecons };
 };
