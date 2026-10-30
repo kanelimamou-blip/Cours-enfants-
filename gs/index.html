@@ -646,7 +646,8 @@ details[open] { display: grid; gap: 8px; }
     try { parole.cancel(); const u = new SpeechSynthesisUtterance(texte); u.lang = "fr-FR"; u.rate = 0.85; u.pitch = 1.05; if (voix) u.voice = voix; parole.speak(u); } catch (e) {}
   }
   // Voix de papa : fichiers enregistrés (voix/voix.js), sinon la voix du téléphone.
-  const VOIX = window.VOIX_PAPA || {};
+  const VOIX = Object.assign({}, window.VOIX_PAPA || {});
+  VOIX.bravo = (VOIX.bravo || []).concat(VOIX[C.feminin ? "bravo_f" : "bravo_m"] || []);
   let lecteur = null;
   function parler(cle, texte) {
     const liste = VOIX[cle];

@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Enregistrer ma voix</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Baloo+2:wght@800&display=swap">
+<style>
+  :root { --sable: #fff6e6; --carte: #fff; --encre: #2b2118; --doux: #7a6a58; --trait: #ecdcc2; --rouge: #e0533d; --vert: #2e9e5b; --bleu: #2f6fd1; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--sable); color: var(--encre); font-family: "Andika", system-ui, sans-serif; font-size: 18px; }
+  main { max-width: 520px; margin: 0 auto; padding: 20px 16px 40px; display: grid; gap: 16px; }
+  h1 { font-family: "Baloo 2", system-ui, sans-serif; font-size: 30px; margin: 0; }
+  p { margin: 0; color: var(--doux); }
+  .carte { background: var(--carte); border-radius: 22px; padding: 20px; display: grid; gap: 14px; box-shadow: 0 4px 0 var(--trait); text-align: center; }
+  .num { font-family: "Baloo 2", sans-serif; font-size: 18px; color: var(--doux); }
+  .phrase { font-size: 28px; font-weight: 700; line-height: 1.3; color: var(--encre); }
+  .note { font-size: 15px; }
+  .rec { width: 110px; height: 110px; border-radius: 50%; border: 0; background: var(--rouge); color: #fff; font-size: 44px; margin: 0 auto; box-shadow: 0 6px 0 rgba(0,0,0,.2); cursor: pointer; }
+  .rec.actif { animation: pulse 1s infinite; background: #b8321f; }
+  @keyframes pulse { 50% { transform: scale(1.08); } }
+  .rangee { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+  button.b { font: inherit; font-weight: 700; border: 0; border-radius: 14px; padding: 12px 18px; background: var(--carte); box-shadow: 0 3px 0 var(--trait); cursor: pointer; color: var(--encre); }
+  button.b.plein { background: var(--bleu); color: #fff; }
+  button.b:disabled { opacity: .4; }
+  .barre { height: 10px; background: var(--trait); border-radius: 99px; overflow: hidden; }
+  .barre i { display: block; height: 100%; background: var(--vert); }
+  .liste { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+  .liste span { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font-size: 13px; font-weight: 700; background: var(--trait); cursor: pointer; }
+  .liste span.ok { background: var(--vert); color: #fff; }
+  .liste span.ici { outline: 3px solid var(--bleu); }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<main>
+  <h1>🎙️ Enregistrer ma voix</h1>
+  <p>Une phrase à la fois : appuie sur le bouton rouge, dis la phrase, appuie à nouveau pour arrêter. Tu peux réécouter et recommencer. À la fin, envoie le fichier dans la discussion avec Claude.</p>
+  <div class="barre"><i id="prog" style="width:0"></i></div>
+  <div class="carte">
+    <span class="num" id="num"></span>
+    <span class="phrase" id="phrase"></span>
+    <span class="note" id="note"></span>
+    <button class="rec" id="rec" aria-label="Enregistrer">🎙️</button>
+    <div class="rangee">
+      <button class="b" id="prec">‹ Avant</button>
+      <button class="b" id="ecouter" disabled>▶ Réécouter</button>
+      <button class="b" id="suiv">Après ›</button>
+    </div>
+  </div>
+  <div class="liste" id="liste"></div>
+  <div class="carte">
+    <p id="bilan"></p>
+    <button class="b plein" id="envoyer">📤 Préparer le fichier à envoyer</button>
+    <p class="note" id="etat"></p>
+  </div>
+</main>
+<script>
+const PHRASES = [
+  ["bonjour_gs", "Bonjour maman Binta ! Prête à jouer et à apprendre ?"],
+  ["bonjour_ci", "Bonjour Soubeyrou ! On y va, champion ?"],
+  ["bonjour_ce2", "Salut papa Seydina ! Allez, à l'entraînement !"],
+  ["bravo", "Bravo !"], ["bravo", "Très bien !"], ["bravo", "Super !"], ["bravo", "Excellent !"], ["bravo", "C'est ça !"], ["bravo", "Bien joué !"],
+  ["bravo_m", "Tu es trop fort !", "Pour les garçons"], ["bravo_f", "Tu es trop forte !", "Pour Bineta"], ["bravo", "Waouh, bravo !"],
+  ["faux", "Essaie encore."], ["faux", "Pas tout à fait, regarde bien."], ["faux", "Presque ! Recommence."], ["faux", "Prends ton temps."], ["faux", "Ce n'est pas grave, tu vas y arriver."],
+  ["etoiles3", "Trois étoiles ! Je suis fier de toi !"], ["etoiles2", "Bien joué, continue comme ça !"], ["etoiles1", "Courage, on recommence et tu vas réussir !"],
+  ["album", "Tu as gagné un nouvel objet pour ton album !"], ["qdj", "Voici la question du jour !"], ["coffre", "Bravo, tu as ouvert le coffre !"],
+  ["compo", "C'est l'heure de la composition. Concentre-toi bien !"], ["compo_bien", "Quelle belle composition ! Félicitations !"], ["compo_courage", "La composition n'était pas facile. On va réviser ensemble."],
+  ["bon_ok", "Ta récompense est acceptée !"], ["but", "Buuuut !"], ["but", "Quel joueur !"],
+];
+const clips = new Array(PHRASES.length).fill(null);
+let i = 0, rec = null, morceaux = [], flux = null, lecteur = null;
+const $ = id => document.getElementById(id);
+
+function afficher() {
+  const [, t, note] = PHRASES[i];
+  $("num").textContent = "Phrase " + (i + 1) + " sur " + PHRASES.length;
+  $("phrase").textContent = "« " + t + " »";
+  $("note").textContent = note || "";
+  $("ecouter").disabled = !clips[i];
+  $("prec").disabled = i === 0; $("suiv").disabled = i === PHRASES.length - 1;
+  const n = clips.filter(Boolean).length;
+  $("prog").style.width = (100 * n / PHRASES.length) + "%";
+  $("bilan").textContent = n + " phrase" + (n > 1 ? "s" : "") + " enregistrée" + (n > 1 ? "s" : "") + " sur " + PHRASES.length + ". Les phrases non enregistrées garderont la voix du téléphone.";
+  $("liste").innerHTML = PHRASES.map((p, k) => '<span class="' + (clips[k] ? "ok " : "") + (k === i ? "ici" : "") + '" data-k="' + k + '">' + (k + 1) + "</span>").join("");
+  $("liste").querySelectorAll("span").forEach(s => s.onclick = () => { if (!rec) { i = +s.dataset.k; afficher(); } });
+}
+
+$("rec").onclick = async () => {
+  if (rec) { rec.stop(); return; }
+  try {
+    flux = flux || await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } });
+  } catch (e) { $("etat").textContent = "Le micro est refusé. Autorise le micro pour cette page dans Chrome, puis réessaie."; return; }
+  morceaux = [];
+  rec = new MediaRecorder(flux);
+  rec.ondataavailable = e => e.data.size && morceaux.push(e.data);
+  rec.onstop = () => {
+    clips[i] = new Blob(morceaux, { type: rec.mimeType || "audio/webm" });
+    rec = null; $("rec").classList.remove("actif"); $("rec").textContent = "🎙️";
+    if (i < PHRASES.length - 1 && !clips[i + 1]) i++;
+    afficher();
+  };
+  rec.start(); $("rec").classList.add("actif"); $("rec").textContent = "⏹";
+};
+$("ecouter").onclick = () => { if (!clips[i]) return; if (lecteur) lecteur.pause(); lecteur = new Audio(URL.createObjectURL(clips[i])); lecteur.play(); };
+$("prec").onclick = () => { if (!rec && i > 0) { i--; afficher(); } };
+$("suiv").onclick = () => { if (!rec && i < PHRASES.length - 1) { i++; afficher(); } };
+
+// Un seul fichier WAV : chaque phrase, séparée par 1,5 s de silence parfait ; une phrase sautée = un bip court.
+$("envoyer").onclick = async () => {
+  const n = clips.filter(Boolean).length;
+  if (!n) { $("etat").textContent = "Enregistre au moins une phrase."; return; }
+  $("etat").textContent = "Préparation du fichier…";
+  const TAUX = 22050, ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const parties = [];
+  const silence = new Float32Array(Math.round(TAUX * 1.5));
+  for (let k = 0; k < PHRASES.length; k++) {
+    let donnees;
+    if (clips[k]) {
+      const buf = await ctx.decodeAudioData(await clips[k].arrayBuffer());
+      const off = new OfflineAudioContext(1, Math.ceil(buf.duration * TAUX), TAUX);
+      const src = off.createBufferSource(); src.buffer = buf; src.connect(off.destination); src.start();
+      donnees = (await off.startRendering()).getChannelData(0);
+      // évite qu'un passage trop calme ressemble à un séparateur
+      donnees = donnees.map(v => (Math.abs(v) < 1e-4 ? 1e-4 : v));
+    } else {
+      donnees = new Float32Array(Math.round(TAUX * 0.3)).map((_, t) => 0.3 * Math.sin(2 * Math.PI * 1000 * t / TAUX));
+    }
+    parties.push(donnees, silence);
+  }
+  const total = parties.reduce((s, p) => s + p.length, 0);
+  const wav = new DataView(new ArrayBuffer(44 + total * 2));
+  const ecrire = (o, s) => [...s].forEach((c, j) => wav.setUint8(o + j, c.charCodeAt(0)));
+  ecrire(0, "RIFF"); wav.setUint32(4, 36 + total * 2, true); ecrire(8, "WAVE"); ecrire(12, "fmt ");
+  wav.setUint32(16, 16, true); wav.setUint16(20, 1, true); wav.setUint16(22, 1, true); wav.setUint32(24, TAUX, true); wav.setUint32(28, TAUX * 2, true); wav.setUint16(32, 2, true); wav.setUint16(34, 16, true);
+  ecrire(36, "data"); wav.setUint32(40, total * 2, true);
+  let o = 44;
+  parties.forEach(p => p.forEach(v => { wav.setInt16(o, Math.max(-1, Math.min(1, v)) * 0x7fff, true); o += 2; }));
+  const fichier = new File([wav], "voix-papa.wav", { type: "audio/wav" });
+  if (navigator.canShare && navigator.canShare({ files: [fichier] })) {
+    try { await navigator.share({ files: [fichier], title: "Voix de papa" }); $("etat").textContent = "Fichier partagé. Envoie-le dans la discussion avec Claude."; return; } catch (e) {}
+  }
+  const a = document.createElement("a"); a.href = URL.createObjectURL(fichier); a.download = "voix-papa.wav"; a.click();
+  $("etat").textContent = "Le fichier voix-papa.wav est dans tes téléchargements. Envoie-le dans la discussion avec Claude.";
+};
+afficher();
+</script>
+</body>
+</html>
