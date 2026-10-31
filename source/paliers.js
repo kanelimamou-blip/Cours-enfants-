@@ -74,7 +74,10 @@ window.PALIERS_PLUS = function (classe) {
       let a = r(1, maxA), b = r(1, maxB);
       if (op === "-" && b > a) [a, b] = [b, a];
       const s = op === "+" ? a + b : op === "-" ? a - b : a * b, signe = op === "*" ? "×" : op === "-" ? "−" : "+", dit = op === "+" ? " plus " : op === "-" ? " moins " : " fois ";
-      return q(a + " " + signe + " " + b + " = ?", null, ch(s), proches(s, 0, 99999).map(ch), { dire: a + dit + b + " ?" });
+      // En GS et en CI, les petits calculs se font avec des objets à compter.
+      const e = classe !== "ce2" && op !== "*" && a + b <= 10 ? hasard(["🥭", "🐟", "🍩", "🥜"]) : null;
+      const scene = e ? { k: "html", html: '<span class="tas">' + fois(a, () => "<i>" + e + "</i>").join("") + "<i>" + (op === "+" ? "➕" : "➖") + "</i>" + fois(b, () => "<i>" + e + "</i>").join("") + "</span>" } : null;
+      return q(a + " " + signe + " " + b + " = ?", scene, ch(s), proches(s, 0, 99999).map(ch), { dire: a + dit + b + " ?" });
     });
   }
   function comparer(max) {

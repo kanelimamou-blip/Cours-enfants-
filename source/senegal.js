@@ -75,6 +75,7 @@ window.SENEGAL_PLUS = function (classe) {
   const avantApres = max => () => fois(N, i => { const n = r(1, max - 1), avant = i % 2; const b = avant ? n - 1 : n + 1; return q("Quel nombre vient " + (avant ? "avant " : "après ") + n + " ?", { k: "chiffre", t: String(n) }, ch(b), proches(b, 0, max + 1, 3).filter(x => x !== n).slice(0, 2).map(ch), { dire: "Quel nombre vient " + (avant ? "avant " : "après ") + NOMBRES[n] + " ?" }); });
 
   const lecons = [];
+  const BANQUE = {}; // les fabriques de chaque classe, réutilisées par les paliers d'entraînement
   const L = (palier, monde, id, icone, titre, objectif, questions) => lecons.push({ id: classe + "-sn-" + palier + "-" + id, palier, monde, icone, titre, objectif, questions });
 
   // Faits du Sénégal, réutilisés par plusieurs classes
@@ -237,6 +238,7 @@ window.SENEGAL_PLUS = function (classe) {
     L("p4", "senegal", "e22", "👒", "Habillée pour chaque jour", "Choisir ses habits", quizImg(METEO_MODE));
     L("p4", "parler", "e23", "B", "Toutes les premières lettres", "Trouver la lettre du début d'un mot", premiereLettre);
     L("p4", "compter", "e24", "➕", "Encore des additions", "Petites additions avec des images", calcul("+", 4, 4, ["🥭", "🍩", "🐟"]));
+    Object.assign(BANQUE, { docteurQui, ingredients, premiereLettre, syllabesGS, formesNous, position2, mode: imagier(MODE), meteoMode: quizImg(METEO_MODE), soins: quizImg(SOINS), cuisine: quizImg(CUISINE), quiMange: associer(QUI_MANGE, b => "Que mange " + b[0] + " ?"), maisons: associer(MAISONS, b => "Où vit " + b[0] + " ?"), intrus: intrus(GROUPES), drapeau, senegal: quizImg(SENEGAL_SIMPLE) });
   }
 
   // ================================= CI =================================
@@ -303,6 +305,7 @@ window.SENEGAL_PLUS = function (classe) {
     L("p4", "senegal", "d8", "🥁", "Musique et fêtes", "Instruments et fêtes", quelNom(MUSIQUE.concat(FETES)));
     L("p4", "compter", "d9", "🔢", "Avant, après jusqu'à 20", "La suite des nombres", avantApres(20));
     L("p4", "decouvrir", "d10", "🌳", "Animaux et nature", "Nommer animaux et paysages", quelNom(ANIMAUX.concat(NATURE)));
+    Object.assign(BANQUE, { sante: quiz(SANTE), senegal: quiz(SENEGAL_CI), marche: histoires(MARCHE_CFA), intrus: intrus(GROUPES), metiers: associer(METIERS, b => "Qu'utilise " + b[0] + " ?"), mots: lireMots(MOTS_A.concat(MOTS_B)), drapeau });
     L("p4", "compter", "d11", "✌🏾", "Les doubles", "Calculer les doubles", () => fois(N, () => { const n = r(1, 10); return q("Le double de " + n + " ?", { k: "html", html: '<span class="tas">' + fois(n, () => "<i>🥭</i>").join("") + "<i>➕</i>" + fois(n, () => "<i>🥭</i>").join("") + "</span>" }, ch(2 * n), proches(2 * n, 0, 22).map(ch), { dire: "Le double de " + NOMBRES[n] + ", ça fait combien ?" }); }));
     L("p4", "senegal", "d12", "🏙️", "Les villes du Sénégal", "Dakar, Saint-Louis, Ziguinchor…", quiz(SENEGAL_CI));
   }
@@ -388,6 +391,7 @@ window.SENEGAL_PLUS = function (classe) {
     L("p4", "maths", "d13", "🔢", "Les grands nombres", "Avant et après", avantApres(99999));
     L("p4", "decouvrir", "d14", "🌍", "Le Sénégal dans le monde", "Culture et histoire", quiz(CULTURE.concat(HISTOIRE)));
     L("p4", "maths", "d15", "✌🏾", "Calcul mental rapide", "Doubles, moitiés, tables", () => calcul("*", 9, 9)().slice(0, 3).concat(calcul("+", 50, 49)().slice(0, 3)));
+    Object.assign(BANQUE, { geo: quiz(GEO), histoire: quiz(HISTOIRE), culture: quiz(CULTURE), economie: quiz(ECONOMIE), natureSN: quiz(NATURE_SN), prob: histoires(PROB), lireSN, temps: phrasesQuiz(PHRASES_SN), accords: phrasesQuiz(ACCORDS) });
   }
 
   // ================= Encore plus d'étapes (deuxième série, même niveau simple) =================
@@ -523,7 +527,175 @@ window.SENEGAL_PLUS = function (classe) {
     L2("p4", "maths", "26", "🧾", "Le marchand rend la monnaie", "Calculer ce qu'on rend", rendre);
     L2("p4", "francais", "27", "à", "Homophones, révision", "a/à, et/est, son/sont", phrasesQuiz2(HOMO));
     L2("p4", "maths", "28", "⬡", "Formes, révision", "Les polygones", cotes);
+    Object.assign(BANQUE, { homo: phrasesQuiz2(HOMO), nature: quiz(NATURE), plur: quiz(PLUR.map(([a, b, f]) => ["Le pluriel de « " + a + " » ?", b, f])), etreAvoir: phrasesQuiz2(ETRE_AVOIR), sciences: quiz(SCIENCES), fractions, cotes, table, rendre, butsMaths });
   }
 
-  return { monde: { id: "senegal", titre: "Mon Sénégal", icone: "🇸🇳", couleur: "#c8ecc0", lecons: [] }, lecons };
+  // ================= Palier « Les bases » (GS et CI) : lire à l'oral, compter pas à pas =================
+  const paliersPlus = [];
+  if (classe === "gs" || classe === "ci") {
+    paliersPlus.push({ id: "bases", titre: "Les bases", periode: "pour bien démarrer" });
+    const SON = { a: "a", e: "eu", i: "i", o: "o", u: "u", "é": "é", m: "mmm", l: "lll", s: "sss", r: "rrr", f: "fff", n: "nnn", p: "p", t: "t", b: "b", d: "d", v: "vvv", ch: "ch" };
+    const lettreSon = (t, maj) => ({ k: "lettre", t: maj ? t.toUpperCase() : t, dire: "la lettre " + t + ", qui fait " + SON[t] });
+    // J'entends le son, je touche la lettre
+    const entendsLettre = (cibles, autres) => () => fois(N, i => { const c = cibles[i % cibles.length], f = tirer(autres.filter(x => x !== c), 2); return q("Écoute et touche la lettre", { k: "image", e: "👂🏾" }, lettreSon(c), f.map(x => lettreSon(x)), { dire: "Écoute bien : " + SON[c] + ". Touche la lettre qui fait " + SON[c] + "." }); });
+    // Le son du début, avec des images (aucune lecture)
+    const MOTS_SON = { a: [["l'avion", "✈️"], ["l'ananas", "🍍"], ["l'arbre", "🌳"]], i: [["l'île", "🏝️"], ["l'igloo", "🛖"]], o: [["l'os", "🦴"], ["l'orange", "🍊"], ["l'oie", "🪿"]], u: [["l'usine", "🏭"]], m: [["la mangue", "🥭"], ["le mouton", "🐑"], ["la moto", "🏍️"], ["maman", "👩🏾"]], l: [["le lion", "🦁"], ["la lune", "🌙"], ["le lait", "🥛"]], s: [["le sac", "👜"], ["le soleil", "☀️"], ["le serpent", "🐍"]], r: [["le riz", "🍚"], ["la robe", "👗"], ["le roi", "🤴🏾"]], f: [["la fleur", "🌸"], ["le feu", "🔥"], ["la fourmi", "🐜"]], p: [["le pain", "🥖"], ["la pirogue", "🛶"], ["papa", "👨🏾"]], t: [["la tomate", "🍅"], ["la tortue", "🐢"], ["le taxi", "🚕"]], b: [["la banane", "🍌"], ["le baobab", "🌳"], ["le bateau", "⛴️"]], n: [["le nez", "👃🏾"], ["le nid", "🪺"], ["la noix de coco", "🥥"]] };
+    const sonDebut = sons => () => fois(N, i => { const c = sons[i % sons.length], b = hasard(MOTS_SON[c]), f = tirer(Object.keys(MOTS_SON).filter(x => x !== c && x !== "a" && x !== "o" || false).filter(x => x !== c), 2).map(x => hasard(MOTS_SON[x])); return q("Quel mot commence par « " + SON[c] + " » ?", { k: "image", e: "👂🏾" }, img(b[1], b[0]), f.map(x => img(x[1], x[0])), { dire: "Quel mot commence par le son " + SON[c] + " ? " + [b].concat(f).map(x => x[0]).sort().join(", ") + " ?" }); });
+    // Les syllabes : consonne + voyelle, dites puis lues
+    const syll = (cons, voy) => () => fois(N, i => { const c = hasard(cons), v = hasard(voy), s = c + v, f = tirer(voy.filter(x => x !== v).map(x => c + x).concat(cons.filter(x => x !== c).map(x => x + v)), 2); return i % 2 ? q(c + " et " + v + ", ça fait…", { k: "html", html: '<span class="lettre">' + c + '</span> <span class="mots">+</span> <span class="lettre">' + v + "</span>" }, { k: "lettre", t: s, dire: s }, f.map(x => ({ k: "lettre", t: x, dire: x })), { dire: SON[c] + "… " + v + "… ça fait " + s + " ! Touche " + s + "." }) : q("Écoute et touche la syllabe", { k: "image", e: "👂🏾" }, { k: "lettre", t: s, dire: s }, f.map(x => ({ k: "lettre", t: x, dire: x })), { dire: "Écoute : " + s + ". Touche " + s + "." }); });
+    const PREMIERS = [["papa", "👨🏾"], ["maman", "👩🏾"], ["moto", "🏍️"], ["lune", "🌙"], ["riz", "🍚"], ["vélo", "🚲"], ["lit", "🛏️"], ["ami", "🧒🏾"], ["sac", "👜"], ["taxi", "🚕"], ["mur", "🧱"], ["pipe", "🪈"]];
+    const premiersMots = () => fois(N, () => { const [b, ...f] = tirer(PREMIERS, 3); return q("Écoute et touche le mot", { k: "image", e: b[1] }, mot(b[0]), f.map(x => mot(x[0])), { dire: "Écoute : " + b[0] + ". Touche le mot " + b[0] + "." }); });
+    const rimes = () => fois(N, () => { const R = [[["le chat", "🐈"], ["le rat", "🐀"]], [["le lion", "🦁"], ["le camion", "🚚"]], [["la souris", "🐭"], ["le riz", "🍚"]], [["le bateau", "⛴️"], ["le gâteau", "🎂"]], [["la lune", "🌙"], ["la prune", "🫐"]], [["le poisson", "🐟"], ["le hérisson", "🦔"]]], k = r(0, R.length - 1), [a, b] = R[k], f = tirer(R.filter((x, i) => i !== k), 2).map(x => x[1]); return q("Quel mot finit comme « " + a[0] + " » ?", { k: "image", e: a[1] }, img(b[1], b[0]), f.map(x => img(x[1], x[0])), { dire: a[0] + ". Quel mot finit pareil ? " + [b].concat(f).map(x => x[0]).sort().join(", ") + " ?" }); });
+    const SYLL_IMG = [["moto", "🏍️", 2], ["lion", "🦁", 1], ["riz", "🍚", 1], ["maman", "👩🏾", 2], ["banane", "🍌", 3], ["tomate", "🍅", 3], ["sac", "👜", 1], ["vélo", "🚲", 2], ["éléphant", "🐘", 3], ["pain", "🥖", 1], ["papa", "👨🏾", 2], ["ananas", "🍍", 3]];
+    const frapper = () => fois(N, () => { const b = hasard(SYLL_IMG); return q("Tape dans tes mains : combien de morceaux ?", { k: "image", e: b[1] }, tas(b[2], "👏🏾"), [1, 2, 3].filter(x => x !== b[2]).map(x => tas(x, "👏🏾")), { dire: b[0] + ". Tape dans tes mains en le disant. Combien de morceaux ?" }); });
+    const VOY = ["a", "i", "o", "u", "e", "é"];
+    const B = (id, icone, titre, objectif, questions, monde) => L("bases", monde || (classe === "gs" ? "parler" : "lire"), "l" + id, icone, titre, objectif, questions);
+    B("1", "👂🏾", "J'écoute les mots", "Bien entendre les mots", imagier(PREMIERS, "Écoute et touche"));
+    B("2", "👏🏾", "Je tape les syllabes", "Découper un mot en syllabes", frapper);
+    B("3", "🎵", "Les mots qui riment", "Entendre la fin des mots", rimes);
+    B("4", "a", "Les voyelles a, i, o", "Le son des voyelles", entendsLettre(["a", "i", "o"], ["a", "i", "o", "u"]));
+    B("5", "u", "Les voyelles u, e, é", "Le son des voyelles", entendsLettre(["u", "e", "é"], VOY));
+    B("6", "👂🏾", "Le son du début : mmm, lll", "Entendre le premier son", sonDebut(["m", "l"]));
+    B("7", "m", "Les lettres m et l", "La lettre et son son", entendsLettre(["m", "l"], ["m", "l", "s", "r"]));
+    B("8", "ma", "ma, mi, mo, la, li, lo", "Lire les premières syllabes", syll(["m", "l"], ["a", "i", "o"]));
+    B("9", "👂🏾", "Le son du début : sss, rrr", "Entendre le premier son", sonDebut(["s", "r"]));
+    B("10", "s", "Les lettres s et r", "La lettre et son son", entendsLettre(["s", "r"], ["m", "l", "s", "r", "f"]));
+    B("11", "sa", "sa, ri, so, ru", "Lire des syllabes", syll(["s", "r"], ["a", "i", "o", "u"]));
+    B("12", "👂🏾", "Le son du début : p, t, b", "Entendre le premier son", sonDebut(["p", "t", "b"]));
+    B("13", "p", "Les lettres p, t, b", "La lettre et son son", entendsLettre(["p", "t", "b"], ["p", "t", "b", "d", "m"]));
+    B("14", "pa", "pa, to, bi…", "Lire des syllabes", syll(["p", "t", "b"], ["a", "i", "o", "u"]));
+    B("15", "f", "Les lettres f, n, v", "La lettre et son son", entendsLettre(["f", "n", "v"], ["f", "n", "v", "m", "l"]));
+    B("16", "fa", "Toutes les syllabes", "Lire des syllabes", syll(["m", "l", "s", "r", "p", "t", "f", "n"], VOY));
+    B("17", "📖", "Mes premiers mots", "Reconnaître des mots simples", premiersMots);
+    B("18", "📖", "Encore des mots", "Reconnaître des mots simples", premiersMots);
+    Object.assign(BANQUE, { entendsLettre, sonDebut, syll, premiersMots, rimes, frapper, SON, VOY });
+
+    // Compter pas à pas : de la Grande Section au CI
+    const tasHTML = (n, e) => '<span class="tas">' + fois(n, () => "<i>" + e + "</i>").join("") + "</span>";
+    const histoireImg = max => () => fois(N, i => { const e = hasard(["🥭", "🐟", "🍩", "🐑", "⚽"]), plus = i % 2 === 0, a = r(2, max - 1), b = r(1, plus ? max - a : a - 1); const s = plus ? a + b : a - b; return q(plus ? "J'ai " + a + ", on m'en donne " + b + "." : "J'ai " + a + ", j'en mange " + b + ".", { k: "html", html: tasHTML(a, e) + '<span class="mots">' + (plus ? " ➕ " : " ➖ ") + "</span>" + tasHTML(b, e) }, ch(s), proches(s, 0, max).map(ch), { dire: (plus ? "J'ai " + NOMBRES[a] + ". On m'en donne " + NOMBRES[b] + "." : "J'ai " + NOMBRES[a] + ". J'en mange " + NOMBRES[b] + ".") + " Combien j'en ai maintenant ?" }); });
+    const dixEt = () => fois(N, () => { const u = r(1, 9), n = 10 + u; return q("Dix et " + u + ", ça fait ?", { k: "html", html: '<span class="blocs"><i class="dizaine"></i>' + fois(u, () => '<i class="unite"></i>').join("") + "</span>" }, ch(n), proches(n, 10, 20).map(ch), { dire: "Une barre, c'est dix. Dix et " + NOMBRES[u] + ", ça fait combien ?" }); });
+    const C2 = (id, icone, titre, objectif, questions) => L("bases", "compter", "c" + id, icone, titre, objectif, questions);
+    Object.assign(BANQUE, { histoireImg, dixEt });
+    C2("1", "3", "Je compte jusqu'à 3", "Dénombrer de petites quantités", compter(1, 3));
+    C2("2", "5", "Je compte jusqu'à 5", "Dénombrer jusqu'à 5", compter(1, 5));
+    C2("3", "1", "Les chiffres de 1 à 5", "Reconnaître les chiffres", toucheChiffre(5));
+    C2("4", "🔢", "Montre-moi 1 à 5", "Associer chiffre et quantité", montrerNombre(5));
+    C2("5", "🐑", "Où y en a-t-il le plus ?", "Comparer des quantités", lePlus(5));
+    C2("6", "➕", "Un de plus", "Ajouter 1 avec des images", calcul("+", 4, 1, ["🥭", "🐟", "🍩"]));
+    C2("7", "➕", "J'ajoute jusqu'à 5", "Additions avec des images", calcul("+", 3, 2, ["🥭", "🐟", "🍩"]));
+    C2("8", "🧺", "Petites histoires jusqu'à 5", "Ajouter et enlever en images", histoireImg(5));
+    C2("9", "➖", "J'enlève 1", "Enlever avec des images", calcul("-", 5, 1, ["🥭", "🍩", "🍌"]));
+    if (classe === "ci") {
+      C2("10", "7", "Je compte jusqu'à 7", "Dénombrer jusqu'à 7", compter(4, 7));
+      C2("11", "🔢", "Les chiffres de 1 à 9", "Reconnaître les chiffres", toucheChiffre(9));
+      C2("12", "⏭️", "Avant, après jusqu'à 10", "La suite des nombres", avantApres(10));
+      C2("13", "🔟", "Je compte jusqu'à 10", "Dénombrer jusqu'à 10", compter(5, 10));
+      C2("14", "🔢", "Montre-moi jusqu'à 10", "Associer chiffre et quantité", montrerNombre(10));
+      C2("15", "➕", "J'ajoute jusqu'à 7", "Additions avec des images", calcul("+", 4, 3, ["🥭", "🐟"]));
+      C2("16", "➖", "J'enlève jusqu'à 7", "Soustractions avec des images", calcul("-", 7, 3, ["🍩", "🍌"]));
+      C2("17", "🧺", "Petites histoires jusqu'à 7", "Ajouter et enlever en images", histoireImg(7));
+      C2("18", "➕", "J'ajoute jusqu'à 10", "Additions avec des images", calcul("+", 6, 4, ["🥭", "🐟"]));
+      C2("19", "🔟", "Faire 10", "Compléter jusqu'à 10", complement10);
+      C2("20", "➖", "J'enlève jusqu'à 10", "Soustractions avec des images", calcul("-", 10, 4, ["🍩", "🍌"]));
+      C2("21", "🧺", "Histoires jusqu'à 10", "Ajouter et enlever en images", histoireImg(10));
+      C2("22", "🧱", "Dix et encore", "Les nombres de 11 à 19", dixEt);
+      C2("23", "🔢", "Les nombres jusqu'à 20", "Reconnaître les nombres", toucheChiffre(20));
+      C2("24", "🪙", "Les pièces", "Compter de petites sommes", monnaie(25));
+    } else {
+      C2("10", "7", "Je compte jusqu'à 7", "Dénombrer jusqu'à 7", compter(4, 7));
+      C2("11", "⏭️", "Avant, après", "La suite des nombres", avantApres(7));
+      C2("12", "🔟", "Je compte jusqu'à 10", "Dénombrer jusqu'à 10", compter(5, 10));
+    }
+  }
+
+  // ================= Entraînement : environ 1 500 étapes par appli, sur 30 paliers =================
+  // Chaque palier reprend les familles d'exercices les plus jouées, un cran plus loin à chaque palier.
+  const THEMES = [["Les fruits", FRUITS], ["Les animaux", ANIMAUX], ["Les plats", PLATS], ["Les transports", TRANSPORTS], ["Les habits", HABITS], ["La nature", NATURE], ["La musique", MUSIQUE], ["Le marché", MARCHE], ["Les fêtes", FETES]];
+  const NB_PALIERS = 30, PAR_PALIER = 48;
+  const theme = niv => THEMES[niv % THEMES.length];
+  const familles = [];
+  const F = (poids, monde, icone, titre, objectif, fab) => familles.push({ poids, monde, icone, titre, objectif, fab });
+  const plafond = (debut, pas, max) => niv => Math.min(max, debut + Math.floor(niv / pas));
+  const LETTRES_PAR_NIV = [["a", "i", "o"], ["u", "e", "é"], ["m", "l"], ["s", "r"], ["p", "t"], ["b", "d"], ["f", "n"], ["v", "ch"]];
+  const lettresNiv = niv => LETTRES_PAR_NIV[niv % LETTRES_PAR_NIV.length];
+  const SONS_DEBUT = [["m", "l"], ["s", "r"], ["p", "t"], ["b", "n"], ["f", "m"], ["l", "s"], ["r", "t"]];
+  const CONS_NIV = niv => ["m", "l", "s", "r", "p", "t", "b", "d", "f", "n", "v"].slice(0, Math.min(11, 2 + Math.floor(niv / 3)));
+  if (classe === "gs") {
+    const B = BANQUE, cpt = plafond(4, 4, 10), add = plafond(3, 5, 10);
+    F(3, "compter", "🔢", n => "Je compte jusqu'à " + cpt(n), "Dénombrer", n => compter(1, cpt(n)));
+    F(2, "compter", "1", n => "Les chiffres jusqu'à " + cpt(n), "Reconnaître les chiffres", n => toucheChiffre(cpt(n)));
+    F(2, "compter", "🎯", n => "Montre-moi " + cpt(n), "Associer chiffre et quantité", n => montrerNombre(cpt(n)));
+    F(1, "compter", "🐑", () => "Le plus, le moins", "Comparer des quantités", n => () => lePlus(cpt(n))().slice(0, 3).concat(lePlus(cpt(n), true)().slice(0, 3)));
+    F(2, "compter", "➕", n => "J'ajoute jusqu'à " + add(n), "Additions avec des images", n => calcul("+", Math.max(1, add(n) - 2), 2, ["🥭", "🐟", "🍩", "🥜"]));
+    F(1, "compter", "🧺", n => "Petites histoires jusqu'à " + Math.min(10, add(n)), "Ajouter et enlever en images", n => B.histoireImg(Math.max(4, Math.min(10, add(n)))));
+    F(1, "compter", "🔁", () => "Les suites d'images", "Continuer une suite", () => suiteImages);
+    F(3, "parler", "👂🏾", n => "J'entends « " + lettresNiv(n).map(x => B.SON[x]).join(", ") + " »", "Le son des lettres", n => B.entendsLettre(lettresNiv(n), [...new Set(lettresNiv(n).concat(lettresNiv(n + 1), lettresNiv(n + 2)))]));
+    F(2, "parler", "🗣️", n => "Le son du début", "Entendre le premier son", n => B.sonDebut(SONS_DEBUT[n % SONS_DEBUT.length]));
+    F(2, "parler", "👏🏾", () => "Je tape les syllabes", "Découper un mot en syllabes", () => B.frapper);
+    F(1, "parler", "🎵", () => "Les mots qui riment", "Entendre la fin des mots", () => B.rimes);
+    F(1, "parler", "M", () => "La première lettre", "Trouver la lettre du début", () => B.premiereLettre);
+    F(1, "parler", "😀", () => "Émotions et contraires", "Le vocabulaire", n => n % 2 ? emotions : contraires);
+    F(2, "decouvrir", "🖼️", n => theme(n)[0], "Nommer les choses de chez nous", n => imagier(theme(n)[1]));
+    F(1, "decouvrir", "🐄", () => "Les cris des animaux", "Reconnaître les animaux", () => cris);
+    F(1, "cuisine", "🍲", () => "Dans la cuisine", "Ingrédients et ustensiles", n => n % 2 ? B.ingredients : B.cuisine);
+    F(1, "docteure", "🩺", () => "Docteure Binta", "Santé et corps", n => [B.docteurQui, B.soins, quizImg(SENS), imagier(CORPS)][n % 4]);
+    F(1, "senegal", "👗", () => "La mode de Binta", "Habits et bijoux", n => n % 2 ? B.mode : B.meteoMode);
+    F(1, "senegal", "🇸🇳", () => "Mon Sénégal", "Symboles et culture", n => n % 3 ? B.senegal : B.drapeau);
+    F(1, "parler", "🎨", () => "Les couleurs", "Reconnaître les couleurs", n => n % 2 ? couleurs(COULEURS) : couleurDe);
+  }
+  if (classe === "ci") {
+    const B = BANQUE, cpt = plafond(6, 2, 20), nb = plafond(10, 0.34, 100), add = plafond(5, 2, 20), sub = plafond(5, 2, 20);
+    F(2, "compter", "🔢", n => "Je compte jusqu'à " + cpt(n), "Dénombrer", n => compter(Math.max(1, cpt(n) - 6), cpt(n)));
+    F(2, "compter", "1", n => "Les nombres jusqu'à " + nb(n), "Reconnaître les nombres", n => toucheChiffre(nb(n)));
+    F(3, "compter", "➕", n => "J'ajoute jusqu'à " + add(n), "Additions", n => calcul("+", Math.max(2, add(n) - 3), 3, ["🥭", "🐟", "🍩"]));
+    F(3, "compter", "➖", n => "J'enlève jusqu'à " + sub(n), "Soustractions", n => calcul("-", sub(n), Math.min(5, Math.max(1, Math.floor(sub(n) / 2))), ["🍩", "🍌", "🥭"]));
+    F(2, "compter", "🧺", n => "Histoires jusqu'à " + Math.min(10, add(n)), "Ajouter et enlever en images", n => B.histoireImg(Math.min(10, Math.max(5, add(n)))));
+    F(1, "compter", "🔟", () => "Faire 10", "Compléter jusqu'à 10", () => complement10);
+    F(1, "compter", "⏭️", n => "Avant, après jusqu'à " + nb(n), "La suite des nombres", n => avantApres(nb(n)));
+    F(1, "compter", "🧱", () => "Dix et encore", "Les nombres de 11 à 19", () => B.dixEt);
+    F(1, "compter", "🪙", () => "Les pièces", "Compter de petites sommes", n => monnaie(n < 10 ? 25 : n < 20 ? 50 : 100));
+    F(3, "lire", "👂🏾", n => "J'entends « " + lettresNiv(n).map(x => B.SON[x]).join(", ") + " »", "Le son des lettres", n => B.entendsLettre(lettresNiv(n), [...new Set(lettresNiv(n).concat(lettresNiv(n + 1), lettresNiv(n + 2)))]));
+    F(3, "lire", "ma", n => "Les syllabes avec " + CONS_NIV(n).slice(-2).join(" et "), "Lire des syllabes", n => B.syll(CONS_NIV(n).slice(-3), B.VOY));
+    F(2, "lire", "🗣️", () => "Le son du début", "Entendre le premier son", n => B.sonDebut(SONS_DEBUT[n % SONS_DEBUT.length]));
+    F(2, "lire", "📖", () => "Mes premiers mots", "Reconnaître des mots simples", n => [B.premiersMots, B.mots, lettreManque][n % 3]);
+    F(1, "lire", "👏🏾", () => "Syllabes et rimes", "Entendre les sons des mots", n => n % 2 ? B.frapper : B.rimes);
+    F(1, "lire", "🦁", () => "Le ou la, un ou des", "Les petits mots", n => n % 2 ? leLa : unDes);
+    F(1, "decouvrir", "🖼️", n => theme(n)[0], "Nommer les choses de chez nous", n => quelNom(theme(n)[1]));
+    F(1, "decouvrir", "🧼", () => "Ma santé et mon corps", "Hygiène, corps, sens", n => [B.sante, quizImg(SENS), quelNom(CORPS)][n % 3]);
+    F(1, "senegal", "🇸🇳", () => "Mon Sénégal", "Symboles et culture", n => [B.senegal, B.drapeau, B.metiers][n % 3]);
+  }
+  if (classe === "ce2") {
+    const B = BANQUE, gros = n => Math.min(9999, 100 + n * 330);
+    F(3, "maths", "➕", n => "Additions jusqu'à " + gros(n), "Calculer des additions", n => calcul("+", Math.floor(gros(n) * 0.6), Math.floor(gros(n) * 0.4)));
+    F(3, "maths", "➖", n => "Soustractions jusqu'à " + gros(n), "Calculer des soustractions", n => calcul("-", gros(n), Math.floor(gros(n) / 2)));
+    F(3, "maths", "✖️", n => "La table de " + (2 + n % 8), "Les tables de multiplication", n => B.table(2 + n % 8));
+    F(1, "maths", "✖️", () => "Multiplier", "Multiplier par un chiffre", n => calcul("*", Math.min(99, 10 + n * 3), 9));
+    F(2, "maths", "🧺", () => "Problèmes du marché", "Problèmes en francs CFA", n => n % 2 ? B.prob : B.rendre);
+    F(1, "maths", "🥧", () => "Fractions et formes", "Demi, tiers, quart, polygones", n => n % 2 ? B.fractions : B.cotes);
+    F(1, "maths", "🔢", () => "Les grands nombres", "Avant et après", n => avantApres(Math.min(99999, 1000 * (n + 1))));
+    F(3, "francais", "à", () => "Homophones", "a/à, et/est, son/sont, on/ont", () => B.homo);
+    F(2, "francais", "⏳", () => "Les temps des verbes", "Passé, présent, futur", n => n % 2 ? B.temps : B.etreAvoir);
+    F(2, "francais", "🏷️", () => "Grammaire", "Nature des mots, accords, pluriels", n => [B.nature, B.accords, B.plur][n % 3]);
+    F(2, "francais", "📚", () => "Je lis et je comprends", "Comprendre un texte court", () => B.lireSN);
+    F(1, "foot", "⚽", () => "Les maths du foot", "Problèmes avec des buts", () => B.butsMaths);
+    F(2, "decouvrir", "🗺️", () => "Le Sénégal", "Géographie, histoire, culture", n => [B.geo, B.histoire, B.culture, B.economie][n % 4]);
+    F(1, "decouvrir", "🧲", () => "Sciences et nature", "Sciences", n => n % 2 ? B.sciences : B.natureSN);
+  }
+  if (familles.length) {
+    const ordre = []; familles.forEach((f, i) => { for (let k = 0; k < f.poids; k++) ordre.push(i); });
+    // On mélange une fois l'ordre des familles (toujours le même) pour varier le chemin.
+    let graine = 7; const tire = () => (graine = (graine * 9301 + 49297) % 233280) / 233280;
+    for (let i = ordre.length - 1; i > 0; i--) { const j = Math.floor(tire() * (i + 1)); [ordre[i], ordre[j]] = [ordre[j], ordre[i]]; }
+    const vus = {};
+    for (let k = 1; k <= NB_PALIERS; k++) {
+      paliersPlus.push({ id: "e" + k, titre: "Entraînement " + k, periode: "niveau " + k });
+      for (let j = 0; j < PAR_PALIER; j++) {
+        const f = familles[ordre[(k * PAR_PALIER + j) % ordre.length]], niv = k - 1 + Math.floor(j / 16);
+        const t = f.titre(niv); vus[t] = (vus[t] || 0) + 1;
+        L("e" + k, f.monde, "x" + j, f.icone, t + " · " + vus[t], f.objectif, f.fab(niv));
+      }
+    }
+  }
+
+  return { monde: { id: "senegal", titre: "Mon Sénégal", icone: "🇸🇳", couleur: "#c8ecc0", lecons: [] }, lecons, paliers: paliersPlus };
 };
